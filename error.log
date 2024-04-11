@@ -1,0 +1,58 @@
+
+新错误
+结论：LongVacation(james) → FavoriteSeason(james, summer)
+格式化结论：Implies(LongVacation(james), FavoriteSeason(james,summer))
+前提：['∃x (Season(x) ∧ LongVacation(x) ∧ MostLovedSeason(x, summer))', '∀x (FavoriteSeason(x, emma) ↔ Season(x, summer))', '∀x (FavoriteSeason(x, mia) ↔ ¬FavoriteSeason(x, emma))', 'LongVacation(james)', 'FavoriteSeason(james, summer)']
+格式化前提：['Exists(x, And(Season(x), And(LongVacation(x), MostLovedSeason(x,summer))))', 'ForAll(x, And(Implies(FavoriteSeason(x,emma), Season(x,summer)), Implies(Season(x,summer), FavoriteSeason(x,emma))))', 'ForAll(x, And(Implies(FavoriteSeason(x,mia), Not(FavoriteSeason(x,emma))), Implies(Not(FavoriteSeason(x,emma)), FavoriteSeason(x,mia))))', 'LongVacation(james)', 'FavoriteSeason(james,summer)']
+错误：0 ∃x (Season(x) ∧ LongVacation(x) ∧ MostLovedSeason(x, summer))
+Exists(x,And(Season(x),And(LongVacation(x),MostLovedSeason(x,1))))
+ 异常: b'Wrong number of arguments (1) passed to function (declare-fun season (Int Int) Bool) \narg: x\n'
+
+
+新错误
+结论：∃x OccursIn(monkeypox_virus, x)
+格式化结论：Exists(x, OccursIn(monkeypox_virus,x))
+前提：['∀x (InfectiousDisease(monkeypox, monkeypox_virus) ∧ Animal(x) → OccursIn(monkeypox_virus, x))', '∀x (Human(x) → Mammal(x))', '∀x (Mammal(x) → Animal(x))', '∀x (Symptom(monkeypox, x) → (fever(x) ∧ headache(x) ∧ muscle_pains(x) ∧ feeling_tired(x)))', '∀x (Person(x) ∧ Has(x, flu) → FeelsTired(x))', '∃x Animal(x)']
+格式化前提：['ForAll(x, Implies(And(InfectiousDisease(monkeypox,monkeypox_virus), Animal(x)), OccursIn(monkeypox_virus,x)))', 'ForAll(x, Implies(Human(x), Mammal(x)))', 'ForAll(x, Implies(Mammal(x), Animal(x)))', 'ForAll(x, -----Symptom(monkeypox,x)→(fever(x)∧headache(x)∧muscle_pains(x)∧feeling_tired(x))-----)', 'ForAll(x, Implies(And(Person(x), Has(x,flu)), FeelsTired(x)))', 'Exists(x, Animal(x))']
+错误：3 ∀x (Symptom(monkeypox, x) → (fever(x) ∧ headache(x) ∧ muscle_pains(x) ∧ feeling_tired(x)))
+ForAll(x,-----Symptom(2,x)→(fever(x)∧headache(x)∧muscle_pains(x)∧feeling_tired(x))-----)
+ 异常: invalid character '→' (U+2192) (<string>, line 1)
+
+
+新错误
+结论：
+∃x (Man(x) ∧ Taller(michael, x) ∧ ¬(SamePerson(x, michael)) ∧ Taller(x, peter))
+
+格式化结论：Exists(x, And(Man(x), And(Taller(michael,x), And(Not(SamePerson(x,michael)), Taller(x,peter)))))
+前提：['∀x ∀y (Man(x) ∧ Man(y) ∧ Taller(x, y) → CanBlockShooting(x, y))', '\nMan(michael) ∧ ∀x (Person(x) ∧ Man(x) ∧ ¬(x = michael) → Taller(x, michael))\n', '∀x ∀y ∀z ((Person(x) ∧ Person(y) ∧ Person(z) ∧ Taller(x, y) ∧ Taller(y, z)) → Taller(x, z))', 'Man(peter) ∧ Taller(peter, michael)', '∀x ∀y (Person(x) ∧ Person(y) ∧ CanBlockShooting(michael, x) ∧ ¬JumpingWhenShooting(x) → CanBlockShooting(michael, y))', '¬CanBlockShooting(michael, windy)', '∀x (Shooter(x) ∧ CanJumpWhenShooting(x) → GreatShooter(x))']
+格式化前提：['ForAll(x, ForAll(y, Implies(And(Man(x), And(Man(y), Taller(x,y))), CanBlockShooting(x,y))))', 'And(Man(michael), ForAll(x, Implies(And(Person(x), And(Man(x), Not(-----x=michael-----))), Taller(x,michael))))', 'ForAll(x, ForAll(y, ForAll(z, Implies(And(Person(x), And(Person(y), And(Person(z), And(Taller(x,y), Taller(y,z))))), Taller(x,z)))))', 'And(Man(peter), Taller(peter,michael))', 'ForAll(x, ForAll(y, Implies(And(Person(x), And(Person(y), And(CanBlockShooting(michael,x), Not(JumpingWhenShooting(x))))), CanBlockShooting(michael,y))))', 'Not(CanBlockShooting(michael,windy))', 'ForAll(x, Implies(And(Shooter(x), CanJumpWhenShooting(x)), GreatShooter(x)))']
+错误：1 
+Man(michael) ∧ ∀x (Person(x) ∧ Man(x) ∧ ¬(x = michael) → Taller(x, michael))
+
+And(Man(1),ForAll(x,Implies(And(Person(x),And(Man(x),Not(2))),Taller(x,1))))
+ 异常: True, False or Z3 Boolean expression expected. Received 2 of type <class 'int'>
+
+
+新错误
+结论：GreatShooter(windy)
+格式化结论：GreatShooter(windy)
+前提：['∀x ∀y (Man(x) ∧ Man(y) ∧ Taller(x, y) → CanBlockShooting(x, y))', '\nMan(michael) ∧ ∀z (Man(z) ∧ ¬(z = michael) → Taller(michael, z))\n', '∀x ∀y ∀z ((Person(x) ∧ Person(y) ∧ Person(z)) ∧ Taller(x, y) ∧ Taller(y, z) → Taller(x, z))', 'Man(peter) ∧ Taller(peter, michael)', '∀x ∀y (Person(x) ∧ ShootingFrom(y, x) ∧ ¬Jumping(y) → CanBlockShooting(michael, y))', '¬CanBlockShooting(michael, windy)', '∀x (Shooter(x) ∧ CanJump(x) → GreatShooter(x))']
+格式化前提：['ForAll(x, ForAll(y, Implies(And(Man(x), And(Man(y), Taller(x,y))), CanBlockShooting(x,y))))', 'And(Man(michael), ForAll(z, Implies(And(Man(z), Not(-----z=michael-----)), Taller(michael,z))))', 'ForAll(x, ForAll(y, ForAll(z, Implies(And(And(Person(x), And(Person(y), Person(z))), And(Taller(x,y), Taller(y,z))), Taller(x,z)))))', 'And(Man(peter), Taller(peter,michael))', 'ForAll(x, ForAll(y, Implies(And(Person(x), And(ShootingFrom(y,x), Not(Jumping(y)))), CanBlockShooting(michael,y))))', 'Not(CanBlockShooting(michael,windy))', 'ForAll(x, Implies(And(Shooter(x), CanJump(x)), GreatShooter(x)))']
+错误：1 
+Man(michael) ∧ ∀z (Man(z) ∧ ¬(z = michael) → Taller(michael, z))
+
+And(Man(1),ForAll(z,Implies(And(Man(z),Not(2)),Taller(1,z))))
+ 异常: True, False or Z3 Boolean expression expected. Received 2 of type <class 'int'>
+
+
+新错误
+结论：CanBlock(peter, windy)
+格式化结论：CanBlock(peter,windy)
+前提：['∀x∀y∀z (Man(x) ∧ Man(y) ∧ Taller(x, y) → CanBlock(y, x))', '\nMan(michael) ∧ ∀y (Man(y) ∧ ¬(michael(y)) → Taller(michael, y))\n', '∀x∀y∀z ((Person(x) ∧ Person(y) ∧ Person(z)) ∧ (Taller(x, y) ∧ Taller(y, z)) → Taller(x, z))', 'Man(peter) ∧ Taller(peter, michael)', '∀x∀y (Person(x) ∧ Person(y) ∧ ¬Jumping(y) → CanBlock(michael, x))', '¬CanBlock(michael, windy)', '∀x (Shooter(x) ∧ CanJump(x) → GreatShooter(x))']
+格式化前提：['ForAll(x, ForAll(y, ForAll(z, Implies(And(Man(x), And(Man(y), Taller(x,y))), CanBlock(y,x)))))', 'And(Man(michael), ForAll(y, Implies(And(Man(y), Not(-----michael(y)-----)), Taller(michael,y))))', 'ForAll(x, ForAll(y, ForAll(z, Implies(And(And(Person(x), And(Person(y), Person(z))), And(Taller(x,y), Taller(y,z))), Taller(x,z)))))', 'And(Man(peter), Taller(peter,michael))', 'ForAll(x, ForAll(y, Implies(And(Person(x), And(Person(y), Not(Jumping(y)))), CanBlock(michael,x))))', 'Not(CanBlock(michael,windy))', 'ForAll(x, Implies(And(Shooter(x), CanJump(x)), GreatShooter(x)))']
+错误：1 
+Man(michael) ∧ ∀y (Man(y) ∧ ¬(michael(y)) → Taller(michael, y))
+
+And(Man(1),ForAll(y,Implies(And(Man(y),Not(-----michael(y)-----)),Taller(1,y))))
+ 异常: invalid syntax (<string>, line 1)
+

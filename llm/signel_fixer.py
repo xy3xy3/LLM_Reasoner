@@ -35,7 +35,7 @@ def process(
     list_res: list,
 ):
     global origin
-    print(f"\nID{id}单个修复{full_premises}\n{str_res}\n")
+    print(f"\nID{id}单个修复\n")
     max_attempts = 5  # 最大尝试次数
     err_msg = ""  # 错误信息
     fianl_res = []
@@ -50,12 +50,12 @@ def process(
             err_msg = (
                 f"<NL>\n{list_premises[i]}\n</NL>\n<FOL>\n{res_text}\n<FOL>\n{msg}."
             )
-            print(f"ID{id}单个修复，重新发送 {retry_count + 1}次尝试: {err_msg}")
             prompt = origin.format(
                 knowledge=knowledge,
                 full_premises=full_premises,
                 error_msg=err_msg,
             )
+            print(f"ID{id}单个修复，重新发送 {retry_count + 1}次尝试:\n {prompt}")
             raw_res = llm_send(prompt, "")
             if (raw_res == ""):
                 return "空回复", []

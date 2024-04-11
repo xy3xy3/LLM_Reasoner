@@ -39,7 +39,7 @@ def process(
     list_res: list,
 ):
     global origin
-    print(f"ID{id}整体修复{full_premises}")
+    print(f"ID{id}整体修复")
     # 从k_dict获取整体的知识
     knowledge = ""
     for k in k_dict[full_premises]:
@@ -57,6 +57,7 @@ def process(
                 length=length,
                 knowledge=knowledge,
             )
+            print(f"ID{id}整体修复，开始发送消息: \n{prompt}")
             raw_response = llm_send(prompt, "")
             if raw_response == "":
                 return "ID{id}回复为空", []
@@ -74,7 +75,7 @@ def process(
         if len_list != length:
             print(f"\n{id} 整体修复，需要 {length} 个, 只返回{len(list_res)}个\n")
             send_attempts += 1
-            err_msg = f"<FOL>\n{raw_response}\n</FOL>\nError: expected {length} formulas, but got {len(list_res)}.\n"
+            err_msg = f"<FOL>\n{str_res}\n</FOL>\nError: expected {length} formulas, but got {len(list_res)}.\n"
             if len_list > length:
                 err_msg += " Please remove the extra formulas."
             else:
@@ -85,7 +86,7 @@ def process(
         f, msg = check_predicate_consistency(list_res)
         if f == False:
             print(f"\n{id} 整体修复{msg}\n")
-            err_msg += f"<FOL>\n{raw_response}\n</FOL>\nError: {msg}.\n"
+            err_msg += f"<FOL>\n{str_res}\n</FOL>\nError: {msg}.\n"
         # 检查结论使用了其他之前的谓词和常量
         f, msg = check_conclusion(list_res)
         if f == False:
@@ -93,7 +94,7 @@ def process(
             if err_msg != "":
                 err_msg += "\nError: {msg}"
             else:
-                err_msg += f"<FOL>\n{raw_response}\n</FOL>\nError: {msg}.\n"
+                err_msg += f"<FOL>\n{str_res}\n</FOL>\nError: {msg}.\n"
         if err_msg != "":
             send_attempts += 1
             continue

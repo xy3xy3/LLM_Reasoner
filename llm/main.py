@@ -22,6 +22,9 @@ def send(data):
     if list_res == []:
         print(f"整体修正失败，{str_res}")
         return []
+    if len(list_res) != len(list_premises):
+        print(f"整体修正失败，最终数量不一致")
+        return []
     # 单个修正
     str_res, list_res = sf_process(id,full_premises,list_premises,k_list,k_dict,str_res, list_res)
     if list_res == []:
