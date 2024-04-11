@@ -16,13 +16,14 @@ client = OpenAI(
 )
 
 def llm_send(prompt, system_msg):
+    global cf
     max_try = 5
     cur = 0
     while cur < max_try:
         try:
             response = (
                 client.chat.completions.create(
-                    model="gpt-3.5-turbo-0125",
+                    model=cf.get('API', 'MODEL'),
                     messages=get_msg(prompt, system_msg),
                     # extra_body={"chatId": random.randint(10000, 99999)},
                     temperature=0.8,

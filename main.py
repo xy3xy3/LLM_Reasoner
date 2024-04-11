@@ -16,7 +16,7 @@ def process_data(line):
     res = send(data)
     print(res)
     if len(res) == 0:
-        return
+        return ""
     data["conclusion-AI"] = res[-1]
     data["response"] = res[:-1]
     predicates, constants = get_param_from_list(res)
@@ -68,26 +68,17 @@ def run_single(num_lines=0, r=False):
                 outfile.flush()  # 立即将缓冲区的内容写入文件
                 os.fsync(outfile.fileno())  # 确保写入的内容被立即写入磁盘
 
-
 def process_data_parallel(args):
-    line, output_lock = args
-    data = json.loads(line)
-    print("开始执行：", data["id"], " 时间：", datetime.datetime.now())
-    res = send(data)  # 假设这是已经定义好的函数
-    print(res)
-    if len(res) == 0:
-        return None
-    data["conclusion-AI"] = res[-1]
-    data["response"] = res[:-1]
-    predicates, constants = get_param_from_list(res)
-    predicates = list(predicates.keys())
-    data["predicates-AI"] = " ".join(predicates)
-    data["constants-AI"] = " ".join(constants)
-    label, errmsg = inference(data)
-    data["label-AI"] = label
-    data["errmsg"] = errmsg
-    data["same"] = data["label-AI"] == data["label"]
-    return json.dumps(data)
+    # 解包参数
+    line, temp_output_path = args
+    data = process_data(line)
+    if not data:
+        return
+    # 将处理后的数据写入对应进程的临时文件
+    with open(temp_output_path, "a", encoding="utf-8") as temp_file:
+        temp_file.write(data + "\n")
+        temp_file.flush()
+        os.fsync(temp_file.fileno())
 
 
 def run_parallel(num_lines=0, r=False, num_processes=4):
@@ -99,6 +90,7 @@ def run_parallel(num_lines=0, r=False, num_processes=4):
             output_name,
             f"./log/res_{time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(ctime))}.jsonl",
         )
+
     with open(input_name, "r", encoding="utf-8") as infile:
         lines = infile.readlines()
         if r:
@@ -106,36 +98,36 @@ def run_parallel(num_lines=0, r=False, num_processes=4):
         if num_lines != 0:
             lines = lines[:num_lines]
 
+    # 创建临时输出文件名列表
+    temp_output_paths = [f"./log/part_{i}.jsonl" for i in range(num_processes)]
+    # 清空或创建临时文件
+    for path in temp_output_paths:
+        open(path, 'w').close()
+
     # 分块数据
-    chunk_size = len(lines) // num_processes
-    data_chunks = [lines[i : i + chunk_size] for i in range(0, len(lines), chunk_size)]
+    chunk_size = len(lines) // num_processes + (len(lines) % num_processes > 0)
+    data_chunks = [lines[i: i + chunk_size] for i in range(0, len(lines), chunk_size)]
 
     # 创建进程池
     with Pool(num_processes) as pool:
-        # 构造参数，包括文件锁
-        tasks = [(chunk, output_name) for chunk in data_chunks]
-        results = pool.map(process_data_chunk, tasks)
+        tasks = [(chunk, temp_output_paths[i]) for i, chunk in enumerate(data_chunks)]
+        pool.map(process_data_chunk, tasks)
 
-        # 处理结果并写入文件
-        with open(output_name, "a", encoding="utf-8") as outfile:
-            for result_chunk in results:
-                for result in result_chunk:
-                    if result:
-                        outfile.write(result + "\n")
-                        outfile.flush()
-                        os.fsync(outfile.fileno())
+    # 合并临时文件
+    with open(output_name, "w", encoding="utf-8") as outfile:
+        for temp_path in temp_output_paths:
+            with open(temp_path, "r", encoding="utf-8") as temp_file:
+                outfile.write(temp_file.read())
+            # 删除临时文件
+            os.remove(temp_path)
 
 
 def process_data_chunk(args):
-    chunk, output_name = args
-    results = []
+    chunk, temp_output_path = args
     for line in chunk:
-        result = process_data_parallel((line, None))  # 暂时不使用锁
-        if result:
-            results.append(result)
-    return results
+        process_data_parallel((line, temp_output_path))
 
 
 if __name__ == "__main__":
     # run_parallel()
-    run_single()
+    run_parallel()

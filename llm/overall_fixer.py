@@ -23,7 +23,13 @@ You can analyze task during your output.But don't use natural language in the fi
 </NL>
 {err_msg}
 ## For FOL rule generation
-1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence) 2. You *SHOULD NEVER USE* the following symbols for FOL: "", "̸=", "%", "=" 3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 4. The FOL rule SHOULD ACCURATELY reflect the meaning of the NL statement 5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 6. You SHOULD generate FOL rules with either: (1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
+1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence)
+2. You *SHOULD NEVER USE* the following symbols for FOL: "", "̸=", "%", "=" 
+3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 
+4. The FOL rule SHOULD ACCURATELY reflect the meaning of the NL statement 
+5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 
+6. You SHOULD generate FOL rules with either: 
+(1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
 ## Task
 Convert the {length} lines natural language sentences in <NL> into the same num first-order logical formulas.And fix the error in Background Information.
 """

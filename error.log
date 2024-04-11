@@ -66,3 +66,249 @@ And(Man(1),ForAll(y,Implies(And(Man(y),Not(-----michael(y)-----)),Taller(1,y))))
 ForAll(x,Implies(And(InfectiousDisease(x),CausedByVirus(x,1)),And(OccursInAnimals(1),Animal(1))))
  异常: b'Wrong number of arguments (1) passed to function (declare-fun occursinanimals (Int Int) Bool) \narg: 1\n'
 
+
+新错误
+结论：∀x (AtTournament(x, rolandGarros2022) ↔ (FemaleTennisPlayer(x) ∨ MaleTennisPlayer(x)))
+格式化结论：ForAll(x, And(Implies(AtTournament(x,rolandGarros2022), Or(FemaleTennisPlayer(x), MaleTennisPlayer(x))), Implies(Or(FemaleTennisPlayer(x), MaleTennisPlayer(x)), AtTournament(x,rolandGarros2022))))
+前提：['∀x (RankedHighlyByWTA(x) → AmongMostActivePlayersInMajorTennis(x))', '∀x (LostTo(x, igaSwiatek) → RankedHighlyByWTA(x))', '∀x (FemaleTennisPlayer(x) ∧ AtTournament(x, rolandGarros2022) → LostTo(x, igaSwiatek))', '∀x (MaleTennisPlayer(x) ∧ AtTournament(x, rolandGarros2022) → LostTo(x, rafaelNadal))', '(RankedHighlyByWTA(cocoGauff) ∨ LostTo(cocoGauff, rafaelNadal)) → ¬MaleTennisPlayer(cocoGauff, rolandGarros2022)', 'LostTo(cocoGauff, rafaelNadal)']
+格式化前提：['ForAll(x, Implies(RankedHighlyByWTA(x), AmongMostActivePlayersInMajorTennis(x)))', 'ForAll(x, Implies(LostTo(x,igaSwiatek), RankedHighlyByWTA(x)))', 'ForAll(x, Implies(And(FemaleTennisPlayer(x), AtTournament(x,rolandGarros2022)), LostTo(x,igaSwiatek)))', 'ForAll(x, Implies(And(MaleTennisPlayer(x), AtTournament(x,rolandGarros2022)), LostTo(x,rafaelNadal)))', 'Implies(Or(RankedHighlyByWTA(cocoGauff), LostTo(cocoGauff,rafaelNadal)), Not(MaleTennisPlayer(cocoGauff,rolandGarros2022)))', 'LostTo(cocoGauff,rafaelNadal)']
+错误：4 (RankedHighlyByWTA(cocoGauff) ∨ LostTo(cocoGauff, rafaelNadal)) → ¬MaleTennisPlayer(cocoGauff, rolandGarros2022)
+Implies(Or(RankedHighlyByWTA(4),LostTo(4,3)),Not(MaleTennisPlayer(4,2)))
+ 异常: b'index out of bounds'
+
+
+新错误
+结论：¬(∃x (StarringMembers(x, pappys) ∧ Piloted(x, bbctwo ∨ bbcthree)))
+格式化结论：Not(Exists(x, -----StarringMembers(x,pappys)∧Piloted(x,bbctwo∨bbcthree)-----))
+前提：['BritishSitcomSeries(badults) ∧ StarringMembers(badults, pappys)', 'Piloted(badults, july2013) ∧ OnChannel(badults, bbcthree)', '\nWorkingTitle(badults, The_Secret_Dude_Society)\n', 'ScriptEditorFor(badults, andrewCollins)']
+格式化前提：['And(BritishSitcomSeries(badults), StarringMembers(badults,pappys))', 'And(Piloted(badults,july2013), OnChannel(badults,bbcthree))', 'WorkingTitle(badults,The_Secret_Dude_Society)', 'ScriptEditorFor(badults,andrewCollins)']
+错误：¬(∃x (StarringMembers(x, pappys) ∧ Piloted(x, bbctwo ∨ bbcthree)))  Not(Exists(x,-----StarringMembers(x,2)∧Piloted(x,7)-----)), 异常: invalid character '∧' (U+2227) (<string>, line 1)
+
+
+新错误
+结论：
+∀x ((TakeOutService(x) ∧ ManyNegativeReviews(x)) → ((Rating(x) > 9) ∧ ¬(TakeOutService(x))))
+
+格式化结论：ForAll(x, Implies(And(TakeOutService(x), ManyNegativeReviews(x)), And(Rating(x)>9, Not(TakeOutService(x)))))
+前提：['∀x (YelpRecommendations(x) → ¬ManyNegativeReviews(x))', '\n∀x (Restaurant(x) ∧ Rating(x, y) ∧ GreaterThanNine(y) → YelpRecommendations(x, y))\n', '∃x (¬TakeOutService(x) ∧ ManyNegativeReviews(x))', '\n∀x (PopularAmongLocalResidents(x) → ∃y (RatingGreaterThan(x, y)))\n', '\n∀z (Rating(subway, z) ∨ PopularAmongLocalResidents(subway))\n']
+格式化前提：['ForAll(x, Implies(YelpRecommendations(x), Not(ManyNegativeReviews(x))))', 'ForAll(x, Implies(And(Restaurant(x), And(Rating(x,y), GreaterThanNine(y))), YelpRecommendations(x,y)))', 'Exists(x, And(Not(TakeOutService(x)), ManyNegativeReviews(x)))', 'ForAll(x, Implies(PopularAmongLocalResidents(x), Exists(y, RatingGreaterThan(x,y))))', 'ForAll(z, Or(Rating(subway,z), PopularAmongLocalResidents(subway)))']
+错误：0 ∀x (YelpRecommendations(x) → ¬ManyNegativeReviews(x))
+ForAll(x,Implies(YelpRecommendations(x),Not(ManyNegativeReviews(x))))
+ 异常: b'Wrong number of arguments (1) passed to function (declare-fun yelprecommendations (Int Int) Bool) \narg: x\n'
+
+
+新错误
+结论：(TakeOutService(Subway) ∧ ¬ManyNegativeReviews(Subway))
+格式化结论：And(TakeOutService(Subway), Not(ManyNegativeReviews(Subway)))
+前提：['∀x (ListedInYelpsRecommendations(x) → ¬ManyNegativeReviews(x))', '\n∀x ((Rating(x) ⊕ PopularAmongLocalResidents(x)) → ListedInYelpsRecommendations(x))\n', '∃x (¬TakeOutService(x) ∧ ManyNegativeReviews(x))', '\n∀x (PopularAmongLocalResidents(x) → (Rating(x) > 9 ∨ Rating(x) = 9))\n', '\nRating(Subway) > 9 ∨ (∃x (LocalResident(x) ∧ PopularAmongLocalResident(Subway)))\n']
+格式化前提：['ForAll(x, Implies(ListedInYelpsRecommendations(x), Not(ManyNegativeReviews(x))))', 'ForAll(x, Implies(Xor(Rating(x), PopularAmongLocalResidents(x)), ListedInYelpsRecommendations(x)))', 'Exists(x, And(Not(TakeOutService(x)), ManyNegativeReviews(x)))', 'ForAll(x, Implies(PopularAmongLocalResidents(x), Or(Rating(x)>9, Rating(x)=9)))', 'Or(Rating(Subway)>9, Exists(x, And(LocalResident(x), PopularAmongLocalResident(Subway))))']
+错误：3 
+∀x (PopularAmongLocalResidents(x) → (Rating(x) > 9 ∨ Rating(x) = 9))
+
+ForAll(x,Implies(PopularAmongLocalResidents(x),Or(Rating(x)>9,Rating(x)=9)))
+ 异常: expression cannot contain assignment, perhaps you meant "=="? (<string>, line 1)
+
+
+新错误
+结论：ComplainOften(luke) ∧ AnnoyingSiblings(luke)
+格式化结论：And(ComplainOften(luke), AnnoyingSiblings(luke))
+前提：['∀x ∀y ((Twins(x) ∨ Triplets(x)) → (HangOutWithSiblings(x, y) ∧ PlayWithSiblings(x, y)))', '∀x ∀y ((SameAgeSiblings(x, y)) ↔ (Twins(x) ∨ Triplets(x)))', '∀x (ComplainOften(x) ∧ AnnoyingSiblings(x) → SameAgeSiblings(x, x))', '∀x (¬LiveAtHomeRegularly(x) → ¬DevelopStrongBonds(x))', '∀x ((HangOutWithSiblings(x) ∧ PlayWithSiblings(x)) → ¬LiveAtHomeRegularly(x))', '(Twins(luke) ∨ Triplets(luke)) ∧ DevelopStrongBonds(luke) ⊕ (¬Twins(luke) ∧ ¬Triplets(luke) ∧ ¬DevelopStrongBonds(luke))']
+格式化前提：['ForAll(x, ForAll(y, Implies(Or(Twins(x), Triplets(x)), And(HangOutWithSiblings(x,y), PlayWithSiblings(x,y)))))', 'ForAll(x, ForAll(y, And(Implies(SameAgeSiblings(x,y), Or(Twins(x), Triplets(x))), Implies(Or(Twins(x), Triplets(x)), SameAgeSiblings(x,y)))))', 'ForAll(x, Implies(And(ComplainOften(x), AnnoyingSiblings(x)), SameAgeSiblings(x,x)))', 'ForAll(x, Implies(Not(LiveAtHomeRegularly(x)), Not(DevelopStrongBonds(x))))', 'ForAll(x, Implies(And(HangOutWithSiblings(x), PlayWithSiblings(x)), Not(LiveAtHomeRegularly(x))))', 'Xor(And(Or(Twins(luke), Triplets(luke)), DevelopStrongBonds(luke)), And(Not(Twins(luke)), And(Not(Triplets(luke)), Not(DevelopStrongBonds(luke)))))']
+错误：0 ∀x ∀y ((Twins(x) ∨ Triplets(x)) → (HangOutWithSiblings(x, y) ∧ PlayWithSiblings(x, y)))
+ForAll(x,ForAll(y,Implies(Or(Twins(x),Triplets(x)),And(HangOutWithSiblings(x,y),PlayWithSiblings(x,y)))))
+ 异常: b'index out of bounds'
+
+
+新错误
+结论：∃x (MountainRange(x) ∧ LocatedIn(x, texas) ∧ Visited(juanDeOnate, x))
+格式化结论：Exists(x, And(MountainRange(x), And(LocatedIn(x,texas), Visited(juanDeOnate,x))))
+前提：['\n∀x (MountainRange(x) ∧ (LocatedIn(x, NewMexico) ∨ LocatedIn(x, Texas)))\n', 'Visited(juanDeOnate, picurisMountains)', 'LocatedIn(hardingPegmatiteMine, picurisMountains) ∧ Donated(hardingPegmatiteMine)', '\n¬∃x∃y (MountainRange(x) ∧ LocatedIn(x, texas) ∧ HasMine(y) ∧ Donated(y, x))\n']
+格式化前提：['ForAll(x, And(MountainRange(x), Or(LocatedIn(x,NewMexico), LocatedIn(x,Texas))))', 'Visited(juanDeOnate,picurisMountains)', 'And(LocatedIn(hardingPegmatiteMine,picurisMountains), Donated(hardingPegmatiteMine))', 'Not(Exists(x, Exists(y, And(MountainRange(x), And(LocatedIn(x,texas), And(HasMine(y), Donated(y,x)))))))']
+错误：2 LocatedIn(hardingPegmatiteMine, picurisMountains) ∧ Donated(hardingPegmatiteMine)
+And(LocatedIn(5,3),Donated(5))
+ 异常: b'Wrong number of arguments (1) passed to function (declare-fun donated (Int Int) Bool) \narg: 5\n'
+
+
+新错误
+结论：GreatShooter(windy)
+格式化结论：GreatShooter(windy)
+前提：['∀x∀y∀z (Man(x) ∧ Man(y) ∧ Taller(x, y) → CanBlockShooting(y, x))', '\nMan(michael) ∧ ∀y (Man(y) ∧ ¬(y = michael) → Taller(michael, y))\n', '∀x∀y∀z ((Person(x) ∧ Person(y) ∧ Person(z)) ∧ (Taller(x, y) ∧ Taller(y, z)) → Taller(x, z))', 'Man(peter) ∧ Taller(peter, michael)', '∀x∀y (Person(x) ∧ Person(y) ∧ ¬Jumping(y) → CanBlockShooting(michael, x))', '¬CanBlockShooting(michael, windy)', '∀x ((Shooter(x) ∧ CanJump(x)) → GreatShooter(x))']
+格式化前提：['ForAll(x, ForAll(y, ForAll(z, Implies(And(Man(x), And(Man(y), Taller(x,y))), CanBlockShooting(y,x)))))', 'And(Man(michael), ForAll(y, Implies(And(Man(y), Not(-----y=michael-----)), Taller(michael,y))))', 'ForAll(x, ForAll(y, ForAll(z, Implies(And(And(Person(x), And(Person(y), Person(z))), And(Taller(x,y), Taller(y,z))), Taller(x,z)))))', 'And(Man(peter), Taller(peter,michael))', 'ForAll(x, ForAll(y, Implies(And(Person(x), And(Person(y), Not(Jumping(y)))), CanBlockShooting(michael,x))))', 'Not(CanBlockShooting(michael,windy))', 'ForAll(x, Implies(And(Shooter(x), CanJump(x)), GreatShooter(x)))']
+错误：1 
+Man(michael) ∧ ∀y (Man(y) ∧ ¬(y = michael) → Taller(michael, y))
+
+And(Man(1),ForAll(y,Implies(And(Man(y),Not(2)),Taller(1,y))))
+ 异常: True, False or Z3 Boolean expression expected. Received 2 of type <class 'int'>
+
+
+新错误
+结论：CanBlock(peter, windy)
+格式化结论：CanBlock(peter,windy)
+前提：['∀x ∀y (Man(x) ∧ Man(y) ∧ TallerThan(x, y) → CanBlock(x, y))', '∀classmate (Man(classmate) ∧ TallerThan(michael, classmate) ∧ ∀y ∀z (Man(y) ∧ Man(z) ∧ TallerThan(y, z) ∧ TallerThan(z, michael) → TallerThan(y, michael)))', '∀x (Man(x) → TallerThan(peter, x))', '∀x (Man(x) → TallerThan(x, michael))', '¬(∀x (Shooting(x) ∧ ¬Jumping(x) → CanBlock(michael, x)))', '¬CanBlock(michael, windy)', '∀x (Shooting(x) ∧ Jumping(x) → GreatShooter(x))']
+格式化前提：['ForAll(x, ForAll(y, Implies(And(Man(x), And(Man(y), TallerThan(x,y))), CanBlock(x,y))))', 'ForAll(c, -----lassmate(Man(classmate)∧TallerThan(michael,classmate)∧∀y∀z(Man(y)∧Man(z)∧TallerThan(y,z)∧TallerThan(z,michael)→TallerThan(y,michael)))-----)', 'ForAll(x, Implies(Man(x), TallerThan(peter,x)))', 'ForAll(x, Implies(Man(x), TallerThan(x,michael)))', 'Not(ForAll(x, Implies(And(Shooting(x), Not(Jumping(x))), CanBlock(michael,x))))', 'Not(CanBlock(michael,windy))', 'ForAll(x, Implies(And(Shooting(x), Jumping(x)), GreatShooter(x)))']
+错误：1 ∀classmate (Man(classmate) ∧ TallerThan(michael, classmate) ∧ ∀y ∀z (Man(y) ∧ Man(z) ∧ TallerThan(y, z) ∧ TallerThan(z, michael) → TallerThan(y, michael)))
+ForAll(c,-----lassmate(Man(1)∧TallerThan(2,1)∧∀y∀z(Man(y)∧Man(z)∧TallerThan(y,z)∧TallerThan(z,2)→TallerThan(y,2)))-----)
+ 异常: invalid character '∧' (U+2227) (<string>, line 1)
+
+
+新错误
+结论：IndoEuropeanLanguage(french)
+格式化结论：IndoEuropeanLanguage(french)
+前提：['∀x (RomanceLanguage(x) → IndoEuropeanLanguage(x))', 'LanguageFamily(romanceLanguages)', '\n∀x ∀y ((Language(x) ∧ Language(y) ∧ LanguageFamily(z) ∧ BelongsToLanguageFamily(x, z) ∧ BelongsToLanguageFamily(y, z)) → RelatedLanguages(x, y))\n\n∀x ∀y ∀z ((Language(x) ∧ Language(y) ∧ LanguageFamily(z) ∧ BelongsToLanguageFamily(x, z) ∧ BelongsToLanguageFamily(y, z)) → RelatedLanguages(x, y))\n', 'RomanceLanguage(french) ∧ RomanceLanguage(spanish)', 'RelatedLanguages(german, spanish)', '¬∃x RelatedLanguages(basque, x)']
+格式化前提：['ForAll(x, Implies(RomanceLanguage(x), IndoEuropeanLanguage(x)))', 'LanguageFamily(romanceLanguages)', 'ForAll(x, ForAll(y, -----((Language(x)∧Language(y)∧LanguageFamily(z)∧BelongsToLanguageFamily(x,z)∧BelongsToLanguageFamily(y,z))→RelatedLanguages(x,y))∀x∀y∀z((Language(x)∧Language(y)∧LanguageFamily(z)∧BelongsToLanguageFamily(x,z)∧BelongsToLanguageFamily(y,z))→RelatedLanguages(x,y))-----))', 'And(RomanceLanguage(french), RomanceLanguage(spanish))', 'RelatedLanguages(german,spanish)', 'Not(Exists(x, RelatedLanguages(basque,x)))']
+错误：2 
+∀x ∀y ((Language(x) ∧ Language(y) ∧ LanguageFamily(z) ∧ BelongsToLanguageFamily(x, z) ∧ BelongsToLanguageFamily(y, z)) → RelatedLanguages(x, y))
+
+∀x ∀y ∀z ((Language(x) ∧ Language(y) ∧ LanguageFamily(z) ∧ BelongsToLanguageFamily(x, z) ∧ BelongsToLanguageFamily(y, z)) → RelatedLanguages(x, y))
+
+ForAll(x,ForAll(y,-----((Language(x)∧Language(y)∧LanguageFamily(z)∧BelongsToLanguageFamily(x,z)∧BelongsToLanguageFamily(y,z))→RelatedLanguages(x,y))∀x∀y∀z((Language(x)∧Language(y)∧LanguageFamily(z)∧BelongsToLanguageFamily(x,z)∧BelongsToLanguageFamily(y,z))→RelatedLanguages(x,y))-----))
+ 异常: invalid character '∧' (U+2227) (<string>, line 1)
+
+
+新错误
+结论：∃x (MountainRange(x) ∧ LocatedIn(x, texas) ∧ Visited(juandeOnate, x))
+格式化结论：Exists(x, And(MountainRange(x), And(LocatedIn(x,texas), Visited(juandeOnate,x))))
+前提：['\n∀x (MountainRange(x) ∧ LocatedIn(x, newMexico ∨ texas) → (LocatedIn(x, newMexico) ∨ LocatedIn(x, texas)))\n', 'Visited(juandeOnate, picurisMountains)', 'LocatedIn(hardingPegmatiteMine, picurisMountains) ∧ Donated(hardingPegmatiteMine)', '¬∃x (MountainRange(x) ∧ LocatedIn(x, texas) ∧ ∃y (Mine(y) ∧ LocatedIn(y, x) ∧ Donated(y)))']
+格式化前提：['ForAll(x, -----MountainRange(x)∧LocatedIn(x,newMexico∨texas)→(LocatedIn(x,newMexico)∨LocatedIn(x,texas))-----)', 'Visited(juandeOnate,picurisMountains)', 'And(LocatedIn(hardingPegmatiteMine,picurisMountains), Donated(hardingPegmatiteMine))', 'Not(Exists(x, And(MountainRange(x), And(LocatedIn(x,texas), Exists(y, And(Mine(y), And(LocatedIn(y,x), Donated(y))))))))']
+错误：0 
+∀x (MountainRange(x) ∧ LocatedIn(x, newMexico ∨ texas) → (LocatedIn(x, newMexico) ∨ LocatedIn(x, texas)))
+
+ForAll(x,-----MountainRange(x)∧LocatedIn(x,1)→(LocatedIn(x,2)∨LocatedIn(x,3))-----)
+ 异常: invalid character '∧' (U+2227) (<string>, line 1)
+
+
+新错误
+结论：
+∃y (Man(y) ∧ Taller(michael, y) ∧ ¬Shorter(peter, y))
+
+格式化结论：Exists(y, And(Man(y), And(Taller(michael,y), Not(Shorter(peter,y)))))
+前提：['∀x∀y∀z (Man(x) ∧ Man(y) ∧ Taller(x, y) → CanBlockShooting(y, x))', '\nMan(michael) ∧ ∀y (Man(y) ∧ ¬(michael(y)) → Taller(michael, y))\n', '∀x∀y∀z (Person(x) ∧ Person(y) ∧ Person(z) ∧ Taller(x, y) ∧ Taller(y, z) → Taller(x, z))', 'Man(peter) ∧ Taller(peter, michael)', '∀x∀y (Person(x) ∧ Person(y) ∧ CanBlockShooting(y, x) ∧ ¬JumpingWhenShooting(y) → CanBlockShooting(michael, x))', '¬CanBlockShooting(michael, windy)', '∀x (Shooter(x) ∧ JumpingWhenShooting(x) → GreatShooter(x))']
+格式化前提：['ForAll(x, ForAll(y, ForAll(z, Implies(And(Man(x), And(Man(y), Taller(x,y))), CanBlockShooting(y,x)))))', 'And(Man(michael), ForAll(y, Implies(And(Man(y), Not(-----michael(y)-----)), Taller(michael,y))))', 'ForAll(x, ForAll(y, ForAll(z, Implies(And(Person(x), And(Person(y), And(Person(z), And(Taller(x,y), Taller(y,z))))), Taller(x,z)))))', 'And(Man(peter), Taller(peter,michael))', 'ForAll(x, ForAll(y, Implies(And(Person(x), And(Person(y), And(CanBlockShooting(y,x), Not(JumpingWhenShooting(y))))), CanBlockShooting(michael,x))))', 'Not(CanBlockShooting(michael,windy))', 'ForAll(x, Implies(And(Shooter(x), JumpingWhenShooting(x)), GreatShooter(x)))']
+错误：1 
+Man(michael) ∧ ∀y (Man(y) ∧ ¬(michael(y)) → Taller(michael, y))
+
+And(Man(1),ForAll(y,Implies(And(Man(y),Not(-----michael(y)-----)),Taller(1,y))))
+ 异常: invalid syntax (<string>, line 1)
+
+
+新错误
+结论：GreatShooter(windy)
+格式化结论：GreatShooter(windy)
+前提：['∀x∀y∀z (Man(x) ∧ Man(y) ∧ Taller(x, y) → CanBlockShooting(y, x))', '\nMan(michael) ∧ ∀y (Man(y) ∧ ¬(y = michael) → Taller(michael, y))\n', '∀x∀y∀z (Person(x) ∧ Person(y) ∧ Person(z) ∧ Taller(x, y) ∧ Taller(y, z) → Taller(x, z))', 'Man(peter) ∧ Taller(peter, michael)', '∀x∀y (Person(x) ∧ Person(y) ∧ CanBlockShooting(y, x) → ¬JumpingWhenShooting(x, y) → CanBlockShooting(michael, y))', '¬CanBlockShooting(michael, windy)', '∀x (Shooter(x) ∧ CanJumpWhenShooting(x) → GreatShooter(x))']
+格式化前提：['ForAll(x, ForAll(y, ForAll(z, Implies(And(Man(x), And(Man(y), Taller(x,y))), CanBlockShooting(y,x)))))', 'And(Man(michael), ForAll(y, Implies(And(Man(y), Not(-----y=michael-----)), Taller(michael,y))))', 'ForAll(x, ForAll(y, ForAll(z, Implies(And(Person(x), And(Person(y), And(Person(z), And(Taller(x,y), Taller(y,z))))), Taller(x,z)))))', 'And(Man(peter), Taller(peter,michael))', 'ForAll(x, ForAll(y, Implies(And(Person(x), And(Person(y), CanBlockShooting(y,x))), Implies(Not(JumpingWhenShooting(x,y)), CanBlockShooting(michael,y)))))', 'Not(CanBlockShooting(michael,windy))', 'ForAll(x, Implies(And(Shooter(x), CanJumpWhenShooting(x)), GreatShooter(x)))']
+错误：1 
+Man(michael) ∧ ∀y (Man(y) ∧ ¬(y = michael) → Taller(michael, y))
+
+And(Man(1),ForAll(y,Implies(And(Man(y),Not(2)),Taller(1,y))))
+ 异常: True, False or Z3 Boolean expression expected. Received 2 of type <class 'int'>
+
+
+新错误
+结论：CanBlockShooting(peter, windy)
+格式化结论：CanBlockShooting(peter,windy)
+前提：['∀x ∀y (Man(x) ∧ Man(y) ∧ Taller(x, y) → CanBlockShooting(x, y))', '\nMan(michael) ∧ ∀z (Man(z) ∧ (z ≠ michael) → Taller(michael, z))\n', '∀x ∀y ∀z ((Person(x) ∧ Person(y) ∧ Person(z)) → (Taller(x, y) ∧ Taller(y, z) → Taller(x, z)))', 'Man(peter) ∧ Taller(peter, michael)', '∀y (Person(y) ∧ ¬JumpingWhenShooting(y) → CanBlockShooting(michael, y))', '¬CanBlockShooting(michael, windy)', '∀x (Shooter(x) ∧ CanJumpWhenShooting(x) → GreatShooter(x))']
+格式化前提：['ForAll(x, ForAll(y, Implies(And(Man(x), And(Man(y), Taller(x,y))), CanBlockShooting(x,y))))', 'And(Man(michael), ForAll(z, -----Man(z)∧(z≠michael)→Taller(michael,z)-----))', 'ForAll(x, ForAll(y, ForAll(z, Implies(And(Person(x), And(Person(y), Person(z))), Implies(And(Taller(x,y), Taller(y,z)), Taller(x,z))))))', 'And(Man(peter), Taller(peter,michael))', 'ForAll(y, Implies(And(Person(y), Not(JumpingWhenShooting(y))), CanBlockShooting(michael,y)))', 'Not(CanBlockShooting(michael,windy))', 'ForAll(x, Implies(And(Shooter(x), CanJumpWhenShooting(x)), GreatShooter(x)))']
+错误：1 
+Man(michael) ∧ ∀z (Man(z) ∧ (z ≠ michael) → Taller(michael, z))
+
+And(Man(1),ForAll(z,-----Man(z)∧(2)→Taller(1,z)-----))
+ 异常: invalid character '∧' (U+2227) (<string>, line 1)
+
+
+新错误
+结论：HangOutWithSiblings(luke) ∧ PlayWithSiblings(luke)
+格式化结论：And(HangOutWithSiblings(luke), PlayWithSiblings(luke))
+前提：['∀x ((Twin(x) ∨ Triplet(x)) → HangOutWithSiblings(x) ∧ PlayWithSiblings(x))', '\n∀x ((∃y (Sibling(y, x) ∧ SameAge(x, y))) → (Twin(x) ∨ Triplet(x) ∨ ¬Twin(x) ∧ ¬Triplet(x)))\n', '∀x (ComplainAboutAnnoyingSiblings(x) → ∃y (Sibling(y) ∧ SameAge(x, y)))', '∀x (¬LiveAtHomeRegularly(x) → ¬DevelopStrongBonds(x))', '∀x ((HangOutWithSiblings(x) ∧ PlayWithSiblings(x)) → ¬LiveAtHomeRegularly(x))', '\n(Twin(luke) ∨ Triplet(luke)) ∧ DevelopStrongBonds(luke) ⊕ (¬Twin(luke) ∧ ¬Triplet(luke) ∧ ¬DevelopStrongBonds(luke))\n']
+格式化前提：['ForAll(x, Implies(Or(Twin(x), Triplet(x)), And(HangOutWithSiblings(x), PlayWithSiblings(x))))', 'ForAll(x, Implies(Exists(y, And(Sibling(y,x), SameAge(x,y))), Or(Twin(x), Or(Triplet(x), And(Not(Twin(x)), Not(Triplet(x)))))))', 'ForAll(x, Implies(ComplainAboutAnnoyingSiblings(x), Exists(y, And(Sibling(y), SameAge(x,y)))))', 'ForAll(x, Implies(Not(LiveAtHomeRegularly(x)), Not(DevelopStrongBonds(x))))', 'ForAll(x, Implies(And(HangOutWithSiblings(x), PlayWithSiblings(x)), Not(LiveAtHomeRegularly(x))))', 'Xor(And(Or(Twin(luke), Triplet(luke)), DevelopStrongBonds(luke)), And(Not(Twin(luke)), And(Not(Triplet(luke)), Not(DevelopStrongBonds(luke)))))']
+错误：1 
+∀x ((∃y (Sibling(y, x) ∧ SameAge(x, y))) → (Twin(x) ∨ Triplet(x) ∨ ¬Twin(x) ∧ ¬Triplet(x)))
+
+ForAll(x,Implies(Exists(y,And(Sibling(y,x),SameAge(x,y))),Or(Twin(x),Or(Triplet(x),And(Not(Twin(x)),Not(Triplet(x)))))))
+ 异常: b'index out of bounds'
+
+
+新错误
+结论：
+∃x (Man(x) ∧ Taller(x, michael) ∧ ¬(IsPeter(x)))
+
+格式化结论：Exists(x, And(Man(x), And(Taller(x,michael), Not(IsPeter(x)))))
+前提：['∀x∀y∀z (Man(x) ∧ Man(y) ∧ Taller(x, y) → CanBlockShooting(y, x))', '\nMan(michael) ∧ ∀x (Man(x) ∧ ¬(x = michael) → Taller(x, michael))\n', '∀x∀y∀z ((Person(x) ∧ Person(y) ∧ Person(z)) ∧ (Taller(x, y) ∧ Taller(y, z)) → Taller(x, z))', 'Man(peter) ∧ Taller(peter, michael)', '∀x∀y (Person(x) ∧ Person(y) ∧ CanBlockShooting(y, michael) → (¬JumpingWhenShooting(y) → CanBlockShooting(y, michael)))', '¬CanBlockShooting(michael, windy)', '∀x (Shooter(x) ∧ JumpingWhenShooting(x) → GreatShooter(x))']
+格式化前提：['ForAll(x, ForAll(y, ForAll(z, Implies(And(Man(x), And(Man(y), Taller(x,y))), CanBlockShooting(y,x)))))', 'And(Man(michael), ForAll(x, Implies(And(Man(x), Not(-----x=michael-----)), Taller(x,michael))))', 'ForAll(x, ForAll(y, ForAll(z, Implies(And(And(Person(x), And(Person(y), Person(z))), And(Taller(x,y), Taller(y,z))), Taller(x,z)))))', 'And(Man(peter), Taller(peter,michael))', 'ForAll(x, ForAll(y, Implies(And(Person(x), And(Person(y), CanBlockShooting(y,michael))), Implies(Not(JumpingWhenShooting(y)), CanBlockShooting(y,michael)))))', 'Not(CanBlockShooting(michael,windy))', 'ForAll(x, Implies(And(Shooter(x), JumpingWhenShooting(x)), GreatShooter(x)))']
+错误：1 
+Man(michael) ∧ ∀x (Man(x) ∧ ¬(x = michael) → Taller(x, michael))
+
+And(Man(1),ForAll(x,Implies(And(Man(x),Not(2)),Taller(x,1))))
+ 异常: True, False or Z3 Boolean expression expected. Received 2 of type <class 'int'>
+
+
+新错误
+结论：
+∀x ((TakeOutService(x) ∧ ManyNegativeReviews(x)) → (Rating(x) > 9 ∧ ¬TakeOutService(x)))
+
+格式化结论：ForAll(x, Implies(And(TakeOutService(x), ManyNegativeReviews(x)), And(Rating(x)>9, Not(TakeOutService(x)))))
+前提：['∀x (ListedInYelpsRecommendations(x) → ¬ManyNegativeReviews(x))', '\n∀x ((Rating(x) ⊕ PopularAmongLocalResidents(x)) → ListedInYelpsRecommendations(x))\n', '∃x (¬TakeOutService(x) ∧ ManyNegativeReviews(x))', '\n∀x ((PopularAmongLocalResidents(x) ∧ Rating(x) > 9) ∨ (∃y ((¬TakeOutService(y)) ∧ ManyNegativeReviews(y))))\n', '\n(Rating(Subway) > 9 ∨ (∃x (LocalResident(x) ∧ Popular(Subway, x))))\n']
+格式化前提：['ForAll(x, Implies(ListedInYelpsRecommendations(x), Not(ManyNegativeReviews(x))))', 'ForAll(x, Implies(Xor(Rating(x), PopularAmongLocalResidents(x)), ListedInYelpsRecommendations(x)))', 'Exists(x, And(Not(TakeOutService(x)), ManyNegativeReviews(x)))', 'ForAll(x, Or(And(PopularAmongLocalResidents(x), Rating(x)>9), Exists(y, And(Not(TakeOutService(y)), ManyNegativeReviews(y)))))', 'Or(Rating(Subway)>9, Exists(x, And(LocalResident(x), Popular(Subway,x))))']
+错误：3 
+∀x ((PopularAmongLocalResidents(x) ∧ Rating(x) > 9) ∨ (∃y ((¬TakeOutService(y)) ∧ ManyNegativeReviews(y))))
+
+ForAll(x,Or(And(PopularAmongLocalResidents(x),Rating(x)>9),Exists(y,And(Not(TakeOutService(y)),ManyNegativeReviews(y)))))
+ 异常: '>' not supported between instances of 'BoolRef' and 'int'
+
+
+新错误
+结论：(TakeOutService(subway) ∧ ¬ManyNegativeReviews(subway))
+格式化结论：And(TakeOutService(subway), Not(ManyNegativeReviews(subway)))
+前提：['∀x (ListedInYelpsRecommendations(x) → ¬ManyNegativeReviews(x))', '\n∀x (Rating(x) ∧ GreaterThanNine(x) → ListedInYelpsRecommendations(x))\n', '∃x (¬TakeOutService(x) ∧ ManyNegativeReviews(x))', '\n∀x (PopularAmongLocalResidents(x) → Rating(x) > 9)\n', '\n∀x (Restaurant(x) ∧ ((Rating(x) > 9 ∨ PopularAmongLocalResidents(x)) ∨ (Subway(x) ∧ TakeOutService(x) ∧ ¬ManyNegativeReviews(x))))\n']
+格式化前提：['ForAll(x, Implies(ListedInYelpsRecommendations(x), Not(ManyNegativeReviews(x))))', 'ForAll(x, Implies(And(Rating(x), GreaterThanNine(x)), ListedInYelpsRecommendations(x)))', 'Exists(x, And(Not(TakeOutService(x)), ManyNegativeReviews(x)))', 'ForAll(x, Implies(PopularAmongLocalResidents(x), Rating(x)>9))', 'ForAll(x, And(Restaurant(x), Or(Or(Rating(x)>9, PopularAmongLocalResidents(x)), And(Subway(x), And(TakeOutService(x), Not(ManyNegativeReviews(x)))))))']
+错误：3 
+∀x (PopularAmongLocalResidents(x) → Rating(x) > 9)
+
+ForAll(x,Implies(PopularAmongLocalResidents(x),Rating(x)>9))
+ 异常: '>' not supported between instances of 'BoolRef' and 'int'
+
+
+新错误
+结论：¬TakeOutService(Subway)
+格式化结论：Not(TakeOutService(Subway))
+前提：['∀x (ListedInYelpRecommendations(x) → ¬ManyNegativeReviews(x))', '\n∀x ((Rating(x) ⊕ PopularAmongLocalResidents(x)) → ListedInYelpRecommendations(x))\n', '∃x (¬TakeOutService(x) ∧ ManyNegativeReviews(x))', '\n∀x (PopularAmongLocalResidents(x) → (∀y (¬(ReceiveNegativeReviews(y) ∧ SameRestaurantAs(x,y) ∧ Rating(y) > 9))))\n', '\n(Rating(Subway) > 9 ∨ PopularAmongLocalResidents(Subway))\n']
+格式化前提：['ForAll(x, Implies(ListedInYelpRecommendations(x), Not(ManyNegativeReviews(x))))', 'ForAll(x, Implies(Xor(Rating(x), PopularAmongLocalResidents(x)), ListedInYelpRecommendations(x)))', 'Exists(x, And(Not(TakeOutService(x)), ManyNegativeReviews(x)))', 'ForAll(x, Implies(PopularAmongLocalResidents(x), ForAll(y, Not(And(ReceiveNegativeReviews(y), And(SameRestaurantAs(x,y), Rating(y)>9))))))', 'Or(Rating(Subway)>9, PopularAmongLocalResidents(Subway))']
+错误：3 
+∀x (PopularAmongLocalResidents(x) → (∀y (¬(ReceiveNegativeReviews(y) ∧ SameRestaurantAs(x,y) ∧ Rating(y) > 9))))
+
+ForAll(x,Implies(PopularAmongLocalResidents(x),ForAll(y,Not(And(ReceiveNegativeReviews(y),And(SameRestaurantAs(x,y),Rating(y)>9))))))
+ 异常: '>' not supported between instances of 'BoolRef' and 'int'
+
+
+新错误
+结论：∀x (EvocativeDesignStyle(x) ∨ DreamyDesignStyle(x))
+格式化结论：ForAll(x, Or(EvocativeDesignStyle(x), DreamyDesignStyle(x)))
+前提：['∀x (DesignStyle(x, zahaHadid) ↔ TimelessDesignStyle(x))', '¬∀x (DesignStyle(x, massProduct) → TimelessDesignStyle(x))', 'DesignStyle(zahaHadid) ⊕ DesignStyle(kellyWearstler)', '∀x (DesignStyle(x, kellyWearstler) → EvocativeDesignStyle(x))', '∀x (DesignStyle(x, kellyWearstler) → DreamyDesignStyle(x))', '∀x (TimelessDesignStyle(x) → (MassProductDesign(x) ∧ EvocativeDesignStyle(x)))']
+格式化前提：['ForAll(x, And(Implies(DesignStyle(x,zahaHadid), TimelessDesignStyle(x)), Implies(TimelessDesignStyle(x), DesignStyle(x,zahaHadid))))', 'Not(ForAll(x, Implies(DesignStyle(x,massProduct), TimelessDesignStyle(x))))', 'Xor(DesignStyle(zahaHadid), DesignStyle(kellyWearstler))', 'ForAll(x, Implies(DesignStyle(x,kellyWearstler), EvocativeDesignStyle(x)))', 'ForAll(x, Implies(DesignStyle(x,kellyWearstler), DreamyDesignStyle(x)))', 'ForAll(x, Implies(TimelessDesignStyle(x), And(MassProductDesign(x), EvocativeDesignStyle(x))))']
+错误：2 DesignStyle(zahaHadid) ⊕ DesignStyle(kellyWearstler)
+Xor(DesignStyle(1),DesignStyle(3))
+ 异常: b'Wrong number of arguments (1) passed to function (declare-fun designstyle (Int Int) Bool) \narg: 1\n'
+
+
+新错误
+结论：∀x (MonthlyRent(x, 2000) ∧ MoreDeposit(x, 1500) → ¬RentApartment(tom, x))
+格式化结论：ForAll(x, Implies(And(MonthlyRent(x,2000), MoreDeposit(x,1500)), Not(RentApartment(tom,x))))
+前提：['∀x (PetsAllowed(x) ∧ ManagedBuilding(x) → DepositRequired(x))', '∀x (DepositRequired(x) → (EqualDeposit(x) ∨ MoreDeposit(x)))', '∀x (Cat(x) → Pets(x))', '\n∀x (ManagedBuilding(x) ∧ AllowMoveInWith(Tom, Fluffy) ∧ MaxDeposit(x, 1500) → ¬RentApartment(Tom, x))\n', '∀x (MonthlyRent(x, 2000) → MoreDeposit(x, 1500))', '\n∀x (RentApartment(tom, x) ↔ (ManagedBuilding(x) ∧ AllowMoveInWithTomAndFluffy(x) ∧ MonthlyRent(x, 2000) ∧ ¬MoreDeposit(x, 1500)))\n', '\n∀x (EqualDeposit(OliveGarden) ∧ MonthlyRent(OliveGarden, 2000) ∧ AllowMoveInWith(tom, OliveGarden))\n', '∀x (MoreDeposit(OliveGarden, 1500) → ¬EqualDeposit(OliveGarden))', '\n∀x (Cat(fluffy) ∧ AllowMoveInWithTom(fluffy, OliveGarden) ∧ SecurityDepositNoMoreThan(OliveGarden, 1500) → RentApartment(tom, OliveGarden))\n']
+格式化前提：['ForAll(x, Implies(And(PetsAllowed(x), ManagedBuilding(x)), DepositRequired(x)))', 'ForAll(x, Implies(DepositRequired(x), Or(EqualDeposit(x), MoreDeposit(x))))', 'ForAll(x, Implies(Cat(x), Pets(x)))', 'ForAll(x, Implies(And(ManagedBuilding(x), And(AllowMoveInWith(Tom,Fluffy), MaxDeposit(x,1500))), Not(RentApartment(Tom,x))))', 'ForAll(x, Implies(MonthlyRent(x,2000), MoreDeposit(x,1500)))', 'ForAll(x, And(Implies(RentApartment(tom,x), And(ManagedBuilding(x), And(AllowMoveInWithTomAndFluffy(x), And(MonthlyRent(x,2000), Not(MoreDeposit(x,1500)))))), Implies(And(ManagedBuilding(x), And(AllowMoveInWithTomAndFluffy(x), And(MonthlyRent(x,2000), Not(MoreDeposit(x,1500))))), RentApartment(tom,x))))', 'ForAll(x, And(EqualDeposit(OliveGarden), And(MonthlyRent(OliveGarden,2000), AllowMoveInWith(tom,OliveGarden))))', 'ForAll(x, Implies(MoreDeposit(OliveGarden,1500), Not(EqualDeposit(OliveGarden))))', 'ForAll(x, Implies(And(Cat(fluffy), And(AllowMoveInWithTom(fluffy,OliveGarden), SecurityDepositNoMoreThan(OliveGarden,1500))), RentApartment(tom,OliveGarden)))']
+错误：1 ∀x (DepositRequired(x) → (EqualDeposit(x) ∨ MoreDeposit(x)))
+ForAll(x,Implies(DepositRequired(x),Or(EqualDeposit(x),MoreDeposit(x))))
+ 异常: b'Wrong number of arguments (1) passed to function (declare-fun moredeposit (Int Int) Bool) \narg: x\n'
+
+
+新错误
+结论：¬IsInLanguageFamily(basque, romanceLanguages)
+格式化结论：Not(IsInLanguageFamily(basque,romanceLanguages))
+前提：['∀x (RomanceLanguage(x) → IndoEuropeanLanguage(x))', 'LanguageFamily(romanceLanguages)', '\n∀x ∀y ((Language(x) ∧ Language(y) ∧ LanguageFamily(z) ∧ IsInLanguageFamily(x, z) ∧ IsInLanguageFamily(y, z)) → RelatedLanguages(x, y))\n\n∀x ∀y ∀z ((Language(x) ∧ Language(y) ∧ LanguageFamily(z) ∧ IsInLanguageFamily(x, z) ∧ IsInLanguageFamily(y, z)) → RelatedLanguages(x, y))\n', 'RomanceLanguage(french)', 'RomanceLanguage(spanish)', 'RelatedLanguages(spanish, german)']
+格式化前提：['ForAll(x, Implies(RomanceLanguage(x), IndoEuropeanLanguage(x)))', 'LanguageFamily(romanceLanguages)', 'ForAll(x, ForAll(y, -----((Language(x)∧Language(y)∧LanguageFamily(z)∧IsInLanguageFamily(x,z)∧IsInLanguageFamily(y,z))→RelatedLanguages(x,y))∀x∀y∀z((Language(x)∧Language(y)∧LanguageFamily(z)∧IsInLanguageFamily(x,z)∧IsInLanguageFamily(y,z))→RelatedLanguages(x,y))-----))', 'RomanceLanguage(french)', 'RomanceLanguage(spanish)', 'RelatedLanguages(spanish,german)']
+错误：2 
+∀x ∀y ((Language(x) ∧ Language(y) ∧ LanguageFamily(z) ∧ IsInLanguageFamily(x, z) ∧ IsInLanguageFamily(y, z)) → RelatedLanguages(x, y))
+
+∀x ∀y ∀z ((Language(x) ∧ Language(y) ∧ LanguageFamily(z) ∧ IsInLanguageFamily(x, z) ∧ IsInLanguageFamily(y, z)) → RelatedLanguages(x, y))
+
+ForAll(x,ForAll(y,-----((Language(x)∧Language(y)∧LanguageFamily(z)∧IsInLanguageFamily(x,z)∧IsInLanguageFamily(y,z))→RelatedLanguages(x,y))∀x∀y∀z((Language(x)∧Language(y)∧LanguageFamily(z)∧IsInLanguageFamily(x,z)∧IsInLanguageFamily(y,z))→RelatedLanguages(x,y))-----))
+ 异常: invalid character '∧' (U+2227) (<string>, line 1)
+

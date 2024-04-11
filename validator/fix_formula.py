@@ -303,7 +303,7 @@ def validate_formula(formula):
         if var not in constraints:
             # 如果变量未被约束
             position = formula.find(var)
-            return False, f"Variable '{var}' is not properly constrained at position {position}.Use quantifiers '∀' or '∃' to constrain variables."
+            return False, f"Variable '{var}' is not properly constrained at position {position}.Use quantifiers '∀' or '∃' to constrain variables.Or replace the varible by constant"
 
         # 检查约束是否合法
         for start, end in constraints[var]:

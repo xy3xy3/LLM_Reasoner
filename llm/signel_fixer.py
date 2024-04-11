@@ -8,7 +8,13 @@ from validator.fix_formula import (
 
 origin = """# Role: Logic Corrector
 ## For FOL rule generation
-1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence) 2. You *SHOULD NEVER USE* the following symbols for FOL: "", "̸=", "%", "=" 3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 4. The FOL rule SHOULD ACCURATELY reflect the meaning of the NL statement 5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 6. You SHOULD generate FOL rules with either: (1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
+1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence)
+2. You *SHOULD NEVER USE* the following symbols for FOL: "", "̸=", "%", "=" 
+3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 
+4. The FOL rule SHOULD ACCURATELY reflect the meaning of the NL statement 
+5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 
+6. You SHOULD generate FOL rules with either: 
+(1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
 ## Output format
 Use <FOL> and </FOL> to wrap the FOL formulas.
 Each line in the tag should be a single FOL formula.
@@ -36,7 +42,7 @@ def process(
 ):
     global origin
     print(f"\nID{id}单个修复\n")
-    max_attempts = 5  # 最大尝试次数
+    max_attempts = 6  # 最大尝试次数
     err_msg = ""  # 错误信息
     fianl_res = []
     for i, res_text in enumerate(list_res):
@@ -46,6 +52,7 @@ def process(
         for k in k_dict[list_premises[i]]:
             knowledge += k
         while not valid and retry_count < max_attempts:
+            retry_count += 1
             # 重新构造仅包含当前正在处理的premise的提示信息
             err_msg = (
                 f"<NL>\n{list_premises[i]}\n</NL>\n<FOL>\n{res_text}\n<FOL>\n{msg}."
@@ -59,9 +66,13 @@ def process(
             raw_res = llm_send(prompt, "")
             if (raw_res == ""):
                 return "空回复", []
-            res_text, _ = process_response(raw_res)
+            res_text, res_list = process_response(raw_res)
+            if len(res_list)>1:
+                err_msg = (
+                f"<NL>\n{list_premises[i]}\n</NL>\n<FOL>\n{res_text}\n<FOL>\nYou can only reply one line pure formula."
+                )
+                continue
             valid, msg = validate_formula(res_text)
-            retry_count += 1
         # 将最终验证通过或重试结束后的结果添加到结果列表
         if not valid:
             print(f"\n最终还是失败 {msg}\n{res_text}")
