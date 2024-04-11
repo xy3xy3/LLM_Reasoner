@@ -52,6 +52,6 @@ def process(id:int,full_premises: str, list_premises: list, k_list: list, k_dict
     print(f"ID{id}总体翻译: \n{prompt}")
     raw_response = llm_send(prompt, "")
     if raw_response == "":
-        return "ID{id}回复为空", []
+        return f"ID{id}回复为空", []
     str_res, list_res = process_response(raw_response)
     return str_res, list_res

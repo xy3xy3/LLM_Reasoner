@@ -68,6 +68,7 @@ def run_single(num_lines=0, r=False):
                 outfile.flush()  # 立即将缓冲区的内容写入文件
                 os.fsync(outfile.fileno())  # 确保写入的内容被立即写入磁盘
 
+
 def process_data_parallel(args):
     # 解包参数
     line, temp_output_path = args
@@ -81,7 +82,7 @@ def process_data_parallel(args):
         os.fsync(temp_file.fileno())
 
 
-def run_parallel(num_lines=0, r=False, num_processes=4):
+def run_parallel(num_lines=0, r=False, num_processes=6):
     input_name = "./data/folio_fix.jsonl"
     output_name = "./log/res.jsonl"
     if os.path.exists(output_name):
@@ -102,11 +103,11 @@ def run_parallel(num_lines=0, r=False, num_processes=4):
     temp_output_paths = [f"./log/part_{i}.jsonl" for i in range(num_processes)]
     # 清空或创建临时文件
     for path in temp_output_paths:
-        open(path, 'w').close()
+        open(path, "w").close()
 
     # 分块数据
     chunk_size = len(lines) // num_processes + (len(lines) % num_processes > 0)
-    data_chunks = [lines[i: i + chunk_size] for i in range(0, len(lines), chunk_size)]
+    data_chunks = [lines[i : i + chunk_size] for i in range(0, len(lines), chunk_size)]
 
     # 创建进程池
     with Pool(num_processes) as pool:
@@ -120,14 +121,88 @@ def run_parallel(num_lines=0, r=False, num_processes=4):
                 outfile.write(temp_file.read())
             # 删除临时文件
             os.remove(temp_path)
-
+# 合并所有文件
+def merge_files():
+    #查找log所有带part_的合并到res
+    path = "./log"
+    files = os.listdir(path)
+    with open("./log/res.jsonl", "w", encoding="utf-8") as outfile:
+        for file in files:
+            if "part_" in file:
+                with open(f"{path}/{file}", "r", encoding="utf-8") as infile:
+                    outfile.write(infile.read())
+                os.remove(f"{path}/{file}")
 
 def process_data_chunk(args):
     chunk, temp_output_path = args
     for line in chunk:
         process_data_parallel((line, temp_output_path))
 
+def run_rest(use_multiprocessing=False, num_processes=4):
+    input_name = "./data/folio_fix.jsonl"
+    output_name = "./log/res.jsonl"
+    processed_ids = set()
+
+    # 读取已处理的数据，建立已处理ID集合
+    with open(output_name, "r", encoding="utf-8") as res_file:
+        for line in res_file:
+            data = json.loads(line)
+            processed_ids.add(data["id"])
+
+    with open(input_name, "r", encoding="utf-8") as infile:
+        lines = [line for line in infile if json.loads(line)["id"] not in processed_ids]
+
+    if use_multiprocessing:
+        # 创建临时输出文件名列表
+        temp_output_paths = [f"./log/part_{i}.jsonl" for i in range(num_processes)]
+        # 清空或创建临时文件
+        for path in temp_output_paths:
+            open(path, "w").close()
+
+        # 分块数据
+        chunk_size = len(lines) // num_processes + (len(lines) % num_processes > 0)
+        data_chunks = [lines[i : i + chunk_size] for i in range(0, len(lines), chunk_size)]
+
+        # 创建进程池
+        with Pool(num_processes) as pool:
+            tasks = [(chunk, temp_output_paths[i]) for i, chunk in enumerate(data_chunks)]
+            pool.map(process_data_chunk, tasks)
+
+        # 合并临时文件到最终输出文件
+        with open(output_name, "a", encoding="utf-8") as outfile:
+            for temp_path in temp_output_paths:
+                with open(temp_path, "r", encoding="utf-8") as temp_file:
+                    outfile.write(temp_file.read())
+                # 删除临时文件
+                os.remove(temp_path)
+    else:
+        # 单进程处理
+        with open(output_name, "a", encoding="utf-8") as outfile:
+            for line in lines:
+                result = process_data(line)
+                if result:
+                    outfile.write(result + "\n")
+                    outfile.flush()  # 确保数据写入文件
+                    os.fsync(outfile.fileno())  # 确保写入的内容被立即写入磁盘
+
+def try_id(id: int):
+    input_name = "./data/folio_fix.jsonl"
+    output_name = "./log/res.jsonl"
+    # 查找对应id的测试
+    with open(input_name, "r", encoding="utf-8") as infile, open(
+        output_name, "a", encoding="utf-8"
+    ) as outfile:
+        for line in infile:
+            data = json.loads(line)
+            if data["id"] == id:
+                res = process_data(line)
+                if res:
+                    outfile.write(res + "\n")
+                    outfile.flush()
+                break
+
 
 if __name__ == "__main__":
     # run_parallel()
-    run_parallel()
+    # merge_files()
+    run_rest(1)

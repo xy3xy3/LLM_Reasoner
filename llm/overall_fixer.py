@@ -66,8 +66,9 @@ def process(
             print(f"ID{id}整体修复，开始发送消息: \n{prompt}")
             raw_response = llm_send(prompt, "")
             if raw_response == "":
-                return "ID{id}回复为空", []
+                return f"ID{id}回复为空", []
             str_res, list_res = process_response(raw_response)
+            err_msg = ""
         # 检查是否包含LaTeX符号或自然语言
         if check_latex_nature_language(str_res):
             print(
@@ -97,7 +98,7 @@ def process(
         f, msg = check_conclusion(list_res)
         if f == False:
             print(f"\n{id} 整体修复 {msg}\n")
-            if err_msg != "":
+            if "FOL" in err_msg:
                 err_msg += f"\nError: {msg}"
             else:
                 err_msg += f"<FOL>\n{str_res}\n</FOL>\nError: {msg}.\n"
