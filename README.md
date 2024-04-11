@@ -13,9 +13,6 @@
 ### web
 
 使用flask启动web服务，便于查看结果
-```python
-python web/app.py
-```
 
 
 ## 运行项目
@@ -38,4 +35,11 @@ FASTPGT_API_KEY = fastgpt-
 
 ```python
 python main.py
+```
+
+### 启动web服务
+
+
+```python
+python web/app.py
 ```

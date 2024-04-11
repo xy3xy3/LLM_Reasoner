@@ -137,5 +137,5 @@ def process_data_chunk(args):
 
 
 if __name__ == "__main__":
-    run_parallel()
-    # run_single()
+    # run_parallel()
+    run_single()

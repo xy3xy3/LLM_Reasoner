@@ -92,7 +92,7 @@ def process(
         if f == False:
             print(f"\n{id} 整体修复 {msg}\n")
             if err_msg != "":
-                err_msg += "\nError: {msg}"
+                err_msg += f"\nError: {msg}"
             else:
                 err_msg += f"<FOL>\n{str_res}\n</FOL>\nError: {msg}.\n"
         if err_msg != "":

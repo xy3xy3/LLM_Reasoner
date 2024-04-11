@@ -56,3 +56,13 @@ Man(michael) ∧ ∀y (Man(y) ∧ ¬(michael(y)) → Taller(michael, y))
 And(Man(1),ForAll(y,Implies(And(Man(y),Not(-----michael(y)-----)),Taller(1,y))))
  异常: invalid syntax (<string>, line 1)
 
+
+新错误
+结论：∀x (¬GetFlu(x))
+格式化结论：ForAll(x, Not(GetFlu(x)))
+前提：['∀x (InfectiousDisease(x) ∧ CausedByVirus(x, monkeypoxVirus) → (OccursInAnimals(monkeypoxVirus) ∧ Animal(monkeypoxVirus)))', '∀x (Animal(x) → OccursInAnimals(x, monkeypoxVirus))', '∀x (Human(x) → Mammal(x))', '∀x (Mammal(x) → Animal(x))', '∀x (SymptomsOf(monkeypox, x) → (Fever(x) ∧ Headache(x) ∧ MusclePains(x) ∧ FeelTired(x)))', '∀x (Person(x) ∧ GetFlu(x) → FeelTired(x))']
+格式化前提：['ForAll(x, Implies(And(InfectiousDisease(x), CausedByVirus(x,monkeypoxVirus)), And(OccursInAnimals(monkeypoxVirus), Animal(monkeypoxVirus))))', 'ForAll(x, Implies(Animal(x), OccursInAnimals(x,monkeypoxVirus)))', 'ForAll(x, Implies(Human(x), Mammal(x)))', 'ForAll(x, Implies(Mammal(x), Animal(x)))', 'ForAll(x, Implies(SymptomsOf(monkeypox,x), And(Fever(x), And(Headache(x), And(MusclePains(x), FeelTired(x))))))', 'ForAll(x, Implies(And(Person(x), GetFlu(x)), FeelTired(x)))']
+错误：0 ∀x (InfectiousDisease(x) ∧ CausedByVirus(x, monkeypoxVirus) → (OccursInAnimals(monkeypoxVirus) ∧ Animal(monkeypoxVirus)))
+ForAll(x,Implies(And(InfectiousDisease(x),CausedByVirus(x,1)),And(OccursInAnimals(1),Animal(1))))
+ 异常: b'Wrong number of arguments (1) passed to function (declare-fun occursinanimals (Int Int) Bool) \narg: 1\n'
+
