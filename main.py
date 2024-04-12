@@ -82,7 +82,7 @@ def process_data_parallel(args):
         os.fsync(temp_file.fileno())
 
 
-def run_parallel(num_lines=0, r=False, num_processes=6):
+def run_parallel(num_lines=0, r=False, num_processes=8):
     input_name = "./data/folio_fix.jsonl"
     output_name = "./log/res.jsonl"
     if os.path.exists(output_name):
@@ -205,4 +205,4 @@ def try_id(id: int):
 if __name__ == "__main__":
     # run_parallel()
     # merge_files()
-    run_rest(1)
+    run_rest(1,6)

@@ -5,3 +5,4 @@ log/*
 *.cfg
 llm/__pycache__/overall_translator.cpython-311.pyc
 error.log
+llm/__pycache__/overall_translator.cpython-311.pyc
