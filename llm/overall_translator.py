@@ -1,3 +1,4 @@
+import datetime
 from .client import *
 origin = """# Role: Logic Translater
 ## Symbols Description: 
@@ -44,12 +45,15 @@ Convert the following {length} lines natural language sentences into {length} fi
 <NL>
 {full_premises}
 </NL>
+Let's think step by step.
+Firstly,show your think and follow the rules above.
+Secondly,write {length} FOL formulas for {length} lines in the following tag <FOL>.
 """
 
 def process(id:int,full_premises: str, list_premises: list, k_list: list, k_dict: dict):
     global origin
     prompt = origin.format(knowledge="".join(k_list),length=len(list_premises),full_premises=full_premises)
-    print(f"ID{id}总体翻译: \n{prompt}")
+    print(f"ID{id}总体翻译 {datetime.datetime.now()}: \n{prompt}")
     raw_response = llm_send(prompt, "")
     if raw_response == "":
         return f"ID{id}回复为空", []

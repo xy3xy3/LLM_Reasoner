@@ -43,20 +43,23 @@ function renderChart(data) {
   });
 }
 // 获取文件列表
-$.get("/files", function (data) {
-  var files = data.files;
-  var select = $("#fileSelect");
-  files.forEach(function (file) {
-    select.append('<option value="' + file + '">' + file + "</option>");
+function getFileList() {
+  $.get("/files", function (data) {
+    var files = data.files;
+    var select = $("#fileSelect");
+    select.empty();
+    files.forEach(function (file) {
+      select.append('<option value="' + file + '">' + file + "</option>");
+    });
+    layui.form.render("select"); // 更新渲染
   });
-  layui.form.render("select"); // 更新渲染
-});
+}
 layui.use(["table", "form", "layer"], function () {
   var table = layui.table;
   var form = layui.form;
   var layer = layui.layer;
   var originalData = []; // 用于存储原始数据
-
+  getFileList(); // 获取文件列表
   // 定义表格的设置
   var tableOptions = {
     elem: "#demo",
@@ -85,6 +88,7 @@ layui.use(["table", "form", "layer"], function () {
       ],
     ],
     page: true,
+    limits: [10, 50, 100, 150, 200],
   };
 
   // 加载数据
@@ -172,6 +176,7 @@ layui.use(["table", "form", "layer"], function () {
         table.render(tableOptions);
       },
       error: function () {
+        layer.msg("无法加载JSONL数据", { icon: 5 });
         console.error("无法加载JSONL数据");
       },
     });
@@ -182,6 +187,10 @@ layui.use(["table", "form", "layer"], function () {
   // 监听搜索事件
   form.on("submit(doSearch)", function (data) {
     loadData(data.field);
+    return false; // 阻止表单跳转
+  });
+  form.on("submit(refresh)", function (data) {
+    getFileList();
     return false; // 阻止表单跳转
   });
 
@@ -197,7 +206,7 @@ layui.use(["table", "form", "layer"], function () {
       var details = `<div class="">
 <div class="layui-row">
 <!-- 自然语言 -->
-<div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+<div class="layui-col-xs4 layui-col-sm4 layui-col-m4">
   <table class="layui-table" border="1">
     <tr>
       <th>自然语言</th>
@@ -209,8 +218,18 @@ layui.use(["table", "form", "layer"], function () {
   </table>
 </div>
 
+<div class="layui-col-xs4 layui-col-sm4 layui-col-m4">
+<table class="layui-table" border="1">
+<tr>
+<th>标注参考</th>
+</tr>
+<tr>
+<td>${data["premises-FOL"]}</td>
+</tr>
+</table>
+</div>
 <!-- GPT输出 -->
-<div class="layui-col-xs6 layui-col-sm6 layui-col-md6">
+<div class="layui-col-xs4 layui-col-sm4 layui-col-m4">
   <table class="layui-table" border="1">
     <tr>
       <th>GPT输出</th>
@@ -247,14 +266,6 @@ layui.use(["table", "form", "layer"], function () {
 </tr>
 </table>
 </div>
-<table class="layui-table" border="1">
-<tr>
-<th>标注参考</th>
-</tr>
-<tr>
-<td>${data["premises-FOL"]}</td>
-</tr>
-</table>
 `;
 
       // <!-- 其他表格可以继续放在这里，它们将显示在下一行 -->

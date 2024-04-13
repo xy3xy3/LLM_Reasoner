@@ -1,3 +1,4 @@
+import datetime
 from .client import *
 from validator.fix_formula import (
     check_conclusion,
@@ -41,7 +42,7 @@ def process(
     list_res: list,
 ):
     global origin
-    print(f"\nID{id}单个修复\n")
+    print(f"\nID{id}单个修复 {datetime.datetime.now()}\n")
     max_attempts = 6  # 最大尝试次数
     err_msg = ""  # 错误信息
     fianl_res = []
@@ -62,7 +63,7 @@ def process(
                 full_premises=full_premises,
                 error_msg=err_msg,
             )
-            print(f"ID{id}单个修复，重新发送 {retry_count + 1}次尝试:\n {prompt}")
+            print(f"ID{id}单个修复{datetime.datetime.now()}重新发送 {retry_count + 1}次尝试:\n {prompt}")
             raw_res = llm_send(prompt, "")
             if (raw_res == ""):
                 return "空回复", []

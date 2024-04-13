@@ -3,6 +3,7 @@ from .client import get_knowledge
 from .overall_fixer import process as of_process
 from .signel_fixer import process as sf_process
 from .overall_translator import process as ot_process
+from .error_fixer import process as ef_process
 # 定义发送函数
 def send(data):
     id = data["id"]
@@ -30,4 +31,14 @@ def send(data):
     if list_res == []:
         print(f"单个修正失败，{str_res}")
         return []
+    # # llm错误修复
+    # str_res, list_res = ef_process(id,full_premises,list_premises,k_list,k_dict,str_res, list_res)
+    # if list_res == []:
+    #     print(f"llm错误修复失败，{str_res}")
+    #     return []
+    # # 再次单个修正
+    # str_res, list_res = sf_process(id,full_premises,list_premises,k_list,k_dict,str_res, list_res)
+    # if list_res == []:
+    #     print(f"单个修正失败，{str_res}")
+    #     return []
     return list_res

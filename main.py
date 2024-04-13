@@ -126,7 +126,7 @@ def merge_files():
     #查找log所有带part_的合并到res
     path = "./log"
     files = os.listdir(path)
-    with open("./log/res.jsonl", "w", encoding="utf-8") as outfile:
+    with open("./log/res.jsonl", "a", encoding="utf-8") as outfile:
         for file in files:
             if "part_" in file:
                 with open(f"{path}/{file}", "r", encoding="utf-8") as infile:
@@ -204,5 +204,5 @@ def try_id(id: int):
 
 if __name__ == "__main__":
     # run_parallel()
-    # merge_files()
+    merge_files()
     run_rest(1,6)

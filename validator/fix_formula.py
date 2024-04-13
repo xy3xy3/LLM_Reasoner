@@ -70,8 +70,8 @@ def check_predicate_consistency(expressions:list):
             if count > 2:
                 return False, f"Predicate '{predicate}' has arity {count}. Predicates must have at most 2 arguments. A 3 arity predicates can be replaced by some 2 arity predicates."
         
-        # if len(usages) == 1:
-        #     single_occurrence_predicates.append((predicate, usages[0][0]))  # 记录谓词和其索引
+        if len(usages) == 1:
+            single_occurrence_predicates.append((predicate, usages[0][0]))  # 记录谓词和其索引
             
         unique_arg_counts = set(count for _, count, _ in usages)
         if len(unique_arg_counts) > 1:
@@ -106,7 +106,10 @@ def check_predicate_consistency(expressions:list):
         if single_occurrence_predicates:
             single_details = ", ".join([f"'{predicate}' only occurs in expression {index+1}" for predicate, index in single_occurrence_predicates])
             msg_parts.append(f"Predicates that occur only once: {single_details}.")
-        return False, ". ".join(msg_parts)+"You should check for similar predicates and replace them with the same one to ensure that the reasoning can proceed correctly.\nYou should check for similar predicates and replace them with the same one to ensure that the reasoning can proceed correctly.Or you can reduce the number of predicates."
+        return False, ". ".join(msg_parts)+"""\nYou can check for similar predicates and replace them with the same one to ensure that the reasoning can proceed correctly.
+Or you can reduce the number of predicates if the varible domain contains the same information with the predicate.
+Or you can add the predicate which occur only once to other expressions if the predicate is necessary.
+Based on the context to determine the correct way."""
     else:
         return True, ""
 

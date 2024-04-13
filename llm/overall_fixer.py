@@ -1,3 +1,4 @@
+import datetime
 from .client import *
 from validator.fix_formula import (
     check_conclusion,
@@ -31,7 +32,9 @@ You can analyze task during your output.But don't use natural language in the fi
 6. You SHOULD generate FOL rules with either: 
 (1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
 ## Task
-Convert the {length} lines natural language sentences in <NL> into the same num first-order logical formulas.And fix the error in Background Information.
+Let's think step by step.
+Firstly,show your think and follow the rules above in order to fix the error in Background Information
+Secondly,write {length} FOL formulas for {length} lines in the following tag.
 """
 
 
@@ -63,7 +66,7 @@ def process(
                 length=length,
                 knowledge=knowledge,
             )
-            print(f"ID{id}整体修复，开始发送消息: \n{prompt}")
+            print(f"ID{id}整体修复 {datetime.datetime.now()}，开始发送消息: \n{prompt}")
             raw_response = llm_send(prompt, "")
             if raw_response == "":
                 return f"ID{id}回复为空", []
@@ -72,7 +75,7 @@ def process(
         # 检查是否包含LaTeX符号或自然语言
         if check_latex_nature_language(str_res):
             print(
-                f"ID{id}整体修复 包含LaTeX符号或自然语言, 重新发送 {send_attempts + 1}次尝试: {str_res}"
+                f"ID{id}整体修复 {datetime.datetime.now()} 包含LaTeX符号或自然语言, 重新发送 {send_attempts + 1}次尝试: {str_res}"
             )
             send_attempts += 1
             err_msg = f"<FOL>\n{str_res}\n</FOL>\n This contains LaTeX symbols or natural language, which is not allowed. Please provide the response in the correct format.\n"
@@ -80,7 +83,7 @@ def process(
         # 检查长度是否一致
         len_list = len(list_res)
         if len_list != length:
-            print(f"\n{id} 整体修复，需要 {length} 个, 只返回{len(list_res)}个\n")
+            print(f"\n{id} 整体修复 {datetime.datetime.now()} 需要 {length} 个, 只返回{len(list_res)}个\n")
             send_attempts += 1
             err_msg = f"<FOL>\n{str_res}\n</FOL>\nError: expected {length} formulas, but got {len(list_res)}.\n"
             if len_list > length:
@@ -92,7 +95,7 @@ def process(
         # 检查谓词元数
         f, msg = check_predicate_consistency(list_res)
         if f == False:
-            print(f"\n{id} 整体修复{msg}\n")
+            print(f"\n{id} 整体修复{datetime.datetime.now()} {msg}\n")
             err_msg += f"<FOL>\n{str_res}\n</FOL>\nError: {msg}.\n"
         # 检查结论使用了其他之前的谓词和常量
         f, msg = check_conclusion(list_res)
