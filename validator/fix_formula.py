@@ -106,10 +106,10 @@ def check_predicate_consistency(expressions:list):
         if single_occurrence_predicates:
             single_details = ", ".join([f"'{predicate}' only occurs in expression {index+1}" for predicate, index in single_occurrence_predicates])
             msg_parts.append(f"Predicates that occur only once: {single_details}.")
-        return False, ". ".join(msg_parts)+"""\nYou can check for similar predicates and replace them with the same one to ensure that the reasoning can proceed correctly.
-Or you can reduce the number of predicates if the varible domain contains the same information with the predicate.
-Or you can add the predicate which occur only once to other expressions if the predicate is necessary.
-Based on the context to determine the correct way."""
+        return False, ". ".join(msg_parts)+"""\nThere are three methods to solve this problem. Please ascertain the correct approach based on the context:
+1. One could examine whether predicates with similar meanings appear between different lines. If the meanings are similar and the number of predicate parameters is consistent, they can be replaced with the same one.
+2. If the current line's variable reversal domain contains information identical to the predicate, it can be omitted.
+3. If the current line's predicate is necessary, one may integrate predicates that appear only once into other expressions."""
     else:
         return True, ""
 
@@ -225,7 +225,10 @@ def check_conclusion(f_list:list):
     # 检查前提和结论的谓词一致性
     for predicate, arity in p2.items():
         if predicate not in p1:
-            return False, f"Predicate '{predicate}' in conclusion(the last line) is not found in premises.Change this predicate or other similiar predicates to be the same in order to match the premises."
+            return False, f"""Predicate '{predicate}' in conclusion(the last line) is not found in premises.You can check for similar predicates and replace them with the same one to ensure that the reasoning can proceed correctly.
+Or you can reduce the number of predicates if the varible domain contains the same information with the predicate.
+Or you can add the predicate which occur only once to other expressions if the predicate is necessary.
+Based on the context to determine the correct way."""
         if p1[predicate] != arity:
             return False, f"Predicate '{predicate}' has inconsistent arity in premises and conclusion."
     # 检查前提和结论的常元一致性

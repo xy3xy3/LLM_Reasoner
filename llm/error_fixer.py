@@ -7,57 +7,38 @@ from validator.fix_formula import (
     validate_formula,
 )
 
-origin = """# Role: Logic Error Fixer
-
-## Attention:
-Please ensure that all FOL formulations not only are syntactically correct but also semantically aligned with the given natural language descriptions. Errors in translation or logical representation must be clearly identified and corrected.
-
-## Definition:
-First Order Logic (FOL) translation error checking: This process involves reviewing a set of FOL statements to ensure they correctly represent the corresponding natural language statements, making corrections where necessary.
-
-## Goals:
-1. Identify errors in the translation of natural language statements to FOL formulations.
-2. Provide a clear list of identified errors using Markdown syntax.
-3. Correct any identified errors and represent the corrected version with the <FOL> tag.
-4. Emphasize the output of all FOL statements, replacing only those with identified errors.
-
-## Constraints:
-1. Avoid using disallowed symbols and formats in FOL.
-2. Maintain the structural integrity of FOL while making corrections.
-3. Ensure all corrections are logically sound and maintain the intended meaning of the original natural language.
-
-## Output Format:
-1. List all identified errors in Markdown format.
-2. Display all FOL statements (num of {length}), marking corrected versions with the <FOL> tag.
-
-## Error identification should focus on the following aspects
-1. Should 'either' be translated as OR or XOR in the overall context
-2. Is there a lack of predicate usage in a certain sentence that prevents smooth reasoning
-
-## Workflows:
-1. **Error Identification**
-   - Review each FOL statement against its corresponding natural language description.
-   - Identify any mismatches or errors in logical representation.
-   - List these errors using Markdown syntax.
-
-2. **Correction of FOL Statements**
-   - Correct identified errors in FOL statements.
-   - Replace erroneous statements with corrected versions, marked with <FOL>.
-
-3. **Output Generation**
-   - Provide a comprehensive list of all original and corrected FOL statements.
-   - Ensure that corrections are clearly indicated and all statements are included in the output.
-   - Your ouput of <FOL> should contains all the corrected FOL statements not just the fixed ones.
-
-## Some addition errors you need to fix
-{err_msg}
-
-## task
+origin = """You are a good logic fixer to find the erros in the FOL formulas.
+# For FOL rule generation
+1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence) 2. You *SHOULD NEVER USE* the following symbols for FOL: "", "̸=", "%", "=" 3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 4. The FOL rule SHOULD ACCURATELY reflect the meaning of the NL statement 5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 6. You SHOULD generate FOL rules with either: (1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
+# Background information:
 <NL>
 {full_premises}
 </NL>
 <FOL>\n{str_res}\n</FOL>
+{err_msg}
+# Task
+Let's think step by step.
+
+
+Firstly, analyse the probably errors in the background information <FOL>.
+Secondly, reply with the specified number({length}) of fol formulas in the `<FOL></FOL>` tag. Please note that your reply can only have one `<FOL></FOL>` tag
+The final answers should be the fixed.
 """
+
+# You need to reply yuor analysis which is important for yuo to fix the errors correctly.
+# When analyzing errors, consider each of the following points for each line of <FOL> in detail
+# 1. **Logic Operator Decision**: Determine whether to use OR (inclusive, symbolized as ∨) or XOR (exclusive, symbolized as ⊕) in logical contexts. Use XOR when dealing with two mutually exclusive propositions, such as 'male or female', where only one can be true at any given time.
+
+# 2. **Predicate Redundancy and Necessity**:
+#    - **Redundancy Check**: Evaluate if the predicate is superfluous. For instance, if the domain implicitly defined by the quantifier already includes the attribute described by the predicate (e.g., if the domain of 'x' is persons, the predicate 'Human(x)' is redundant and should be removed).
+#    - **Necessity Check**: Assess if there is a missing necessary predicate. If the implicit domain of 'x' does not inherently include an essential attribute, this predicate needs to be added (e.g., if the domain is human, ensure predicates defining essential human attributes are explicitly stated).
+# This check should based on the context.
+# If other lines have the predicate to describe something's domain, you should remove the predicate in this line or add the missing predicate in other lines.
+
+# 3. **Hidden Information in Language**: Identify and integrate predicates that may not be explicitly stated but are essential for ensuring accurate logical reasoning. These predicates often represent attributes or characteristics assumed within natural language but not overtly mentioned.
+
+# 4. **Explicit Information in Language**: Recognize and employ predicates necessary for substantiating the reasoning based on explicitly stated information in the text. This involves using predicates to affirm the type or category of an item or concept when such specifications are crucial for logical coherence.
+
 
 def process(
     id: int,
@@ -70,10 +51,6 @@ def process(
 ):
     global origin
     print(f"ID{id}错误修复")
-    # 从k_dict获取错误的知识
-    knowledge = ""
-    for k in k_dict[full_premises]:
-        knowledge += k
     length = len(list_premises)
     max_attempts = 2 * length  # 最大尝试次数
     send_attempts = 0  # 当前尝试次数
@@ -86,10 +63,13 @@ def process(
             length=length,
             str_res=str_res,
         )
+        # print(prompt)
+        # break
         print(f"ID{id}错误修复，开始发送消息: \n{prompt}")
         raw_response = llm_send(prompt, "")
         if raw_response == "":
             return f"ID{id}回复为空", []
+        print(raw_response)
         str_res, list_res = process_response(raw_response)
         err_msg = ""
         # 检查长度是否一致
@@ -97,7 +77,7 @@ def process(
         if len_list != length:
             print(f"\n{id} 错误修复，需要 {length} 个, 只返回{len(list_res)}个\n")
             send_attempts += 1
-            err_msg = f"<FOL>\n{str_res}\n</FOL>\nError: expected {length} formulas, but got {len(list_res)}.\n"
+            err_msg = f"## Some addition errors you need to fix\nError: expected {length} formulas, but got {len(list_res)}.Make sure the formulas are one to one of NL.\n"
             if len_list > length:
                 err_msg += " Please remove the extra formulas."
             else:
@@ -108,19 +88,20 @@ def process(
         f, msg = check_predicate_consistency(list_res)
         if f == False:
             print(f"\n{id} 错误修复{msg}\n")
-            err_msg += f"<FOL>\n{str_res}\n</FOL>\nError: {msg}.\n"
+            if "FOL" in err_msg:
+                err_msg = f"## Some addition errors you need to fix\n"
+            err_msg += f"\nError: {msg}.\n"
         # 检查结论使用了其他之前的谓词和常量
         f, msg = check_conclusion(list_res)
         if f == False:
             print(f"\n{id} 错误修复 {msg}\n")
             if "FOL" in err_msg:
-                err_msg += f"\nError: {msg}"
+                err_msg += f"## Some addition errors you need to fix\nError: {msg}"
             else:
-                err_msg += f"<FOL>\n{str_res}\n</FOL>\nError: {msg}.\n"
+                err_msg += f"\nError: {msg}.\n"
         if err_msg != "":
             send_attempts += 1
             continue
         else:
             break
-    # 返回修正的结果
     return str_res, list_res

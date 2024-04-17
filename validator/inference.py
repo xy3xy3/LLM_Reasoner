@@ -1,17 +1,6 @@
 from z3 import *
 import re
 from .translate import *
-'''
-    1. 此文件使用translate模块将response和conclusion-AI中的公式翻译至z3可接受方式
-    2. 使用正则表达式提取出predicates-AI中的谓词和元数，然后为每个谓词创建函数
-    3. 构建reason(premises, conclusion, predicates_dict)对一个例子进行求解
-    4. 封装至inference(instance)中，此函数接受一个完整的、以字典形式给出的例子，至少
-        包含"response", "conclusion-AI", "predicates-AI"三个键
-'''
-
-
-
-
 
 # 提取并替换formula中的常元，因为同一组前提要共享常元，因此记录constants_dict
 # region
@@ -155,14 +144,16 @@ def log(msg):
         f.write(msg+"\n")
     print(msg)
     
-# 封装，此函数接受一个完整的、以字典形式给出的例子，至少包含"response", "conclusion-AI", "predicates-AI"三个键
+# 封装，此函数接受一个完整的、以字典形式给出的例子，至少包含"response", "conclusion-AI"
 def inference(instance):
     predicates = {}
     predicates_clear()
-    for formula in instance["response"]:
-        formula = formula.replace('.', '')
-        predicates = extract_predicates(formula)
-    predicates = extract_predicates(instance["conclusion-AI"].replace('.', ''))
+    # 替换原有的特殊符号
+    instance["conclusion-AI"] = instance["conclusion-AI"].replace('.', '').replace('’', '')
+    for i in range(len(instance["response"])):
+        instance["response"][i] = instance["response"][i].replace('.', '').replace('’', '')
+        predicates = extract_predicates(instance["response"][i])
+    predicates = extract_predicates(instance["conclusion-AI"])
 
     premises = translate_premises(instance["response"])
     conclusion = translate(instance["conclusion-AI"].replace('.', ''))

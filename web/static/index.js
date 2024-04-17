@@ -249,8 +249,8 @@ layui.use(["table", "form", "layer"], function () {
 </tr>
 <tr>
 <td>${data["conclusion"]}</td>
-<td>${data["conclusion-FOL"]}</td>
-<td>${data["conclusion-AI"]}</td>
+<td>${data["conclusion-FOL"]} <br>${data["label"]}</td>
+<td>${data["conclusion-AI"]} <br>${data["label-AI"]}</td>
 </tr>
 </table>
 <table class="layui-table" border="1">

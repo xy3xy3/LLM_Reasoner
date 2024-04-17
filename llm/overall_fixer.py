@@ -33,8 +33,8 @@ You can analyze task during your output.But don't use natural language in the fi
 (1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
 ## Task
 Let's think step by step.
-Firstly,show your think and follow the rules above in order to fix the error in Background Information
-Secondly,write {length} FOL formulas for {length} lines in the following tag.
+Firstly,reply what your think and follow the rules above in order to fix the error in Background Information
+Secondly,write {length} FOL formulas for {length} lines in the following tag <FOL>.
 """
 
 

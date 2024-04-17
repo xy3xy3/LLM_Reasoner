@@ -29,7 +29,9 @@ You can analyze task during your output.But don't use natural language in the fi
 ## Error message:
 {error_msg}
 ## Cureent task:
-Now try to fix the error,and reply only one formula to replace the error one."""
+Let's think step by step.
+Firstly,reply what your think  and follow the rules above in order to fix the error.
+Secondly,write only one FOL formulas for one lines in the following tag <FOL>."""
 
 
 def process(

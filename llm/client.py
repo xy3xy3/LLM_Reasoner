@@ -26,7 +26,7 @@ def llm_send(prompt, system_msg):
                     model=cf.get('API', 'MODEL'),
                     messages=get_msg(prompt, system_msg),
                     # extra_body={"chatId": random.randint(10000, 99999)},
-                    temperature=0.8,
+                    temperature=0.7,
                     max_tokens=1024,
                 )
                 .choices[0]
@@ -78,6 +78,8 @@ def error_msg(msg,new_msg,response:str):
 
 # 处理返回的结果
 def process_response(text:str):
+    # 去除空行
+    text = text.replace("\n\n", "\n")
      # 去除Markdown列表编号
     text = re.sub(r"-\s+", "", text, flags=re.MULTILINE)
     # 去除数字编号
@@ -94,8 +96,6 @@ def process_response(text:str):
     text = re.sub(r"\s*//.*", "", text)
     # 去除\
     text = text.replace("\\", "")
-    # 去除空行
-    text = text.replace("\n\n", "\n")
     # 替换一些不合法
     text = text.replace("∀x,y", "∀x ∀y")
     # 将方括号替换为普通括号
@@ -103,12 +103,12 @@ def process_response(text:str):
     # 如果有莫名其妙的最外层括号则去除
     # if text.startswith("(") and text.endswith(")"):
     #     text = text[1:-1]
-
-   
     # 去除`
     text = text.replace("`", "")
     res = text.split("\n")
-    res = [x for x in res if x]
+    #去除空行，去除开头的空格
+    res = [x.strip() for x in res if x]
+    text = "\n".join(res)
     return text,res
 # 定义抽取知识函数
 def get_knowledge(full_premises:str,list_premises:list):
@@ -120,7 +120,7 @@ def get_knowledge(full_premises:str,list_premises:list):
         k_list.append(k)
     # 每个premise查询知识库，加到knowledege
     for premise in list_premises:
-        k_dict[premise]= fastgpt_knowledge(f"<NL>\n{premise}\n<NL>", 400, cf.get('API', 'KNOW_S'), 0.2)
+        k_dict[premise]= fastgpt_knowledge(f"<NL>\n{premise}\n<NL>", 500, cf.get('API', 'KNOW_S'), 0.2)
         #从知识库list中提取知识
         for k in k_dict[premise]:
             if k not in k_list:
