@@ -30,7 +30,7 @@ You can analyze task during your output.But don't use natural language in the fi
 {error_msg}
 ## Cureent task:
 Let's think step by step.
-Firstly,reply what your think  and follow the rules above in order to fix the error.
+Firstly,follow the rules above and reply your idea to do this job.
 Secondly,write only one FOL formulas for one lines in the following tag <FOL>."""
 
 

@@ -16,9 +16,11 @@ origin = """# Role: Logic Corrector
 Use <FOL> and </FOL> to wrap the FOL formulas.
 Each line in the tag should be a single FOL formula.
 You can analyze task during your output.But don't use natural language in the final <FOL> tag.
+Only signal <FOL> can be in your reply.
 ## Example to learn
 {knowledge}
 ## Background Information
+The FOL formulas should be one to one of each line.Don't mix two line into one formula.
 <NL>
 {full_premises}
 </NL>
@@ -33,8 +35,8 @@ You can analyze task during your output.But don't use natural language in the fi
 (1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
 ## Task
 Let's think step by step.
-Firstly,reply what your think and follow the rules above in order to fix the error in Background Information
-Secondly,write {length} FOL formulas for {length} lines in the following tag <FOL>.
+Firstly,follow the rules above and reply your idea to do this job.
+Secondly,write {length} FOL formulas after fixed in the following tag <FOL>.
 """
 
 
@@ -54,7 +56,7 @@ def process(
     for k in k_dict[full_premises]:
         knowledge += k
     length = len(list_premises)
-    max_attempts = 2 * length  # 最大尝试次数
+    max_attempts = length + 1  # 最大尝试次数
     send_attempts = 0  # 当前尝试次数
     err_msg = ""  # 错误信息
     while send_attempts < max_attempts:
@@ -85,7 +87,7 @@ def process(
         if len_list != length:
             print(f"\n{id} 整体修复 {datetime.datetime.now()} 需要 {length} 个, 只返回{len(list_res)}个\n")
             send_attempts += 1
-            err_msg = f"<FOL>\n{str_res}\n</FOL>\nError: expected {length} formulas, but got {len(list_res)}.\n"
+            err_msg = f"<FOL>\n{str_res}\n</FOL>\nError: expected {length} formulas, but got {len(list_res)} in the <FOL> tag.\n"
             if len_list > length:
                 err_msg += " Please remove the extra formulas."
             else:

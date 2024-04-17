@@ -115,12 +115,12 @@ def get_knowledge(full_premises:str,list_premises:list):
     global cf
     k_list = []
     k_dict = {}
-    k_dict[full_premises] = fastgpt_knowledge(f"<NL>\n{full_premises}\n<NL>", 600, cf.get('API', 'KNOW_F'), 0.15)
+    k_dict[full_premises] = fastgpt_knowledge(f"<NL>\n{full_premises}\n<NL>", 400, cf.get('API', 'KNOW_F'), 0.2)#600,0.15
     for k in k_dict[full_premises]:
         k_list.append(k)
     # 每个premise查询知识库，加到knowledege
     for premise in list_premises:
-        k_dict[premise]= fastgpt_knowledge(f"<NL>\n{premise}\n<NL>", 500, cf.get('API', 'KNOW_S'), 0.2)
+        k_dict[premise]= fastgpt_knowledge(f"<NL>\n{premise}\n<NL>", 400, cf.get('API', 'KNOW_S'), 0.2)#500 0.2
         #从知识库list中提取知识
         for k in k_dict[premise]:
             if k not in k_list:

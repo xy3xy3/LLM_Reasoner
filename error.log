@@ -214,3 +214,225 @@ Exists(x,Exists(t,And(RosesGivenOut(x),And(OnTV(x,t),And(And(Time(t),At(t,1)),Mo
 Or(DesignStyleByZahaHadid(),DesignStyleByKellyWearstler())
  异常: b'Wrong number of arguments (0) passed to function (declare-fun designstylebyzahahadid (Int) Bool) '
 
+
+新错误
+结论：¬(∃x (StarsMembers(x) ∧ Piloted(x, bbcTwo ∨ bbcThree)))
+格式化结论：Not(Exists(x, -----StarsMembers(x)∧Piloted(x,bbcTwo∨bbcThree)-----))
+前提：['Series(badults) ∧ BritishSitcom(badults) ∧ Starring(pappys, badults)', 'Piloted(badults, July2013) ∧ OnChannel(badults, bbcThree)', 'UsedWorkingTitle(badults, thesecretdudesociety)', 'ScriptEditor(andrew, badults)']
+格式化前提：['And(Series(badults), And(BritishSitcom(badults), Starring(pappys,badults)))', 'And(Piloted(badults,July2013), OnChannel(badults,bbcThree))', 'UsedWorkingTitle(badults,thesecretdudesociety)', 'ScriptEditor(andrew,badults)']
+错误：¬(∃x (StarsMembers(x) ∧ Piloted(x, bbcTwo ∨ bbcThree)))  Not(Exists(x,-----StarsMembers(x)∧Piloted(x,7)-----)), 异常: invalid character '∧' (U+2227) (<string>, line 1)
+
+
+新错误
+结论：¬HasWings(rockObj)
+格式化结论：Not(HasWings(rockObj))
+前提：['∀x (Mammal(x) → Animal(x))', '∀x (Monkey(x) → Mammal(x))', '∀x (Animal(x) → (Monkey(x) ∨ Bird(x)))', '∀x (Bird(x) ↔ Fly(x))', '∀x (Animal(x) → Breathe(x))', '∀x (CanFly(x) → HasWings(x))', '∀x (rockObj(x) ∧ ¬(CanFly(x) ∨ Bird(x)) → (¬CanFly(x) ∧ ¬Breathe(x)))']
+格式化前提：['ForAll(x, Implies(Mammal(x), Animal(x)))', 'ForAll(x, Implies(Monkey(x), Mammal(x)))', 'ForAll(x, Implies(Animal(x), Or(Monkey(x), Bird(x))))', 'ForAll(x, And(Implies(Bird(x), Fly(x)), Implies(Fly(x), Bird(x))))', 'ForAll(x, Implies(Animal(x), Breathe(x)))', 'ForAll(x, Implies(CanFly(x), HasWings(x)))', 'ForAll(x, -----rockObj(x)∧¬(CanFly(x)∨Bird(x))→(¬CanFly(x)∧¬Breathe(x))-----)']
+错误：6 ∀x (rockObj(x) ∧ ¬(CanFly(x) ∨ Bird(x)) → (¬CanFly(x) ∧ ¬Breathe(x)))
+ForAll(x,-----rockObj(x)∧¬(CanFly(x)∨Bird(x))→(¬CanFly(x)∧¬Breathe(x))-----)
+ 异常: invalid character '∧' (U+2227) (<string>, line 1)
+
+
+新错误
+结论：¬TakeOutService(Subway)
+格式化结论：Not(TakeOutService(Subway))
+前提：['∀x (YelpRecommendations(x) → ¬NegativeReviews(x))', '∀x (Rating(x) > 9 → YelpRecommendations(x))', '∃x (¬TakeOutService(x) ∧ NegativeReviews(x))', '∀x ∀y (PopularAmongLocalResidents(x) ∧ Rating(y, x) ∧ GreaterThanNine(y) → ¬∃z (Rating(z, x) ∧ LessThanOrEqualNine(z) ∧ ReceivesNegativeReview(z, x)))', 'Rating(Subway) > 9 ∨ PopularAmongLocalResidents(Subway)']
+格式化前提：['ForAll(x, Implies(YelpRecommendations(x), Not(NegativeReviews(x))))', 'ForAll(x, Implies(Rating(x)>9, YelpRecommendations(x)))', 'Exists(x, And(Not(TakeOutService(x)), NegativeReviews(x)))', 'ForAll(x, ForAll(y, Implies(And(PopularAmongLocalResidents(x), And(Rating(y,x), GreaterThanNine(y))), Not(Exists(z, And(Rating(z,x), And(LessThanOrEqualNine(z), ReceivesNegativeReview(z,x))))))))', 'Or(Rating(Subway)>9, PopularAmongLocalResidents(Subway))']
+错误：1 ∀x (Rating(x) > 9 → YelpRecommendations(x))
+ForAll(x,Implies(Rating(x)>9,YelpRecommendations(x)))
+ 异常: '>' not supported between instances of 'BoolRef' and 'int'
+
+
+新错误
+结论：∀x (HouseholdAppliance(x) → Sucks(x))
+格式化结论：ForAll(x, Implies(HouseholdAppliance(x), Sucks(x)))
+前提：['∀x (Plunger(x) → Sucks(x))', '∀x (Vacuum(x) → Sucks(x))', '∀x (Vampire(x) → SucksBlood(x))', 'Vacuum(s)', '∃d (Duster(d) ∧ HouseholdAppliance(d) ∧ ¬Sucks(d))']
+格式化前提：['ForAll(x, Implies(Plunger(x), Sucks(x)))', 'ForAll(x, Implies(Vacuum(x), Sucks(x)))', 'ForAll(x, Implies(Vampire(x), SucksBlood(x)))', 'Vacuum(s)', 'Exists(d, And(Duster(d), And(HouseholdAppliance(d), Not(Sucks(d)))))']
+错误：4 ∃d (Duster(d) ∧ HouseholdAppliance(d) ∧ ¬Sucks(d))
+Exists(d,And(Duster(2),And(HouseholdAppliance(2),Not(Sucks(2)))))
+ 异常: Invalid bounded variable(s)
+
+
+新错误
+结论：∀x (Pet(x) → ¬Cat(x));
+格式化结论：ForAll(x, -----(Pet(x)→¬Cat(x));-----)
+前提：['∀x (Cat(x) → Mammal(x));', '∃x (Pet(x) ∧ ¬Mammal(x));']
+格式化前提：['ForAll(x, Implies(Cat(x, Mammal(x));))', 'Exists(x, -----(Pet(x)∧¬Mammal(x));-----)']
+错误：0 ∀x (Cat(x) → Mammal(x));
+ForAll(x,Implies(Cat(x,Mammal(x));))
+ 异常: invalid syntax (<string>, line 1)
+
+
+新错误
+结论：¬(∃x (Taller(x, michael) ∧ Taller(peter, x)))
+格式化结论：Not(Exists(x, And(Taller(x,michael), Taller(peter,x))))
+前提：['∀x∀y (Man(x) ∧ Man(y) ∧ Shooting(y) ∧ Taller(x, y) → CanBlockShooting(x, y))', '∀x (Man(x) ∧ InClass(x, michael) ∧ ¬(x = michael) → Taller(michael, x))\n∀x (Person(x) ∧ Taller(michael, x) ∧ CanJumpHigh(x) → CanBlockShoot(michael, x))\n∀x ∀y ∀z ((Taller(x, y) ∧ Taller(y, z)) → Taller(x, z))\n∀x (Person(x) ∧ CanJumpHigh(x) → GreatShooter(x))\n∀x ∀y (Man(x) ∧ InClass(x, michael) ∧ ¬(x = michael) ∧ Shorter(peter, x))', '∀x∀y∀z ((Taller(x, y) ∧ Taller(y, z)) → Taller(x, z))', 'Man(peter) ∧ Man(michael) ∧ Taller(peter, michael)', '∀x (CanBlockShooting(michael, x) ∧ Shooting(x) ∧ ¬Jumping(x) → BlockedBy(michael, x))', '¬CanBlockShooting(michael, windy)', '∀x (Shooter(x) ∧ CanJump(x) → GreatShooter(x))']
+格式化前提：['ForAll(x, ForAll(y, Implies(And(Man(x), And(Man(y), And(Shooting(y), Taller(x,y)))), CanBlockShooting(x,y))))', 'ForAll(x, -----(Man(x)∧InClass(x,michael)∧¬(x=michael)→Taller(michael,x))∀x(Person(x)∧Taller(michael,x)∧CanJumpHigh(x)→CanBlockShoot(michael,x))∀x∀y∀z((Taller(x,y)∧Taller(y,z))→Taller(x,z))∀x(Person(x)∧CanJumpHigh(x)→GreatShooter(x))∀x∀y(Man(x)∧InClass(x,michael)∧¬(x=michael)∧Shorter(peter,x))-----)', 'ForAll(x, ForAll(y, ForAll(z, Implies(And(Taller(x,y), Taller(y,z)), Taller(x,z)))))', 'And(Man(peter), And(Man(michael), Taller(peter,michael)))', 'ForAll(x, Implies(And(CanBlockShooting(michael,x), And(Shooting(x), Not(Jumping(x)))), BlockedBy(michael,x)))', 'Not(CanBlockShooting(michael,windy))', 'ForAll(x, Implies(And(Shooter(x), CanJump(x)), GreatShooter(x)))']
+错误：1 ∀x (Man(x) ∧ InClass(x, michael) ∧ ¬(x = michael) → Taller(michael, x))
+∀x (Person(x) ∧ Taller(michael, x) ∧ CanJumpHigh(x) → CanBlockShoot(michael, x))
+∀x ∀y ∀z ((Taller(x, y) ∧ Taller(y, z)) → Taller(x, z))
+∀x (Person(x) ∧ CanJumpHigh(x) → GreatShooter(x))
+∀x ∀y (Man(x) ∧ InClass(x, michael) ∧ ¬(x = michael) ∧ Shorter(peter, x))
+ForAll(x,-----(Man(x)∧InClass(x,1)∧¬(2)→Taller(1,x))∀x(Person(x)∧Taller(1,x)∧CanJumpHigh(x)→CanBlockShoot(1,x))∀x∀y∀z((Taller(x,y)∧Taller(y,z))→Taller(x,z))∀x(Person(x)∧CanJumpHigh(x)→GreatShooter(x))∀x∀y(Man(x)∧InClass(x,1)∧¬(2)∧Shorter(3,x))-----)
+ 异常: invalid character '∧' (U+2227) (<string>, line 1)
+
+
+新错误
+结论：∃x (ManagedBuilding(x) ∧ RentApartmentWithPets(tom, x) ∧ SecurityDepositLessThanOrEqualTo(x, 1500) ∧ RentApartment(tom, x))
+格式化结论：Exists(x, And(ManagedBuilding(x), And(RentApartmentWithPets(tom,x), And(SecurityDepositLessThanOrEqualTo(x,1500), RentApartment(tom,x)))))
+前提：['∃x ∃y (ManagedBuilding(x) ∧ RentApartmentWithPets(Tom, x) ∧ SecurityDeposit(x, y) ∧ (EqualToOneMonthsRent(y) ∨ MoreThanOneMonthsRent(y)) → RentApartment(Tom, x))', '∀x (ManagedBuilding(x) → ∃y (SecurityDeposit(x, y) ∧ (EqualToOneMonthsRent(y) ∨ GreaterThanOneMonthsRent(x, y))))', '∀x (OwnsPet(tom, fluffy))', '∀x (Cats(x) → Pets(x))', '∀x (ManagedBuilding(OliveGarden))', '∀x (ManagedBuilding(x) ∧ MonthlyRent(x, 2000))', '∀x (MonthlyRent(x, 2000) ∧ ManagedBuilding(x, OliveGarden))', '∀x (RentApartment(tom, x) ↔ (RentApartmentWithPets(tom, x) ∧ ∃y (SecurityDeposit(x, y) ∧ ¬(GreaterThan(y, 1500)))))', '∀x (DepositRequired(x, one_month_rent) ∨ DepositRequired(x, more_than_one_month_rent))']
+格式化前提：['Exists(x, Exists(y, Implies(And(ManagedBuilding(x), And(RentApartmentWithPets(Tom,x), And(SecurityDeposit(x,y), Or(EqualToOneMonthsRent(y), MoreThanOneMonthsRent(y))))), RentApartment(Tom,x))))', 'ForAll(x, Implies(ManagedBuilding(x), Exists(y, And(SecurityDeposit(x,y), Or(EqualToOneMonthsRent(y), GreaterThanOneMonthsRent(x,y))))))', 'ForAll(x, OwnsPet(tom,fluffy))', 'ForAll(x, Implies(Cats(x), Pets(x)))', 'ForAll(x, ManagedBuilding(OliveGarden))', 'ForAll(x, And(ManagedBuilding(x), MonthlyRent(x,2000)))', 'ForAll(x, And(MonthlyRent(x,2000), ManagedBuilding(x,OliveGarden)))', 'ForAll(x, And(Implies(RentApartment(tom,x), And(RentApartmentWithPets(tom,x), Exists(y, And(SecurityDeposit(x,y), Not(GreaterThan(y,1500)))))), Implies(And(RentApartmentWithPets(tom,x), Exists(y, And(SecurityDeposit(x,y), Not(GreaterThan(y,1500))))), RentApartment(tom,x))))', 'ForAll(x, Or(DepositRequired(x,one_month_rent), DepositRequired(x,more_than_one_month_rent)))']
+错误：6 ∀x (MonthlyRent(x, 2000) ∧ ManagedBuilding(x, OliveGarden))
+ForAll(x,And(MonthlyRent(x,4),ManagedBuilding(x,3)))
+ 异常: b'index out of bounds'
+
+
+新错误
+结论：VisitOfficeSupplyStore(Remy)
+格式化结论：VisitOfficeSupplyStore(Remy)
+前提：['∀x (LargeDesktopMonitor(x) ∧ AtHome(x) → (WorkRegularlyAtHome(x) ∧ WorkOftenAtHome(x)))', '∀x (ImpressiveHomeOffice(x) → LargeDesktopMonitor(x))', '∀x ((WorkRegularlyAtHome(x) ∧ WorkOftenAtHome(x)) → VisitOfficeSupplyStore(x))', '∀x (TidyOrganizeSpaces(x) → (¬LateBedtime(x) ∧ ¬WakeAfterNoon(x)))', 'The error message points out that theres an issue with the naming convention of the predicate for Remys behavior, as it should incorporate the variable x to represent individuals So, lets correct that:\nWell rename the predicate for Remys behavior to include the variable x:\nRemyTidyOrganizeSpaces(x)\nNow, lets adjust the line corresponding to Remys behavior:\n∀x ((¬TidyOrganizeSpaces(x) ∧ RemyTidyOrganizeSpaces(x)) ∨ (TidyOrganizeSpaces(x) ∧ ¬RemyTidyOrganizeSpaces(x)) → (GoesToBedLate(x) ∧ WakesUpAfterNoon(x)))\nThis line specifies that either Remy both goes to bed late and wakes up every day after noon while tidying and organizing spaces at home, or they dont go to bed late, dont wake up after noon, and dont tidy and organize spaces at home']
+格式化前提：['ForAll(x, Implies(And(LargeDesktopMonitor(x), AtHome(x)), And(WorkRegularlyAtHome(x), WorkOftenAtHome(x))))', 'ForAll(x, Implies(ImpressiveHomeOffice(x), LargeDesktopMonitor(x)))', 'ForAll(x, Implies(And(WorkRegularlyAtHome(x), WorkOftenAtHome(x)), VisitOfficeSupplyStore(x)))', 'ForAll(x, Implies(TidyOrganizeSpaces(x), And(Not(LateBedtime(x)), Not(WakeAfterNoon(x)))))', '-----TheerrormessagepointsoutthattheresanissuewiththenamingconventionofthepredicateforRemysbehavior,asitshouldincorporatethevariablextorepresentindividualsSo,letscorrectthat:WellrenamethepredicateforRemysbehaviortoincludethevariablex:RemyTidyOrganizeSpaces(x)Now,letsadjustthelinecorrespondingtoRemysbehavior:∀x((¬TidyOrganizeSpaces(x)∧RemyTidyOrganizeSpaces(x))∨(TidyOrganizeSpaces(x)∧¬RemyTidyOrganizeSpaces(x))→(GoesToBedLate(x)∧WakesUpAfterNoon(x)))ThislinespecifiesthateitherRemybothgoestobedlateandwakesupeverydayafternoonwhiletidyingandorganizingspacesathome,ortheydontgotobedlate,dontwakeupafternoon,anddonttidyandorganizespacesathome-----']
+错误：4 The error message points out that theres an issue with the naming convention of the predicate for Remys behavior, as it should incorporate the variable x to represent individuals So, lets correct that:
+Well rename the predicate for Remys behavior to include the variable x:
+RemyTidyOrganizeSpaces(x)
+Now, lets adjust the line corresponding to Remys behavior:
+∀x ((¬TidyOrganizeSpaces(x) ∧ RemyTidyOrganizeSpaces(x)) ∨ (TidyOrganizeSpaces(x) ∧ ¬RemyTidyOrganizeSpaces(x)) → (GoesToBedLate(x) ∧ WakesUpAfterNoon(x)))
+This line specifies that either Remy both goes to bed late and wakes up every day after noon while tidying and organizing spaces at home, or they dont go to bed late, dont wake up after noon, and dont tidy and organize spaces at home
+-----TheerrormessagepointsoutthattheresanissuewiththenamingconventionofthepredicateforRemysbehavior,asitshouldincorporatethevariablextorepresentindividualsSo,letscorrectthat:WellrenamethepredicateforRemysbehaviortoincludethevariablex:RemyTidyOrganizeSpaces(x)Now,letsadjustthelinecorrespondingtoRemysbehavior:∀x((¬TidyOrganizeSpaces(x)∧RemyTidyOrganizeSpaces(x))∨(TidyOrganizeSpaces(x)∧¬RemyTidyOrganizeSpaces(x))→(GoesToBedLate(x)∧WakesUpAfterNoon(x)))ThislinespecifiesthateitherRemybothgoestobedlateandwakesupeverydayafternoonwhiletidyingandorganizingspacesathome,ortheydontgotobedlate,dontwakeupafternoon,anddonttidyandorganizespacesathome-----
+ 异常: invalid character '∀' (U+2200) (<string>, line 1)
+
+
+新错误
+结论：∀x (CityInState(x, pierre) ∧ CityInState(x, bismarck) → State(pierre, state) ∧ State(bismarck, state))
+格式化结论：ForAll(x, Implies(And(CityInState(x,pierre), CityInState(x,bismarck)), And(State(pierre,state), State(bismarck,state))))
+前提：['∀x ((CityInState(x, montana) ∧ City(x)) → ¬(Billings(x) ∨ Butte(x) ∨ Helena(x) ∨ Missoula(x)))', '∃s (CityInState(whiteSulphurSprings, s) ∧ CityInState(butte, s) ∧ ¬(State(s) ∧ In(montana, s)))', '∃s (CityInState(pierre, s) ∧ CityInState(bismarck, s) ∧ ¬State(montana))', '∀x (CityInState(x, butte) → ¬CityInState(x, pierre))', '∀x (¬CityInState(x, montana) ∨ ¬CityInState(pierre, montana))']
+格式化前提：['ForAll(x, Implies(And(CityInState(x,montana), City(x)), Not(Or(Billings(x), Or(Butte(x), Or(Helena(x), Missoula(x)))))))', 'Exists(s, And(CityInState(whiteSulphurSprings,s), And(CityInState(butte,s), Not(And(State(s), In(montana,s))))))', 'Exists(s, And(CityInState(pierre,s), And(CityInState(bismarck,s), Not(State(montana)))))', 'ForAll(x, Implies(CityInState(x,butte), Not(CityInState(x,pierre))))', 'ForAll(x, Or(Not(CityInState(x,montana)), Not(CityInState(pierre,montana))))']
+错误：1 ∃s (CityInState(whiteSulphurSprings, s) ∧ CityInState(butte, s) ∧ ¬(State(s) ∧ In(montana, s)))
+Exists(s,And(CityInState(2,3),And(CityInState(4,3),Not(And(State(3),In(1,3))))))
+ 异常: name 's' is not defined
+
+
+新错误
+结论：American(yuri)
+格式化结论：American(yuri)
+前提：['∃x (BasketballPlayer(x) ∧ ¬American(x))', '∀x (BasketballPlayer(x) → Tall(x))', '∀x (Tall(x) → ∃y (WearLargeShoes(x) ∧ WearLargeSizeClothes(y)))', '∀x (WearLargeShoes(x) → WearLargeSizeClothes(x))', '∀x (BasketballPlayer(x) → ¬American(x))\n∀x (BasketballPlayer(x) → Tall(x))\n∀x (Tall(x) → WearLargeShoes(x))\n∀x (WearLargeShoes(x) → WearLargeSizeClothes(x))\n¬∃x (WearLargeSizeClothes(x) ∧ American(x))\nAmerican(Yuri)']
+格式化前提：['Exists(x, And(BasketballPlayer(x), Not(American(x))))', 'ForAll(x, Implies(BasketballPlayer(x), Tall(x)))', 'ForAll(x, Implies(Tall(x), Exists(y, And(WearLargeShoes(x), WearLargeSizeClothes(y)))))', 'ForAll(x, Implies(WearLargeShoes(x), WearLargeSizeClothes(x)))', 'ForAll(x, -----(BasketballPlayer(x)→¬American(x))∀x(BasketballPlayer(x)→Tall(x))∀x(Tall(x)→WearLargeShoes(x))∀x(WearLargeShoes(x)→WearLargeSizeClothes(x))¬∃x(WearLargeSizeClothes(x)∧American(x))American(Yuri)-----)']
+错误：4 ∀x (BasketballPlayer(x) → ¬American(x))
+∀x (BasketballPlayer(x) → Tall(x))
+∀x (Tall(x) → WearLargeShoes(x))
+∀x (WearLargeShoes(x) → WearLargeSizeClothes(x))
+¬∃x (WearLargeSizeClothes(x) ∧ American(x))
+American(Yuri)
+ForAll(x,-----(BasketballPlayer(x)→¬American(x))∀x(BasketballPlayer(x)→Tall(x))∀x(Tall(x)→WearLargeShoes(x))∀x(WearLargeShoes(x)→WearLargeSizeClothes(x))¬∃x(WearLargeSizeClothes(x)∧American(x))American(1)-----)
+ 异常: invalid character '→' (U+2192) (<string>, line 1)
+
+
+新错误
+结论：Airline(greyhound)
+格式化结论：Airline(greyhound)
+前提：['∀x ((TransportMultiplePassengers(x) ∧ Airline(x)) → ¬Empty(x))', '∀x (Airline(x) → TransportMultiplePassengers(x))', '∀x (Plane(x) → Empty(x))', '∀x (Boeing707(x) → Plane(x))', '∀x (¬Airline(greyhound) → ∀y (greyhoundPlane(y) → ¬Plane(y)))']
+格式化前提：['ForAll(x, Implies(And(TransportMultiplePassengers(x), Airline(x)), Not(Empty(x))))', 'ForAll(x, Implies(Airline(x), TransportMultiplePassengers(x)))', 'ForAll(x, Implies(Plane(x), Empty(x)))', 'ForAll(x, Implies(Boeing707(x), Plane(x)))', 'ForAll(x, Implies(Not(Airline(greyhound)), ForAll(y, -----greyhoundPlane(y)→¬Plane(y)-----)))']
+错误：4 ∀x (¬Airline(greyhound) → ∀y (greyhoundPlane(y) → ¬Plane(y)))
+ForAll(x,Implies(Not(Airline(1)),ForAll(y,-----greyhoundPlane(y)→¬Plane(y)-----)))
+ 异常: invalid character '→' (U+2192) (<string>, line 1)
+
+
+新错误
+结论：∀x (Greyhound(x) → ¬Boeing707(x))   (5)
+格式化结论：ForAll(x, -----(Greyhound(x)→¬Boeing707(x))(5)-----)
+前提：['∀x (CanTransport(x) → ¬Empty(x))   (1)', '∀x (Airliner(x) → CanTransport(x))   (2)', '∀x (Plane(x) → Empty(x) ⊕ ¬Boeing707(x))   (3)', '∀x (¬Airline(x) → ∀y (¬GreyhoundPlane(y)))   (4)']
+格式化前提：['ForAll(x, -----(CanTransport(x)→¬Empty(x))(1)-----)', 'ForAll(x, -----(Airliner(x)→CanTransport(x))(2)-----)', 'ForAll(x, -----(Plane(x)→Empty(x)⊕¬Boeing707(x))(3)-----)', 'ForAll(x, -----(¬Airline(x)→∀y(¬GreyhoundPlane(y)))(4)-----)']
+错误：0 ∀x (CanTransport(x) → ¬Empty(x))   (1)
+ForAll(x,-----(CanTransport(x)→¬Empty(x))(1)-----)
+ 异常: invalid character '→' (U+2192) (<string>, line 1)
+
+
+新错误
+结论：∀x (University(x) ∧ (EndowmentValue(x, 423) ∧ ¬∃y (University(y) ∧ ¬(UniversityEquals(y, x))) → True))
+格式化结论：ForAll(x, And(University(x), And(EndowmentValue(x,423), Not(Exists(y, -----(University(y)∧¬(UniversityEquals(y,x)))→True-----)))))
+前提：['∀x (University(x) ∧ Private(x) ∧ IvyLeague(x) → True)', '∀x (University(x) ∧ MovedTo(x, newHaven) → True)', '∀x (University(x) ∧ EndowmentValue(x, 423) → True)', '∀x (University(x) ∧ EndowmentValue(yaleUniversity, 423B))', '∀x (ResidentialCollege(x) → (∃y (Contains(x, y) ∧ LocatedAt(y, YaleUniversity))))']
+格式化前提：['ForAll(x, -----University(x)∧Private(x)∧IvyLeague(x)→True-----)', 'ForAll(x, -----University(x)∧MovedTo(x,newHaven)→True-----)', 'ForAll(x, -----University(x)∧EndowmentValue(x,423)→True-----)', 'ForAll(x, And(University(x), EndowmentValue(yaleUniversity,423B)))', 'ForAll(x, Implies(ResidentialCollege(x), Exists(y, And(Contains(x,y), LocatedAt(y,YaleUniversity)))))']
+错误：0 ∀x (University(x) ∧ Private(x) ∧ IvyLeague(x) → True)
+ForAll(x,-----University(x)∧Private(x)∧IvyLeague(x)→True-----)
+ 异常: invalid character '∧' (U+2227) (<string>, line 1)
+
+
+新错误
+结论：∀x (SportingEvent(x) ∧ ¬LastOlympicGamesIn(x))
+格式化结论：ForAll(x, And(SportingEvent(x), Not(LastOlympicGamesIn(x))))
+前提：['∀x (SportingEvent(x) → ¬ LastOlympicGamesIn(x, tokyo))', '∀x ((SportingEvent(x) ∧ WonMostMedals(x, tokyo)) → WonMostMedalsInOlympics(unitedstates, tokyo))', '∀x (SportingEvent(x) → ¬ LastOlympicGamesIn(x, tokyo))']
+格式化前提：['ForAll(x, Implies(SportingEvent(x), Not(LastOlympicGamesIn(x,tokyo))))', 'ForAll(x, Implies(And(SportingEvent(x), WonMostMedals(x,tokyo)), WonMostMedalsInOlympics(unitedstates,tokyo)))', 'ForAll(x, Implies(SportingEvent(x), Not(LastOlympicGamesIn(x,tokyo))))']
+错误：0 ∀x (SportingEvent(x) → ¬ LastOlympicGamesIn(x, tokyo))
+ForAll(x,Implies(SportingEvent(x),Not(LastOlympicGamesIn(x,1))))
+ 异常: b'index out of bounds'
+
+
+新错误
+结论：∀x (Student(x) ∧ Mia(x) → (∃s (FavoriteSeason(x, s) ∧ Season(s) ∧ ¬(s = Winter) ∧ ¬(s = Fall) ∧ ¬(s = Autumn) ∧ ¬(s = Summer))))
+格式化结论：ForAll(x, Implies(And(Student(x), Mia(x)), Exists(s, And(FavoriteSeason(x,s), And(Season(s), And(Not(-----s=Winter-----), And(Not(-----s=Fall-----), And(Not(-----s=Autumn-----), Not(-----s=Summer-----)))))))))
+前提：['∀x (Student(x) ∧ WantsLongVacation(x) → (∃s (FavoriteSeason(x, s) ∧ Season(s) ∧ Summer(s))))', '∀x (WantLongVacation(x) ∧ FavoriteSeason(x, Summer) → LovesMost(x, Summer))', '∀x ∀y ((FavoriteSeason(Emma, x) ∧ Season(y) ∧ ¬(FavoriteSeason(Mia, y))) → DifferentFavoriteSeason(Emma, y))', '∀x ∀y (FavoriteSeason(x, Spring) ∧ FavoriteSeason(y, Summer) ∧ ¬SameSeason(x, y))', 'FavoriteSeason(James, Summer)']
+格式化前提：['ForAll(x, Implies(And(Student(x), WantsLongVacation(x)), Exists(s, And(FavoriteSeason(x,s), And(Season(s), Summer(s))))))', 'ForAll(x, Implies(And(WantLongVacation(x), FavoriteSeason(x,Summer)), LovesMost(x,Summer)))', 'ForAll(x, ForAll(y, Implies(And(FavoriteSeason(Emma,x), And(Season(y), Not(FavoriteSeason(Mia,y)))), DifferentFavoriteSeason(Emma,y))))', 'ForAll(x, ForAll(y, And(FavoriteSeason(x,Spring), And(FavoriteSeason(y,Summer), Not(SameSeason(x,y))))))', 'FavoriteSeason(James,Summer)']
+错误：0 ∀x (Student(x) ∧ WantsLongVacation(x) → (∃s (FavoriteSeason(x, s) ∧ Season(s) ∧ Summer(s))))
+ForAll(x,Implies(And(Student(x),WantsLongVacation(x)),Exists(s,And(FavoriteSeason(x,1),And(Season(1),Summer(1))))))
+ 异常: name 's' is not defined
+
+
+新错误
+结论：∀x (Student(x) ∧ WorksInLab(x) → InstructedByDavid(x))
+¬(∃x (WorksInLibrary(x) ∧ ComputerScienceStudent(x)))
+∀x ((PartTimeJob(x) ∧ OfferedByUniversity(x)) → WorksInLibrary(x))
+∀x (TakesDatabaseCourse(x) → ComputerScienceStudent(x))
+∀x (InstructedByDavid(x) → TakesDatabaseCourse(x))
+∀x (WorksInLab(x) → InstructedByDavid(x))
+WorksInLab(james)
+¬(∃x (PartTimeJob(x) ∧ OfferedByUniversity(x))) ∧ ¬(WorksInLab(jack))
+(TakesDatabaseCourse(james) ∨ ∃y (PartTimeJob(y) ∧ OfferedByUniversity(y)))
+格式化结论：And(ForAll(x, -----(Student(x)∧WorksInLab(x)→InstructedByDavid(x))¬(∃x(WorksInLibrary(x)∧ComputerScienceStudent(x)))∀x((PartTimeJob(x)∧OfferedByUniversity(x))→WorksInLibrary(x))∀x(TakesDatabaseCourse(x)→ComputerScienceStudent(x))∀x(InstructedByDavid(x)→TakesDatabaseCourse(x))∀x(WorksInLab(x)→InstructedByDavid(x))WorksInLab(james)¬(∃x(PartTimeJob(x)∧OfferedByUniversity(x)))-----), Not(-----(WorksInLab(jack))(TakesDatabaseCourse(james)∨∃y(PartTimeJob(y)∧OfferedByUniversity(y)))-----))
+前提：['∀x (LibraryWorker(x) → ¬ComputerScienceStudent(x))', '∀x ((PartTimeJob(x) ∧ OfferedByUniversity(x)) → LibraryWorker(x))', '∀x (DatabaseCourse(x) → ComputerScienceStudent(x))', '∀x (InstructedByDavid(x) → DatabaseCourse(x))', '∀x (LabWorker(x) → InstructedByDavid(x))', 'LabWorker(james)', '∀x (¬(PartTime(x) ∧ OfferedByUniversity(x)) ∧ ¬WorksInLab(x))']
+格式化前提：['ForAll(x, Implies(LibraryWorker(x), Not(ComputerScienceStudent(x))))', 'ForAll(x, Implies(And(PartTimeJob(x), OfferedByUniversity(x)), LibraryWorker(x)))', 'ForAll(x, Implies(DatabaseCourse(x), ComputerScienceStudent(x)))', 'ForAll(x, Implies(InstructedByDavid(x), DatabaseCourse(x)))', 'ForAll(x, Implies(LabWorker(x), InstructedByDavid(x)))', 'LabWorker(james)', 'ForAll(x, And(Not(And(PartTime(x), OfferedByUniversity(x))), Not(WorksInLab(x))))']
+错误：∀x (Student(x) ∧ WorksInLab(x) → InstructedByDavid(x))
+¬(∃x (WorksInLibrary(x) ∧ ComputerScienceStudent(x)))
+∀x ((PartTimeJob(x) ∧ OfferedByUniversity(x)) → WorksInLibrary(x))
+∀x (TakesDatabaseCourse(x) → ComputerScienceStudent(x))
+∀x (InstructedByDavid(x) → TakesDatabaseCourse(x))
+∀x (WorksInLab(x) → InstructedByDavid(x))
+WorksInLab(james)
+¬(∃x (PartTimeJob(x) ∧ OfferedByUniversity(x))) ∧ ¬(WorksInLab(jack))
+(TakesDatabaseCourse(james) ∨ ∃y (PartTimeJob(y) ∧ OfferedByUniversity(y)))  And(ForAll(x,-----(Student(x)∧WorksInLab(x)→InstructedByDavid(x))¬(∃x(WorksInLibrary(x)∧ComputerScienceStudent(x)))∀x((PartTimeJob(x)∧OfferedByUniversity(x))→WorksInLibrary(x))∀x(TakesDatabaseCourse(x)→ComputerScienceStudent(x))∀x(InstructedByDavid(x)→TakesDatabaseCourse(x))∀x(WorksInLab(x)→InstructedByDavid(x))WorksInLab(1)¬(∃x(PartTimeJob(x)∧OfferedByUniversity(x)))-----),Not(-----(WorksInLab(2))(TakesDatabaseCourse(1)∨∃y(PartTimeJob(y)∧OfferedByUniversity(y)))-----)), 异常: invalid character '∧' (U+2227) (<string>, line 1)
+
+
+新错误
+结论：∀x (Plunger(x) ↔ Sucks(x))
+∀x (Vacuum(x) ↔ Sucks(x))
+∀x (Vampire(x) ↔ Sucks(x))
+∀x (Space(x) ∧ Vacuum(x) → Sucks(x))
+∀x (Duster(x) → ¬Sucks(x))
+∀x (Space(x) → Sucks(x))
+格式化结论：ForAll(x, -----(Plunger(x)↔Sucks(x))∀x(Vacuum(x)↔Sucks(x))∀x(Vampire(x)↔Sucks(x))∀x(Space(x)∧Vacuum(x)→Sucks(x))∀x(Duster(x)→¬Sucks(x))∀x(Space(x)→Sucks(x))-----)
+前提：['∀x (Predicate1(x) → Predicate2(x))', '∀x (Predicate3(x) → Predicate4(x))', '∀x (Predicate5(x) → Predicate6(x))', 'Predicate7(something)', '∀x (Predicate8(x) → Predicate9(x))']
+格式化前提：['ForAll(x, Implies(Predicate1(x), Predicate2(x)))', 'ForAll(x, Implies(Predicate3(x), Predicate4(x)))', 'ForAll(x, Implies(Predicate5(x), Predicate6(x)))', 'Predicate7(something)', 'ForAll(x, Implies(Predicate8(x), Predicate9(x)))']
+错误：∀x (Plunger(x) ↔ Sucks(x))
+∀x (Vacuum(x) ↔ Sucks(x))
+∀x (Vampire(x) ↔ Sucks(x))
+∀x (Space(x) ∧ Vacuum(x) → Sucks(x))
+∀x (Duster(x) → ¬Sucks(x))
+∀x (Space(x) → Sucks(x))  ForAll(x,-----(Plunger(x)↔Sucks(x))∀x(Vacuum(x)↔Sucks(x))∀x(Vampire(x)↔Sucks(x))∀x(Space(x)∧Vacuum(x)→Sucks(x))∀x(Duster(x)→¬Sucks(x))∀x(Space(x)→Sucks(x))-----), 异常: invalid character '↔' (U+2194) (<string>, line 1)
+
+
+新错误
+结论：∀x (PerformInSchoolTalentShowsOften(x) → AttendAndEngagedWithSchoolEvents(x))
+∀x (¬PerformInSchoolTalentShowsOften(x) ∨ InactiveMemberOfCommunity(x))
+∀x (ChaperoneHighSchoolDances(x) → ¬StudentAtSchool(x))
+∀x (InactiveMemberOfCommunity(x) → ChaperoneHighSchoolDances(x))
+∀x ((YoungChildren(x) ∨ Teenagers(x)) ∧ WishToFurtherEducation(x) → StudentAtSchool(x))
+(AttendAndEngagedWithSchoolEvents(bonnie) ∧ StudentAtSchool(bonnie)) ∨ (¬AttendAndEngagedWithSchoolEvents(bonnie) ∧ ¬StudentAtSchool(bonnie))
+格式化结论：Or(ForAll(x, -----(PerformInSchoolTalentShowsOften(x)→AttendAndEngagedWithSchoolEvents(x))∀x(¬PerformInSchoolTalentShowsOften(x)∨InactiveMemberOfCommunity(x))∀x(ChaperoneHighSchoolDances(x)→¬StudentAtSchool(x))∀x(InactiveMemberOfCommunity(x)→ChaperoneHighSchoolDances(x))∀x((YoungChildren(x)∨Teenagers(x))∧WishToFurtherEducation(x)→StudentAtSchool(x))(AttendAndEngagedWithSchoolEvents(bonnie)∧StudentAtSchool(bonnie))-----), And(Not(AttendAndEngagedWithSchoolEvents(bonnie)), Not(StudentAtSchool(bonnie))))
+前提：['∀x (PerformInTalentShowsOften(x) → (AttendSchoolEvents(x) ∧ EngagedWithSchoolEvents(x)))', '∀x (PerformInTalentShowsOften(x) ∨ (InactiveMemberOfCommunity(x) ∧ DisinterestedMemberOfCommunity(x)))', '∀x (ChaperoneHighSchoolDances(x) → ¬(StudentAtSchool(x) ∧ AttendSchool(x)))', '∀x (InactiveMemberOfCommunity(x) ∧ DisinterestedMemberOfCommunity(x) → ChaperoneHighSchoolDances(x))', '∀x ((YoungChild(x) ∨ Teenager(x)) ∧ FurtherAcademicCareers(x) → (StudentAtSchool(x) ∧ AttendSchool(x)))', '(AttendSchoolEvents(bonnie) ∧ EngagedWithSchoolEvents(bonnie) ∧ StudentAtSchool(bonnie) ∧ AttendSchool(bonnie)) ⊕ (¬AttendSchoolEvents(bonnie) ∧ ¬EngagedWithSchoolEvents(bonnie) ∧ ¬StudentAtSchool(bonnie) ∧ ¬AttendSchool(bonnie))']
+格式化前提：['ForAll(x, Implies(PerformInTalentShowsOften(x), And(AttendSchoolEvents(x), EngagedWithSchoolEvents(x))))', 'ForAll(x, Or(PerformInTalentShowsOften(x), And(InactiveMemberOfCommunity(x), DisinterestedMemberOfCommunity(x))))', 'ForAll(x, Implies(ChaperoneHighSchoolDances(x), Not(And(StudentAtSchool(x), AttendSchool(x)))))', 'ForAll(x, Implies(And(InactiveMemberOfCommunity(x), DisinterestedMemberOfCommunity(x)), ChaperoneHighSchoolDances(x)))', 'ForAll(x, Implies(And(Or(YoungChild(x), Teenager(x)), FurtherAcademicCareers(x)), And(StudentAtSchool(x), AttendSchool(x))))', 'Xor(And(AttendSchoolEvents(bonnie), And(EngagedWithSchoolEvents(bonnie), And(StudentAtSchool(bonnie), AttendSchool(bonnie)))), And(Not(AttendSchoolEvents(bonnie)), And(Not(EngagedWithSchoolEvents(bonnie)), And(Not(StudentAtSchool(bonnie)), Not(AttendSchool(bonnie))))))']
+错误：∀x (PerformInSchoolTalentShowsOften(x) → AttendAndEngagedWithSchoolEvents(x))
+∀x (¬PerformInSchoolTalentShowsOften(x) ∨ InactiveMemberOfCommunity(x))
+∀x (ChaperoneHighSchoolDances(x) → ¬StudentAtSchool(x))
+∀x (InactiveMemberOfCommunity(x) → ChaperoneHighSchoolDances(x))
+∀x ((YoungChildren(x) ∨ Teenagers(x)) ∧ WishToFurtherEducation(x) → StudentAtSchool(x))
+(AttendAndEngagedWithSchoolEvents(bonnie) ∧ StudentAtSchool(bonnie)) ∨ (¬AttendAndEngagedWithSchoolEvents(bonnie) ∧ ¬StudentAtSchool(bonnie))  Or(ForAll(x,-----(PerformInSchoolTalentShowsOften(x)→AttendAndEngagedWithSchoolEvents(x))∀x(¬PerformInSchoolTalentShowsOften(x)∨InactiveMemberOfCommunity(x))∀x(ChaperoneHighSchoolDances(x)→¬StudentAtSchool(x))∀x(InactiveMemberOfCommunity(x)→ChaperoneHighSchoolDances(x))∀x((YoungChildren(x)∨Teenagers(x))∧WishToFurtherEducation(x)→StudentAtSchool(x))(AttendAndEngagedWithSchoolEvents(1)∧StudentAtSchool(1))-----),And(Not(AttendAndEngagedWithSchoolEvents(1)),Not(StudentAtSchool(1)))), 异常: invalid character '→' (U+2192) (<string>, line 1)
+

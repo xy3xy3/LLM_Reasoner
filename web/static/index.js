@@ -142,7 +142,7 @@ layui.use(["table", "form", "layer"], function () {
           // 根据搜索内容过滤数据
           tableOptions.data = originalData.filter(function (item) {
             return (
-              item.example_id == filterText ||
+              item['id'] == filterText ||
               item["premises-FOL"].join(" ").includes(filterText) ||
               item.response.join(" ").includes(filterText)
             );

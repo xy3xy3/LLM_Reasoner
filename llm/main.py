@@ -31,14 +31,12 @@ def send(data):
     if list_res == []:
         print(f"单个修正失败，{str_res}")
         return []
-    # # llm错误修复
-    # str_res, list_res = ef_process(id,full_premises,list_premises,k_list,k_dict,str_res, list_res)
-    # if list_res == []:
-    #     print(f"llm错误修复失败，{str_res}")
-    #     return []
-    # # 再次单个修正
-    # str_res, list_res = sf_process(id,full_premises,list_premises,k_list,k_dict,str_res, list_res)
-    # if list_res == []:
-    #     print(f"单个修正失败，{str_res}")
-    #     return []
+    str_res, list_res = ef_process(id,full_premises,list_premises,k_list,k_dict,str_res, list_res)
+    if list_res == []:
+        print(f"llm错误修复失败，{str_res}")
+        return []
+    str_res, list_res = sf_process(id,full_premises,list_premises,k_list,k_dict,str_res, list_res)
+    if list_res == []:
+        print(f"单个修正失败，{str_res}")
+        return []
     return list_res

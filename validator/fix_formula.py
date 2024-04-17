@@ -69,9 +69,9 @@ def check_predicate_consistency(expressions:list):
         for _, count, _ in usages:
             if count > 2:
                 return False, f"Predicate '{predicate}' has arity {count}. Predicates must have at most 2 arguments. A 3 arity predicates can be replaced by some 2 arity predicates."
-        
-        if len(usages) == 1:
-            single_occurrence_predicates.append((predicate, usages[0][0]))  # 记录谓词和其索引
+        #只出现一次的谓词
+        # if len(usages) == 1:
+        #     single_occurrence_predicates.append((predicate, usages[0][0]))  # 记录谓词和其索引
             
         unique_arg_counts = set(count for _, count, _ in usages)
         if len(unique_arg_counts) > 1:
@@ -108,8 +108,8 @@ def check_predicate_consistency(expressions:list):
             msg_parts.append(f"Predicates that occur only once: {single_details}.")
         return False, ". ".join(msg_parts)+"""\nThere are three methods to solve this problem. Please ascertain the correct approach based on the context:
 1. One could examine whether predicates with similar meanings appear between different lines. If the meanings are similar and the number of predicate parameters is consistent, they can be replaced with the same one.
-2. If the current line's variable reversal domain contains information identical to the predicate, it can be omitted.
-3. If the current line's predicate is necessary, one may integrate predicates that appear only once into other expressions."""
+2. If the current line's variable domain can contains information identical to the predicate, it can be omitted. This is because the variable domain implicitly contains the attribute described by the predicate.
+3. If the current line's predicate is necessary, one may integrate predicates that appear only once into other expressions where other domains contain this infomation."""
     else:
         return True, ""
 
@@ -247,11 +247,18 @@ def validate_formula(formula):
     # 检查自然语言 forall rightarrow latex，如果有，返回
     if check_latex_nature_language(formula):
         return False, "Contains LaTeX `$` or Nature language entities.You need to output pure formula.Please use `¬` for negation, `∧` for conjunction, `∨` for disjunction, `→` for implication, `↔` for biconditional, and `⊕` for exclusive disjunction (XOR)."
-    
+     # 检查量词后面的字母是否为x、y或z
+    quantifier_variable_match = re.findall(r'[∀∃]([\w]*)', formula)
+    if quantifier_variable_match:
+        for item in quantifier_variable_match:
+            if item not in ['x', 'y', 'z']:
+                return False, f"Invalid variables after quantifiers: {item}. Only 'x', 'y', and 'z' are allowed after quantifiers."
+
     # 替换清除量词跟变量之间的空格
     formula = re.sub(r'([∀∃])\s+([x-z])', r'\1\2', formula)
     # 在变量后面紧跟的量词加空格
     formula = re.sub(r'([x-z])([∀∃])', r'\1 \2', formula)
+    
     # 检查括号是否匹配
     unbalanced_parentheses, left_count, right_count = is_balanced_parentheses(formula)
     if unbalanced_parentheses:
@@ -340,7 +347,7 @@ def solvaer_test(formula):
         # 如果出现问题，打印这个前提
         return f"异常: {e}"
 if __name__ == "__main__":
-    s = "¬(∃x (Departure(x) = Arrival(x)))"
+    s = "∃d (Duster(d) ∧ HouseholdAppliance(d) ∧ ¬Sucks(d))"
     print(validate_formula(s))
     # s2 = [
     #       "∀x (Top10Game(x)",
