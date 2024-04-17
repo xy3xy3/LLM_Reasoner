@@ -1,16 +1,7 @@
 import datetime
 from .client import *
-origin = """# Role: Logic Translater
-## For FOL rule generation
-1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence)
-2. You *SHOULD NEVER USE* the following symbols for FOL: "", "̸=", "%", "=" 
-3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 
-4. The FOL rule SHOULD ACCURATELY reflect the meaning of the NL statement 
-5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 
-6. You SHOULD generate FOL rules with either: 
-(1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
-## Example to learn
-{knowledge}
+test = """
+
 ## Attention
 This may be a complex task, please read the following instructions carefully and ensure that your FOL rules are accurate and complete.
 1. Logic Operator Decision: Determine whether to use OR (inclusive, symbolized as ∨) or XOR (exclusive, symbolized as ⊕) in logical contexts. Use XOR when dealing with two mutually exclusive propositions, such as 'male or female', where only one can be true at any given time.
@@ -22,6 +13,18 @@ If other lines have the predicate to describe something's domain, you should rem
 3. Hidden Information in Language: Identify and integrate predicates that may not be explicitly stated but are essential for ensuring accurate logical reasoning. These predicates often represent attributes or characteristics assumed within natural language but not overtly mentioned.
 4. Explicit Information in Language: Recognize and employ predicates necessary for substantiating the reasoning based on explicitly stated information in the text. This involves using predicates to affirm the type or category of an item or concept when such specifications are crucial for logical coherence.
 5. Consider whether the sentence is referring to a specific object or an abstract class of things. If the sentence is referring to a specific object (such as someone or a place), use a constant; otherwise, use a variable with a quantifier
+"""
+origin = """# Role: Logic Translater
+## For FOL rule generation
+1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence)
+2. You *SHOULD NEVER USE* the following symbols for FOL: "", "̸=", "%", "=" 
+3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 
+4. The FOL rule SHOULD ACCURATELY reflect the meaning of the NL statement 
+5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 
+6. You SHOULD generate FOL rules with either: 
+(1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
+## Example to learn
+{knowledge}
 ## Output format
 Use <FOL> and </FOL> to wrap the FOL formulas.
 Each line in the tag should be a single FOL formula.

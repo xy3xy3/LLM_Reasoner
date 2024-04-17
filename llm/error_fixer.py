@@ -1,9 +1,11 @@
-# 由大模型充当错误修复器
+# 可能之后改成专门修复特定问题
+# 修复同义词替换
 from .client import *
 from validator.fix_formula import (
     check_conclusion,
     check_latex_nature_language,
     check_predicate_consistency,
+    find_singel_predicate,
     validate_formula,
 )
 
@@ -16,26 +18,8 @@ origin = """You are a good logic fixer to find the erros in the FOL formulas.
 </NL>
 <FOL>\n{str_res}\n</FOL>
 {err_msg}
-# Some ways you can try
-1. Logic Operator Decision: Determine whether to use OR (inclusive, symbolized as ∨) or XOR (exclusive, symbolized as ⊕) in logical contexts. Use XOR when dealing with two mutually exclusive propositions, such as 'male or female', where only one can be true at any given time.
-
-2. Predicate Redundancy and Necessity:
-   - Redundancy Check: Evaluate if the predicate is superfluous. For instance, if the domain implicitly defined by the quantifier already includes the attribute described by the predicate (e.g., if the domain of 'x' is persons, the predicate 'Human(x)' is redundant and should be removed).
-   - Necessity Check: Assess if there is a missing necessary predicate. If the implicit domain of 'x' does not inherently include an essential attribute, this predicate needs to be added (e.g., if the domain is human, ensure predicates defining essential human attributes are explicitly stated).
-This check should based on the context.
-If other lines have the predicate to describe something's domain, you should remove the predicate in this line or add the missing predicate in other lines.
-
-3. Hidden Information in Language: Identify and integrate predicates that may not be explicitly stated but are essential for ensuring accurate logical reasoning. These predicates often represent attributes or characteristics assumed within natural language but not overtly mentioned.
-
-4. Explicit Information in Language: Recognize and employ predicates necessary for substantiating the reasoning based on explicitly stated information in the text. This involves using predicates to affirm the type or category of an item or concept when such specifications are crucial for logical coherence.
-
-5.Check if the logic formula needs quantifiers and variables.May be some formulas is more apporiate to use constants.
-
-6.Check if the logic formula needs to add or remove some predicates.Maysure the predicate appear in not only one formula.This may help to the final conclusion can be inferred from the premises.
 # Task
 Let's think step by step.
-
-
 Firstly, analyse the probably errors in the background information <FOL>.
 Secondly, reply with the specified number({length}) of fol formulas in the `<FOL></FOL>` tag. Please note that your reply can only have one `<FOL></FOL>` tag
 The final answers should be the fixed.
@@ -70,7 +54,7 @@ def process(
     length = len(list_premises)
     max_attempts = 2 * length  # 最大尝试次数
     send_attempts = 0  # 当前尝试次数
-    err_msg = ""  # 错误信息
+    err_msg = find_singel_predicate(list_res)  # 错误信息
     while send_attempts < max_attempts:
         # 需要发送
         prompt = origin.format(

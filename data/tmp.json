@@ -1,20 +1,24 @@
 {
   "premises": [
-    "All growth companies’ stocks are volatile.",
-    "If the stock price is volatile, then it is not suitable for a retirement fund.",
-    "Some companies’ stocks are growth companies’ stocks.",
-    "All mature companies’ stocks are suitable for a retirement fund.",
-    "KO is a mature company’s stock."
+    "Heinrich Scmidt was a Nazi German politician. ",
+    "Heeinrich Scmidt was also a member of the Prussian State Parliament and the Nazi Reichstag."
   ],
   "premises-FOL": [
-    "∀x (GrowthCompanies’Stocks(x) → PriceVolatile(x))",
-    " ∀x (PriceVolatile(x) → ¬SuitableForRetirementRund(x)) ",
-    " ∃x (Companies’Stocks(x) ∧ GrowthCompanies’Stocks(x))",
-    " ∀x (MatureCompanies’Stocks(x) → SuitableForRetirementRund(x))",
-    " MatureCompanies’Stocks(kO)"
+    "From(heinrichScmidt, naziGermany) \u2227 Politician(heinrichScmidt)",
+    "Member(heinrichScmidt, prussianStateParliament) \u2227 Member(heinrichScmidt, naziReichstag)"
   ],
-  "conclusion": "KO is a company stock.",
-  "conclusion-FOL": "Companies’Stocks(kO)",
-  "label": "Unknown",
-  "id": 64
+  "conclusion": "Heinrich Schmidt was either German or Russian.",
+  "conclusion-FOL": "From(heinrichScmidt, naziGermany) \u2228 From(heinrichScmidt, russia)",
+  "label": "True",
+  "id": 149,
+  "conclusion-AI": "\u00ac(IsHappy(john) \u2227 IsSad(john))",
+  "response": [
+    "\u2200x (IsHuman(x) \u2192 IsMortal(x))",
+    "\u2203x (IsAnimal(x) \u2227 HasTail(x))"
+  ],
+  "predicates-AI": "IsHuman IsMortal IsAnimal HasTail IsHappy IsSad",
+  "constants-AI": "john john",
+  "label-AI": "Unknown",
+  "errmsg": "",
+  "same": false
 }

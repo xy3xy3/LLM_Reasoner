@@ -56,7 +56,7 @@ def process(
     for k in k_dict[full_premises]:
         knowledge += k
     length = len(list_premises)
-    max_attempts = length + 1  # 最大尝试次数
+    max_attempts = length * 2  # 最大尝试次数
     send_attempts = 0  # 当前尝试次数
     err_msg = ""  # 错误信息
     while send_attempts < max_attempts:
@@ -80,12 +80,14 @@ def process(
                 f"ID{id}整体修复 {datetime.datetime.now()} 包含LaTeX符号或自然语言, 重新发送 {send_attempts + 1}次尝试: {str_res}"
             )
             send_attempts += 1
-            err_msg = f"<FOL>\n{str_res}\n</FOL>\n This contains LaTeX symbols or natural language, which is not allowed. Please provide the response in the correct format.\n"
+            err_msg = f"<FOL>\n{str_res}\n</FOL>\n This contains LaTeX symbols or natural language, which is not allowed. Please provide the response in the correct format.<FOL> tag must contain pure formulas.\n"
             continue
         # 检查长度是否一致
         len_list = len(list_res)
         if len_list != length:
-            print(f"\n{id} 整体修复 {datetime.datetime.now()} 需要 {length} 个, 只返回{len(list_res)}个\n")
+            print(
+                f"\n{id} 整体修复 {datetime.datetime.now()} 需要 {length} 个, 只返回{len(list_res)}个\n"
+            )
             send_attempts += 1
             err_msg = f"<FOL>\n{str_res}\n</FOL>\nError: expected {length} formulas, but got {len(list_res)} in the <FOL> tag.\n"
             if len_list > length:
@@ -102,7 +104,7 @@ def process(
         # 检查结论使用了其他之前的谓词和常量
         f, msg = check_conclusion(list_res)
         if f == False:
-            print(f"\n{id} 整体修复 {msg}\n")
+            print(f"\n{id} 整体修复 {datetime.datetime.now()} {msg}\n")
             if "FOL" in err_msg:
                 err_msg += f"\nError: {msg}"
             else:
