@@ -21,18 +21,18 @@ def llm_send(prompt, system_msg):
     cur = 0
     while cur < max_try:
         try:
-            response = (
-                client.chat.completions.create(
+            res = client.chat.completions.create(
                     model=cf.get('API', 'MODEL'),
                     messages=get_msg(prompt, system_msg),
                     # extra_body={"chatId": random.randint(10000, 99999)},
                     temperature=0.7,
+                    stream=False,
                     # max_tokens=1024,
                 )
-                .choices[0]
-                .message.content
-            )
-            return response
+            # print(res)
+            if res.choices[0].message.content:
+                return res.choices[0].message.content
+            return ""
         except Exception as e:
             print(f"llm_send报错 {cur + 1}次尝试: {e}")
             cur += 1

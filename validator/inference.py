@@ -154,19 +154,20 @@ def inference(instance):
         instance["response"][i] = instance["response"][i].replace('.', '').replace('’', '')
         predicates = extract_predicates(instance["response"][i])
     predicates = extract_predicates(instance["conclusion-AI"])
-
     premises = translate_premises(instance["response"])
     conclusion = translate(instance["conclusion-AI"].replace('.', ''))
+    print(premises)
+    print(conclusion)
     case1 = reason(premises, conclusion, predicates, instance["response"], instance["conclusion-AI"])
     case2 = reason(premises, "Not("+conclusion+")", predicates, instance["response"], instance["conclusion-AI"])
     # 如果不是bool类型，则记录
     if not isinstance(case1, bool):
         err_msg = f"""\n新错误\n结论：{instance["conclusion-AI"]}\n格式化结论：{conclusion}\n前提：{instance["response"]}\n格式化前提：{premises}\n错误：{case1}\n"""
-        log(err_msg)
+        # log(err_msg)
         return "Error",err_msg
     if not isinstance(case2, bool):
         err_msg = f"""\n新错误\n结论：{instance["conclusion-AI"]}\n前提：{instance["response"]}\n错误：{case2}\n"""
-        log(err_msg)
+        # log(err_msg)
         return "Error",err_msg
     
     if case1 and not case2:
