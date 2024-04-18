@@ -4,12 +4,13 @@ from llm.client import process_response
 from validator.inference import inference
 raw_response = """
 <FOL>
-∀x (Nintendo(x) → ¬SupportPS4(x))
-∀x (Pokemon(x) → Nintendo(x))
-∀x (FIFA(x) → SupportPS4(x))
-∀x (SoccerOnline(x) → FIFA(x))
-∃x (SoldMoreThanOneMillion(x) ∧ LegendOfZelda(x))
-¬InTop10(LegendOfZelda)
+∀x (PerformInTalentShows(x) → (AttendSchoolEvents(x) ∧ EngagedWithSchoolEvents(x)))
+∀x (PerformInTalentShows(x) ⊕ InactiveAndDisinterested(x))
+∀x (ChaperoneHighSchoolDances(x) → ¬StudentAtSchool(x))
+∀x (InactiveAndDisinterested(x) → ChaperoneHighSchoolDances(x))
+∀x (YoungChildOrTeenager(x) ∧ WishesToFurtherAcademicCareer(x) → StudentAtSchool(x))
+(AttendAndEngagedWithSchoolEvents(Bonnie) ∧ StudentAtSchool(Bonnie)) ⊕ (¬AttendAndEngagedWithSchoolEvents(Bonnie) ∧ ¬StudentAtSchool(Bonnie))
+((YoungChildOrTeenager(Bonnie) ∧ WishesToFurtherAcademicCareer(Bonnie) ∧ ChaperoneHighSchoolDances(Bonnie)) ∨ (¬YoungChildOrTeenager(Bonnie) ∧ ¬WishesToFurtherAcademicCareer(Bonnie))) → (StudentAtSchool(Bonnie) ∨ InactiveAndDisinterested(Bonnie))
 </FOL>
 """
 

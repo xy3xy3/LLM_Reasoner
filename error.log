@@ -1537,3 +1537,63 @@ FOL:
 -----服务暂时不可用，第三方响应错误：USER_DIALOG_CONCURRENCE_LIMIT-----
  异常: invalid character '，' (U+FF0C) (<string>, line 1)
 
+
+新错误
+结论：∀x (LastOlympicGames(x) → ¬InTokyo(x))
+格式化结论：ForAll(x, Implies(LastOlympicGames(x), Not(InTokyo(x))))
+前提：['∀x (OlympicGames(x) → SportingEvent(x))', 'and\n∀x (OlympicGames(x) ∧ ¬HeldIn(x, Tokyo)) → Last(x)', 'MostMedalsWon(unitedstates, tokyo)']
+格式化前提：['ForAll(x, Implies(OlympicGames(x), SportingEvent(x)))', '-----and∀x(OlympicGames(x)∧¬HeldIn(x,Tokyo))→Last(x)-----', 'MostMedalsWon(unitedstates,tokyo)']
+错误：1 and
+∀x (OlympicGames(x) ∧ ¬HeldIn(x, Tokyo)) → Last(x)
+-----and∀x(OlympicGames(x)∧¬HeldIn(x,1))→Last(x)-----
+ 异常: invalid character '∀' (U+2200) (<string>, line 1)
+
+
+新错误
+结论：∃x (Blue(x) ⊕ Red(x))
+格式化结论：Exists(x, Xor(Blue(x), Red(x)))
+前提：['∀x (CanTransportMultiplePassengers(x) → ¬IsEmpty(x))', '∀x (¬(Square(x) ∧ Circle(x)))', '∀x (Rectangle(x) → ¬Square(x))', 'and\n∀x (Boeing707(x) → Plane(x))', '∀x (Green(x) → Square(x) ⊕ Circle(x))']
+格式化前提：['ForAll(x, Implies(CanTransportMultiplePassengers(x), Not(IsEmpty(x))))', 'ForAll(x, Not(And(Square(x), Circle(x))))', 'ForAll(x, Implies(Rectangle(x), Not(Square(x))))', '-----and∀x(Boeing707(x)→Plane(x))-----', 'ForAll(x, Implies(Green(x), Xor(Square(x), Circle(x))))']
+错误：3 and
+∀x (Boeing707(x) → Plane(x))
+-----and∀x(Boeing707(x)→Plane(x))-----
+ 异常: invalid character '∀' (U+2200) (<string>, line 1)
+
+
+新错误
+结论：Writer(daniShapiro)
+格式化结论：Writer(daniShapiro)
+前提：['∀x (Podcast(x) → ¬Novel(x))\n∀x ∀y (Person(x) ∧ BornIn(x, y) ∧ AmericanCity(y) → American(x))\n∀x ∀y (Book(x) ∧ Novel(x) ∧ WrittenBy(x, y) → NovelWriter(y))\nAmericanWriter(daniShapiro)\nWrittenBy(familyHistory, daniShapiro)\nNovel(familyHistory) ∧ WrittenIn(familyHistory, 2003)\nCreator(daniShapiro, familySecretsPodcast) ∧ Podcast(familySecretsPodcast)\nAmericanCity(boston)\nNovelWriter(daniShapiro)', '∀x (BornIn(x, AmericanCity) → American(x))', '∀x ∀y (Novel(x) ∧ WrittenBy(x, y) → Writer(y))', 'American(daniShapiro) ∧ Writer(daniShapiro)', 'WrittenBy(familyHistory, daniShapiro)', 'Novel(familyHistory) ∧ WrittenIn(familyHistory, 2003)', 'Created(daniShapiro, familySecrets) ∧ Podcast(familySecrets)', 'American(boston)']
+格式化前提：['ForAll(x, -----(Podcast(x)→¬Novel(x))∀x∀y(Person(x)∧BornIn(x,y)∧AmericanCity(y)→American(x))∀x∀y(Book(x)∧Novel(x)∧WrittenBy(x,y)→NovelWriter(y))AmericanWriter(daniShapiro)WrittenBy(familyHistory,daniShapiro)Novel(familyHistory)∧WrittenIn(familyHistory,2003)Creator(daniShapiro,familySecretsPodcast)∧Podcast(familySecretsPodcast)AmericanCity(boston)NovelWriter(daniShapiro)-----)', 'ForAll(x, Implies(BornIn(x,AmericanCity), American(x)))', 'ForAll(x, ForAll(y, Implies(And(Novel(x), WrittenBy(x,y)), Writer(y))))', 'And(American(daniShapiro), Writer(daniShapiro))', 'WrittenBy(familyHistory,daniShapiro)', 'And(Novel(familyHistory), WrittenIn(familyHistory,2003))', 'And(Created(daniShapiro,familySecrets), Podcast(familySecrets))', 'American(boston)']
+错误：0 ∀x (Podcast(x) → ¬Novel(x))
+∀x ∀y (Person(x) ∧ BornIn(x, y) ∧ AmericanCity(y) → American(x))
+∀x ∀y (Book(x) ∧ Novel(x) ∧ WrittenBy(x, y) → NovelWriter(y))
+AmericanWriter(daniShapiro)
+WrittenBy(familyHistory, daniShapiro)
+Novel(familyHistory) ∧ WrittenIn(familyHistory, 2003)
+Creator(daniShapiro, familySecretsPodcast) ∧ Podcast(familySecretsPodcast)
+AmericanCity(boston)
+NovelWriter(daniShapiro)
+ForAll(x,-----(Podcast(x)→¬Novel(x))∀x∀y(Person(x)∧BornIn(x,y)∧AmericanCity(y)→American(x))∀x∀y(Book(x)∧Novel(x)∧WrittenBy(x,y)→NovelWriter(y))AmericanWriter(1)WrittenBy(2,1)Novel(2)∧WrittenIn(2,3)Creator(1,4)∧Podcast(4)AmericanCity(5)NovelWriter(1)-----)
+ 异常: invalid character '→' (U+2192) (<string>, line 1)
+
+
+新错误
+结论：∃y (OftenComplain(Luke, y) ∧ AnnoyingSibling(Luke, y))
+格式化结论：Exists(y, And(OftenComplain(Luke,y), AnnoyingSibling(Luke,y)))
+前提：['∀x ∀y ((Twin(x, y) ∨ Triplet(x, y)) → (HangOutWith(x, y) ∧ PlayWith(x, y)))', '∀x ∀y (Sibling(x, y) ∧ SameAge(x, y) → (Twin(x, y) ∨ Triplet(x, y)))', '∀x (OftenComplain(x) ∧ ∃y (AnnoyingSibling(x, y) ∧ Sibling(x, y)) → ∃z (Sibling(x, z) ∧ SameAge(x, z)))', '∀x∀y (NotLiveAtHomeRegularly(x) → (FamilyMember(y) → NotDevelopStrongBonds(x, y)))', '∀x (SpendTimeWithSiblings(x) → OftenNotLiveAtHomeRegularly(x))', '(∃x (Twin(Luke, x) ∨ Triplet(Luke, x)) ∧ StrongBond(Luke, FamilyMember)) ⊕ (¬∃x (Twin(Luke, x) ∨ Triplet(Luke, x)) ∧ ¬StrongBond(Luke, FamilyMember))']
+格式化前提：['ForAll(x, ForAll(y, Implies(Or(Twin(x,y), Triplet(x,y)), And(HangOutWith(x,y), PlayWith(x,y)))))', 'ForAll(x, ForAll(y, Implies(And(Sibling(x,y), SameAge(x,y)), Or(Twin(x,y), Triplet(x,y)))))', 'ForAll(x, Implies(And(OftenComplain(x), Exists(y, And(AnnoyingSibling(x,y), Sibling(x,y)))), Exists(z, And(Sibling(x,z), SameAge(x,z)))))', 'ForAll(x, ForAll(y, Implies(NotLiveAtHomeRegularly(x), Implies(FamilyMember(y), NotDevelopStrongBonds(x,y)))))', 'ForAll(x, Implies(SpendTimeWithSiblings(x), OftenNotLiveAtHomeRegularly(x)))', 'Xor(And(Exists(x, Or(Twin(Luke,x), Triplet(Luke,x))), StrongBond(Luke,FamilyMember)), And(Not(Exists(x, Or(Twin(Luke,x), Triplet(Luke,x)))), Not(StrongBond(Luke,FamilyMember))))']
+错误：2 ∀x (OftenComplain(x) ∧ ∃y (AnnoyingSibling(x, y) ∧ Sibling(x, y)) → ∃z (Sibling(x, z) ∧ SameAge(x, z)))
+ForAll(x,Implies(And(OftenComplain(x),Exists(y,And(AnnoyingSibling(x,y),Sibling(x,y)))),Exists(z,And(Sibling(x,z),SameAge(x,z)))))
+ 异常: b'Wrong number of arguments (1) passed to function (declare-fun oftencomplain (Int Int) Bool) \narg: x\n'
+
+
+新错误
+结论：F1Visa(mike)
+格式化结论：F1Visa(mike)
+前提：['∀x (InternationalStudent(x) ∧ InUS(x) → (F1Visa(x) ⊕ J1Visa(x)))', '∀x ((InternationalStudent(x) ∧ InUS(x) ∧ F1Visa(x) ∧ WantsToWork(x)) → (NeedsToApply(x, CPT) ∨ NeedsToApply(x, OPT)))', 'InternationalStudent(mike)', 'WantsToWork(mike, us) → NeedsToApplyForCPT(mike)']
+格式化前提：['ForAll(x, Implies(And(InternationalStudent(x), InUS(x)), Xor(F1Visa(x), J1Visa(x))))', 'ForAll(x, Implies(And(InternationalStudent(x), And(InUS(x), And(F1Visa(x), WantsToWork(x)))), Or(NeedsToApply(x,CPT), NeedsToApply(x,OPT))))', 'InternationalStudent(mike)', 'Implies(WantsToWork(mike,us), NeedsToApplyForCPT(mike))']
+错误：1 ∀x ((InternationalStudent(x) ∧ InUS(x) ∧ F1Visa(x) ∧ WantsToWork(x)) → (NeedsToApply(x, CPT) ∨ NeedsToApply(x, OPT)))
+ForAll(x,Implies(And(InternationalStudent(x),And(InUS(x),And(F1Visa(x),WantsToWork(x)))),Or(NeedsToApply(x,1),NeedsToApply(x,2))))
+ 异常: b'Wrong number of arguments (1) passed to function (declare-fun wantstowork (Int Int) Bool) \narg: x\n'
+

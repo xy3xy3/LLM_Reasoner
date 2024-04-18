@@ -265,18 +265,20 @@ def find_constant_comparations(formula):
     return comparations
 
 
-def check_latex_nature_language(formula: str):
+def check_nature_language(formula: str):
     nature_check = (
         "forall" in formula
-        or "..." in formula
+        or "." in formula
         or ":" in formula
         or "rightarrow" in formula
         or "neg" in formula
         or "$" in formula
     )
-    latex_symbols = re.findall(r"\\[a-zA-Z]+", formula)  # 寻找\开头的LaTeX符号
-    return nature_check or bool(latex_symbols)
-
+    return nature_check
+def check_latex(formula: str):
+    # 寻找\开头的LaTeX符号 或者 $符号
+    latex_symbols = re.findall(r"\\[a-zA-Z]+", formula)
+    return bool(latex_symbols)
 
 def check_formula(formula):
     forbidden_vars = [r"\bu\b", r"\bv\b", r"\bw\b"]
@@ -357,10 +359,10 @@ def validate_formula(formula):
         return False, check_msg
 
     # 检查自然语言 forall rightarrow latex，如果有，返回
-    if check_latex_nature_language(formula):
+    if check_nature_language(formula):
         return (
             False,
-            "Contains LaTeX `$` or Nature language entities.You need to output pure formula.Please use `¬` for negation, `∧` for conjunction, `∨` for disjunction, `→` for implication, `↔` for biconditional, and `⊕` for exclusive disjunction (XOR).",
+            "Contains Nature language entities.Rewite and follow the rules.",
         )
     # 检查量词后面的字母是否为x、y或z
     quantifier_variable_match = re.findall(r"[∀∃]([\w]*)", formula)
@@ -462,7 +464,7 @@ def validate_formula(formula):
             position = formula.find(var)
             return (
                 False,
-                f"Variable '{var}' is not properly constrained at position {position}.Use quantifiers '∀' or '∃' to constrain variables.Or replace the varible by constant",
+                f"Variable '{var}' is not properly constrained at position {position}.Use quantifiers '∀' or '∃' to constrain variables.Alternatively, you can replace the variables in the predicate with constants.",
             )
 
         # 检查约束是否合法

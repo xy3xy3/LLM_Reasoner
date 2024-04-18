@@ -3,7 +3,6 @@
 from .client import *
 from validator.fix_formula import (
     check_conclusion,
-    check_latex_nature_language,
     check_predicate_consistency,
     find_singel_predicate,
     validate_formula,

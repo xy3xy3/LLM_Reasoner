@@ -1,5 +1,14 @@
+import os
+import sys
+
+# 计算当前文件的绝对路径，然后计算其所在目录的父目录（项目根目录）
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(project_root)
+
 from flask import Flask, render_template, request,jsonify
 from file_reader import *
+from llm.client import process_response
+from validator.inference import inference
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
@@ -41,7 +50,19 @@ def compare_files():
     result = compare_content(content1, content2)  # 假设您已实现此函数
     
     return result
-
+#推理测试
+@app.route('/inferenceSubmit', methods=['POST'])
+def inferenceSubmit():
+    data = request.json
+    raw_response = data.get('text')
+    str_res, list_res = process_response(raw_response)
+    data = {}
+    data["response"] = list_res[:-1]
+    data["conclusion-AI"] = list_res[-1]
+    return jsonify(inference(data))
+@app.route('/inferenceTest')
+def inferenceTest():
+    return render_template('inference.html')
 # 对比文件
 @app.route('/diff')
 def diff():

@@ -2,7 +2,6 @@ import datetime
 from .client import *
 from validator.fix_formula import (
     check_conclusion,
-    check_latex_nature_language,
     check_predicate_consistency,
     validate_formula,
 )
@@ -52,8 +51,10 @@ def process(
         valid, msg = validate_formula(res_text)
         retry_count = 0
         knowledge = ""
-        for k in k_dict[list_premises[i]]:
-            knowledge += k
+        for key, value in k_dict.items():
+            if key == full_premises:
+                continue
+            knowledge += f"Examples for `{key}`\n"+ "\n".join(value) + "\n"
         while not valid and retry_count < max_attempts:
             retry_count += 1
             # 重新构造仅包含当前正在处理的premise的提示信息

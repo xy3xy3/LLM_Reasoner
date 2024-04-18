@@ -2,7 +2,7 @@ import datetime
 from .client import *
 from validator.fix_formula import (
     check_conclusion,
-    check_latex_nature_language,
+    check_nature_language,
     check_predicate_consistency,
 )
 
@@ -53,8 +53,8 @@ def process(
     print(f"ID{id}整体修复")
     # 从k_dict获取整体的知识
     knowledge = ""
-    for k in k_dict[full_premises]:
-        knowledge += k
+    for key, value in k_dict.items():
+       knowledge += f"Examples for `{key}`\n"+ "\n".join(value) + "\n"
     length = len(list_premises)
     max_attempts = length * 2  # 最大尝试次数
     send_attempts = 0  # 当前尝试次数
@@ -75,7 +75,7 @@ def process(
             str_res, list_res = process_response(raw_response)
             err_msg = ""
         # 检查是否包含LaTeX符号或自然语言
-        if check_latex_nature_language(str_res):
+        if check_nature_language(str_res):
             print(
                 f"ID{id}整体修复 {datetime.datetime.now()} 包含LaTeX符号或自然语言, 重新发送 {send_attempts + 1}次尝试: {str_res}"
             )

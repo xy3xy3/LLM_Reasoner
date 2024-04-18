@@ -1,75 +1,69 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>文件对比</title>
-    <link rel="stylesheet" href="./static/layui/css/layui.css" media="all" />
-    <script src="./static/jquery.min.js"></script>
-    <script src="./static/layui/layui.js"></script>
-  </head>
-  <body>
-    <div class="layui-fluid">
-      <div class="layui-row">
-        <div class="layui-col-xs12">
-          <div class="layui-card">
-            <div
-              class="layui-card-header"
-              style="padding-top: 15px; padding-bottom: 15px; height: auto"
-            >
-              <form class="layui-form" id="compareForm">
-                <div class="layui-form-item">
-                  <div class="layui-inline">
-                    <label class="layui-form-label">文件1</label>
-                    <div class="layui-input-block">
-                      <select name="file1" required id="fileSelect1"></select>
-                    </div>
-                  </div>
-                  <div class="layui-inline">
-                    <label class="layui-form-label">文件2</label>
-                    <div class="layui-input-block">
-                      <select name="file2" required id="fileSelect2"></select>
-                    </div>
-                  </div>
-                  <div class="layui-inline">
-                    <label class="layui-form-label">筛选条件</label>
-                    <div class="layui-input-block">
-                      <select id="filterCondition">
-                        <option value="all">无筛选</option>
-                        <option value="label1MatchesLabel">
-                          标签1与标注一致
-                        </option>
-                        <option value="label2MatchesLabel">
-                          标签2与标注一致
-                        </option>
-                        <option value="allMatch">三者一致</option>
-                      </select>
-                    </div>
-                  </div>
+{% extends "base.html" %} {% block content %}
+<div class="layui-container">
+  <div class="layui-row">
+    <div class="layui-col-xs12">
+      <div class="layui-card">
+        <div
+          class="layui-card-header"
+          style="padding-top: 15px; padding-bottom: 15px; height: auto"
+        >
+          <form class="layui-form" action="" id="compareForm">
+            <div class="layui-form-item">
+              <div class="layui-inline">
+                <label class="layui-form-label">文件1</label>
+                <div class="layui-input-block">
+                  <select name="file1" required id="fileSelect1"></select>
                 </div>
-                <div class="layui-form-item">
-                  <button class="layui-btn" type="button" id="doCompare">
-                    开始对比
-                  </button>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">文件2</label>
+                <div class="layui-input-block">
+                  <select name="file2" required id="fileSelect2"></select>
                 </div>
-              </form>
+              </div>
+              <div class="layui-inline">
+                <label class="layui-form-label">筛选条件</label>
+                <div class="layui-input-block">
+                  <select id="filterCondition">
+                    <option value="all">无筛选</option>
+                    <option value="label1MatchesLabel">标签1与标注一致</option>
+                    <option value="label2MatchesLabel">标签2与标注一致</option>
+                    <option value="allMatch">三者一致</option>
+                  </select>
+                </div>
+              </div>
             </div>
-            <div class="layui-card-body">
-              <table
-                class="layui-hide"
-                id="compareTable"
-                lay-filter="compareTable"
-              ></table>
+            <div class="layui-form-item">
+              <button class="layui-btn" type="button" id="doCompare">
+                开始对比
+              </button>
+              <button
+                class="layui-btn"
+                lay-submit
+                lay-filter="refresh"
+                type="button"
+              >
+                刷新数据列表
+              </button>
             </div>
-          </div>
+          </form>
+        </div>
+        <div class="layui-card-body">
+          <table
+            class="layui-hide"
+            id="compareTable"
+            lay-filter="compareTable"
+          ></table>
         </div>
       </div>
     </div>
+  </div>
+</div>
 
-    <!-- 工具条的HTML模板定义 -->
-    <script type="text/html" id="barDemo">
-      <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
-    </script>
+<!-- 工具条的HTML模板定义 -->
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
+</script>
 
-    <script src="./static/diff.js"></script>
-  </body>
-</html>
+<script src="./static/diff.js"></script>
+{% endblock %}

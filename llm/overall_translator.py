@@ -58,27 +58,31 @@ You can analyze task during your output.But don't use natural language in the fi
 This may be a complex task, please read the following instructions carefully and ensure that your FOL rules are accurate and complete.
 1. Logic Operator Decision: Determine whether to use OR (inclusive, symbolized as ∨) or XOR (exclusive, symbolized as ⊕) in logical contexts. Use XOR when dealing with two mutually exclusive propositions, such as 'male or female', where only one can be true at any given time.
 2. Predicate Redundancy and Necessity:
-   - Redundancy Check: Evaluate if the predicate is superfluous. For instance, if the domain implicitly defined by the quantifier already includes the attribute described by the predicate (e.g., if the domain of 'x' is persons, the predicate 'Human(x)' is redundant and should be removed).
-   - Necessity Check: Assess if there is a missing necessary predicate. If the implicit domain of 'x' does not inherently include an essential attribute, this predicate needs to be added (e.g., if the domain is human, ensure predicates defining essential human attributes are explicitly stated).
+- Redundancy Check: Evaluate if the predicate is superfluous. For instance, if the domain implicitly defined by the quantifier already includes the attribute described by the predicate (e.g., if the domain of 'x' is persons, the predicate 'Human(x)' is redundant and should be removed).
+- Necessity Check: Assess if there is a missing necessary predicate. If the implicit domain of 'x' does not inherently include an essential attribute, this predicate needs to be added (e.g., if the domain is human, ensure predicates defining essential human attributes are explicitly stated).
 This check should based on the context.
 If other lines have the predicate to describe something's domain, you should remove the predicate in this line or add the missing predicate in other lines.
-3. Hidden Information in Language: Identify and integrate predicates that may not be explicitly stated but are essential for ensuring accurate logical reasoning. These predicates often represent attributes or characteristics assumed within natural language but not overtly mentioned.
-4. Explicit Information in Language: Recognize and employ predicates necessary for substantiating the reasoning based on explicitly stated information in the text. This involves using predicates to affirm the type or category of an item or concept when such specifications are crucial for logical coherence.
-5. Consider whether the sentence is referring to a specific object or an abstract class of things. If the sentence is referring to a specific object (such as someone or a place), use a constant; otherwise, use a variable with a quantifier
+3. Consider whether the sentence is referring to a specific object or an abstract class of things. If the sentence is referring to a specific object (such as someone or a place), use a constant; otherwise, use a variable with a quantifier
 ## Current task:
 Convert the following {length} lines natural language sentences into {length} first-order logical formulas.
-The formulas should be one to one of each line.Don't mix two line into one formula.
+The formulas you output in the <FOL> tag should correspond line by line with the content in the <NL> tag
 <NL>
 {full_premises}
 </NL>
 Let's think step by step.
-Firstly,follow the rules above and reply your idea to do this job.
-Secondly,write {length} FOL formulas for {length} lines in the following tag <FOL>.
+Firstly, follow the rules and output your analysis of each line in the <NL> tag.
+The analysis should specify the quantifiers, predicates, and entities in the sentence.
+You should also try to focus on the Attention to each line's analysis.
+Secondly,write {length} FOL formulas in the following tag <FOL>.
 """
 
 def process(id:int,full_premises: str, list_premises: list, k_list: list, k_dict: dict):
     global origin
-    prompt = origin.format(knowledge="".join(k_list),length=len(list_premises),full_premises=full_premises)
+    # 遍历每一个list在k_dict构建提示
+    knowledge = ""
+    for key, value in k_dict.items():
+       knowledge += f"Examples for `{key}`\n"+ "\n".join(value) + "\n"
+    prompt = origin.format(knowledge=knowledge,length=len(list_premises),full_premises=full_premises)
     print(f"ID{id}总体翻译 {datetime.datetime.now()}: \n{prompt}")
     raw_response = llm_send(prompt, "")
     if raw_response == "":

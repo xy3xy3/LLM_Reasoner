@@ -1,0 +1,40 @@
+{% extends "base.html" %} {% block content %}
+<div class="layui-container">
+  <div class="layui-row">
+    <div class="layui-col-xs12">
+      <textarea
+        id="inputFormula"
+        class="layui-textarea"
+        placeholder="请输入公式"
+      ></textarea>
+      <button class="layui-btn" onclick="submitFormula()">提交公式</button>
+    </div>
+  </div>
+  <div class="layui-row">
+    <div class="layui-col-xs12">
+      <div id="resultDisplay" class="layui-border-box">结果会显示在这里</div>
+    </div>
+  </div>
+</div>
+
+<script>
+   function submitFormula() {
+      const inputText = $("#inputFormula").val(); // 使用 jQuery 获取输入值
+
+      $.ajax({
+        url: "/inferenceSubmit",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ text: inputText }),
+        success: function(data) {
+          $("#resultDisplay").html(data[0]);
+        },
+        error: function(xhr, status, error) {
+          console.error("Error:", error);
+        }
+      });
+    }
+
+</script>
+
+{% endblock %}

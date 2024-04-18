@@ -27,7 +27,7 @@ def llm_send(prompt, system_msg):
                     messages=get_msg(prompt, system_msg),
                     # extra_body={"chatId": random.randint(10000, 99999)},
                     temperature=0.7,
-                    max_tokens=1024,
+                    # max_tokens=1024,
                 )
                 .choices[0]
                 .message.content
@@ -117,12 +117,14 @@ def get_knowledge(full_premises:str,list_premises:list):
     global cf
     k_list = []
     k_dict = {}
-    k_dict[full_premises] = fastgpt_knowledge(f"<NL>\n{full_premises}\n<NL>", 600, cf.get('API', 'KNOW_F'), 0.15)#600,0.15
+    num1 = 600 if len(list_premises) < 4 else 300
+    num2 = 500 if len(list_premises) < 4 else 200
+    k_dict[full_premises] = fastgpt_knowledge(f"<NL>\n{full_premises}\n<NL>", num1, cf.get('API', 'KNOW_F'), 0.15)#600,0.15
     for k in k_dict[full_premises]:
         k_list.append(k)
     # 每个premise查询知识库，加到knowledege
     for premise in list_premises:
-        k_dict[premise]= fastgpt_knowledge(f"<NL>\n{premise}\n<NL>", 500, cf.get('API', 'KNOW_S'), 0.2)#500 0.2
+        k_dict[premise]= fastgpt_knowledge(f"<NL>\n{premise}\n<NL>", num2, cf.get('API', 'KNOW_S'), 0.2)#500 0.2
         #从知识库list中提取知识
         for k in k_dict[premise]:
             if k not in k_list:

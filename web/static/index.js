@@ -133,7 +133,7 @@ layui.use(["table", "form", "layer"], function () {
           return item["label-AI"] === "Error";
         }).length;
         var accuracy = (trueCount / totalCount) * 100;
-        $("#accuracy").text(accuracy2.toFixed(2) + "%");
+        $("#accuracy").text(accuracy.toFixed(2) + "%");
         var totalCount = originalData.filter(function (item) {
           return item["label-AI"] !== "Error";
         }).length;
@@ -183,8 +183,6 @@ layui.use(["table", "form", "layer"], function () {
       },
     });
   }
-
-  loadData(); // 首次加载数据
 
   // 监听搜索事件
   form.on("submit(doSearch)", function (data) {

@@ -17,6 +17,10 @@ layui.use(["form", "table", "jquery"], function () {
     });
   }
 
+  form.on("submit(refresh)", function (data) {
+    loadFiles();
+    return false; // 阻止表单跳转
+  });
   loadFiles(); // 调用加载文件
 
   // 处理对比
