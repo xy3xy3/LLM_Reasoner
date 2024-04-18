@@ -126,9 +126,6 @@ layui.use(["table", "form", "layer"], function () {
         );
         // 计算正确率和错误数量
         var totalCount = originalData.length;
-        var totalCount = originalData.filter(function (item) {
-          return item["label-AI"] !== "Error";
-        }).length;
         var trueCount = originalData.filter(function (item) {
           return item.same === true;
         }).length;
@@ -136,7 +133,12 @@ layui.use(["table", "form", "layer"], function () {
           return item["label-AI"] === "Error";
         }).length;
         var accuracy = (trueCount / totalCount) * 100;
-        $("#accuracy").text(accuracy.toFixed(2) + "%");
+        $("#accuracy").text(accuracy2.toFixed(2) + "%");
+        var totalCount = originalData.filter(function (item) {
+          return item["label-AI"] !== "Error";
+        }).length;
+        var accuracy2 = (trueCount / totalCount) * 100;
+        $("#accuracy2").text(accuracy2.toFixed(2) + "%");
         $("#errorCount").text(falseCount);
         if (filterText) {
           // 根据搜索内容过滤数据
