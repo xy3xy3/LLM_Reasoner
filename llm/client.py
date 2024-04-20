@@ -4,16 +4,17 @@ import re
 from openai import OpenAI
 import requests
 
-#读取配置文件
+# 读取配置文件
 file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../config.ini")
 cf = ConfigParser()
 
-cf.read('config.ini', encoding='utf-8')
+cf.read("config.ini", encoding="utf-8")
 
 client = OpenAI(
-    api_key=cf.get('API', 'API_SECRET_KEY'),
-    base_url=cf.get('API', 'BASE_URL'),
+    api_key=cf.get("API", "API_SECRET_KEY"),
+    base_url=cf.get("API", "BASE_URL"),
 )
+
 
 def llm_send(prompt, system_msg):
     global cf
@@ -22,13 +23,13 @@ def llm_send(prompt, system_msg):
     while cur < max_try:
         try:
             res = client.chat.completions.create(
-                    model=cf.get('API', 'MODEL'),
-                    messages=get_msg(prompt, system_msg),
-                    # extra_body={"chatId": random.randint(10000, 99999)},
-                    temperature=0.7,
-                    stream=False,
-                    # max_tokens=1024,
-                )
+                model=cf.get("API", "MODEL"),
+                messages=get_msg(prompt, system_msg),
+                # extra_body={"chatId": random.randint(10000, 99999)},
+                temperature=0.7,
+                stream=False,
+                # max_tokens=1024,
+            )
             # print(res)
             if res.choices[0].message.content:
                 return res.choices[0].message.content
@@ -37,6 +38,7 @@ def llm_send(prompt, system_msg):
             print(f"llm_send报错 {cur + 1}次尝试: {e}")
             cur += 1
     return ""
+
 
 # 从数据构造json
 def get_msg(ymsg, smsg=""):
@@ -51,6 +53,7 @@ def get_msg(ymsg, smsg=""):
     # os._exit(1)
     return messages
 
+
 # 获取历史对话，暂时无用
 def get_history(history: list) -> str:
     res = ""
@@ -60,27 +63,30 @@ def get_history(history: list) -> str:
         else:
             res += "<FOL>\n" + item + "\n</FOL>\n"
     return res
-#报错函数，用于加入到发送的消息中
-def error_msg(msg,new_msg,response:str):
+
+
+# 报错函数，用于加入到发送的消息中
+def error_msg(msg, new_msg, response: str):
     if new_msg in msg:
         return msg
     if response in msg or "Result:" in msg:
-        msg += "\n"+new_msg
+        msg += "\n" + new_msg
     else:
-        #去除response空行，并每行加行号
+        # 去除response空行，并每行加行号
         response = response.split("\n")
-        #去除空的
+        # 去除空的
         response = [x for x in response if x]
         response = [f"{i+1}. {response[i]}" for i in range(len(response))]
         response = "\n".join(response)
         msg += f"\nResult:\n```\n{response}\n```\n{new_msg}"
     return msg
 
+
 # 处理返回的结果
-def process_response(text:str):
+def process_response(text: str):
     # 去除空行
     text = text.replace("\n\n", "\n")
-     # 去除Markdown列表编号
+    # 去除Markdown列表编号
     text = re.sub(r"-\s+", "", text, flags=re.MULTILINE)
     # 去除数字编号
     text = re.sub(r"\d+\.\s+", "", text, flags=re.MULTILINE)
@@ -108,32 +114,41 @@ def process_response(text:str):
     # 去除`
     text = text.replace("`", "")
     res = text.split("\n")
-    #去除空行，去除开头的空格
+    # 去除空行，去除开头的空格
     res = [x.strip() for x in res if x]
     text = "\n".join(res)
-    return text,res
+    return text, res
+
+
 # 定义抽取知识函数
-def get_knowledge(full_premises:str,list_premises:list):
+def get_knowledge(full_premises: str, list_premises: list):
     global cf
     k_list = []
     k_dict = {}
-    num1 = 600 if len(list_premises) < 4 else 300
-    num2 = 500 if len(list_premises) < 4 else 200
-    k_dict[full_premises] = fastgpt_knowledge(f"<NL>\n{full_premises}\n<NL>", num1, cf.get('API', 'KNOW_F'), 0.15)#600,0.15
+    num1 = 300
+    num2 = 300
+    k_dict[full_premises] = fastgpt_knowledge(
+        f"<NL>\n{full_premises}\n<NL>", num1, 1, cf.get("API", "KNOW_F"), 0.15
+    )  # 600,0.15
     for k in k_dict[full_premises]:
         k_list.append(k)
     # 每个premise查询知识库，加到knowledege
     for premise in list_premises:
-        k_dict[premise]= fastgpt_knowledge(f"<NL>\n{premise}\n<NL>", num2, cf.get('API', 'KNOW_S'), 0.2)#500 0.2
-        #从知识库list中提取知识
+        k_dict[premise] = fastgpt_knowledge(
+            f"<NL>\n{premise}\n<NL>", num2, 2, cf.get("API", "KNOW_S"), 0.2
+        )  # 500 0.2
+        # 从知识库list中提取知识
         for k in k_dict[premise]:
             if k not in k_list:
                 k_list.append(k)
-    return k_list,k_dict
+    return k_list, k_dict
+
+
 # 获取fastgpt的知识库
 def fastgpt_knowledge(
     query: str,
     max_tokens: int,
+    nums: int,
     dataset_id: str,
     similarity: int = 0,
     search_mode: str = "embedding",
@@ -183,9 +198,12 @@ def fastgpt_knowledge(
         # print(response_data)
         # Process the response data
         result = []
+        # 只取nums个
+        response_data = response_data[:nums]
         for item in response_data:
-            result_line = f"\n{item['q']}{item['a']}\n"
+            result_line = f"{item['q']}{item['a']}\n"
             result.append(result_line)
+        
         return result
     else:
         # Return an error message in case of a failed request

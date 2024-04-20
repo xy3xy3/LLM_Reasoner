@@ -1,0 +1,49 @@
+{% extends "base.html" %} {% block content %}
+<div class="layui-container">
+  <div class="layui-row">
+    <div class="layui-col-xs12">
+      <form class="layui-form">
+        <textarea
+          id="input"
+          class="layui-textarea"
+          placeholder="请输入自然语言，一行一个"
+        ></textarea>
+        <select id="fix">
+          <option value="1">修复</option>
+          <option value="0">不修复</option>
+        </select>
+        <br />
+        <button class="layui-btn" onclick="submit()">提交</button>
+      </form>
+    </div>
+  </div>
+  <div class="layui-row">
+    <div class="layui-col-xs12">
+      <div id="resultDisplay" class="layui-border-box">结果会显示在这里</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function submit() {
+    load = layer.load(2);
+    $.ajax({
+      url: "/sendSubmit",
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify({ text: $("#input").val(), fix: $("#fix").val()}),
+      success: function (data) {
+        layer.close(load);
+        //替换\n为<br>，使得换行生效
+        data = data.replace(/\n/g, "<br>");
+        $("#resultDisplay").html(data);
+      },
+      error: function (xhr, status, error) {
+        layer.close(load);
+        console.error("Error:", error);
+      },
+    });
+  }
+</script>
+
+{% endblock %}

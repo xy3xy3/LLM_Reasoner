@@ -7,8 +7,9 @@ sys.path.append(project_root)
 
 from flask import Flask, render_template, request,jsonify
 from file_reader import *
-from llm.client import process_response
+from llm.client import get_knowledge, process_response
 from validator.inference import inference
+from llm.overall_translator import process as ot_process
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
@@ -50,6 +51,21 @@ def compare_files():
     result = compare_content(content1, content2)  # 假设您已实现此函数
     
     return result
+
+@app.route('/sendSubmit', methods=['POST'])
+def sendSubmit():
+    data = request.json
+    text = data.get('text')
+    # 查询知识库
+    full_premises = text  # 将结论添加到premises的末尾
+    list_premises = text.split("\n")
+    k_list,k_dict = get_knowledge(full_premises,list_premises)
+    # 整体消息发送
+    str_res, list_res = ot_process(1,full_premises,list_premises,k_list,k_dict)
+    return jsonify(str_res)
+@app.route('/send')
+def send():
+    return render_template('send.html')
 #推理测试
 @app.route('/inferenceSubmit', methods=['POST'])
 def inferenceSubmit():

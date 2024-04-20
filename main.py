@@ -203,8 +203,10 @@ def try_id(id: int):
 
 
 if __name__ == "__main__":
-    run_parallel(0,0,8)
+    # run_parallel(0,0,12)
     # run_single(0, 0)
-    # merge_files()
-    # run_rest(1,1)
-    # try_id(15)
+    merge_files()
+    # run_rest(1,8)
+    # try_list = [8]
+    # for i in try_list:
+    #     try_id(i)

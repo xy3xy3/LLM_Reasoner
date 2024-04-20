@@ -65,13 +65,9 @@ def find_singel_predicate(expressions: list):
                     for predicate, index in single_occurrence_predicates
                 ]
             )
-        return f"""Predicates that occur only once: {single_details}\nThere are three methods to solve this problem. Please ascertain the correct approach based on the context:
-1. One could examine whether predicates with similar meanings appear between different lines. If the meanings are similar and the number of predicate parameters is consistent, they can be replaced with the same one.
-2. If the current line's variable domain can contains information identical to the predicate, it can be omitted. This is because the variable domain implicitly contains the attribute described by the predicate.
-3. If the current line's predicate is necessary, one may integrate predicates that appear only once into other expressions where other domains contain this infomation."""
+        return f"""Predicates that occur only once: {single_details}"""
     else:
         return ""
-
 def check_predicate_consistency(expressions: list):
     predicate_usage_details = {}
     constant_list = list()

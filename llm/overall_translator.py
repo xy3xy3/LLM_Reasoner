@@ -18,13 +18,13 @@ origin = """# Role: Logic Translater
 ## Symbols Description: 
 1. Logical Conjunction: `expr1 ∧ expr2`
    - First-order Logic Example: `∀x (Cat(x) ∧ Black(x))`
-   - Description: For all x, if x is a cat, then x is also black.
+   - Description: All cats are black.
 2. Logical Disjunction: `expr1 ∨ expr2`
-   - First-order Logic Example: `∃x (Rain(x) ∨ Snow(x))`
-   - Description: There exists an x such that x is either rain or snow.
+   - First-order Logic Example: `Rain(tommorrow) ∨ Snow(tommorrow)`
+   - Description: tommorrow is rain or snow.
 3. Logical Exclusive Disjunction: `expr1 ⊕ expr2`
    - First-order Logic Example: `∃x (Day(x) ⊕ Night(x))`
-   - Description: There exists a time x that is either day or night, but not both.
+   - Description: There exists a time that is either day or night.
 4. Logical Negation: `¬expr1`
    - First-order Logic Example: `∀x ¬Fly(x)`
    - Description: For all x, x cannot fly.
