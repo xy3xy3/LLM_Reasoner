@@ -17,7 +17,8 @@ constant_comparations_re = re.compile(
 def get_param_from_list(expressions):
     predicate_dict = {}
     constant_list = list()
-
+    if expressions == []:
+        return predicate_dict, constant_list
     for expression in expressions:
         predicates_with_args = predicates_with_args_re.findall(expression)
         for predicate, args in predicates_with_args:
@@ -269,6 +270,8 @@ def check_nature_language(formula: str):
         or "rightarrow" in formula
         or "neg" in formula
         or "$" in formula
+        or "True" in formula
+        or "False" in formula
     )
     return nature_check
 def check_latex(formula: str):
@@ -346,6 +349,18 @@ Based on the context to determine the correct way.""",
     #         return False, f"Constant '{constant}' in conclusion(the last line) is not found in premises."
     return True, ""
 
+def check_unnecessary_quantifiers(formula):
+    constraints = get_variable_constraints(formula)
+    all_variables = get_variables(formula)
+    for var, ranges in constraints.items():
+        used = False
+        for start, end in ranges:
+            if var in formula[start:end]:
+                used = True
+                break
+        if not used:
+            return False, f"Unnecessary quantifier for variable '{var}'. The variable is quantified but not used in its scope."
+    return True, ""
 
 def validate_formula(formula):
     if is_empty(formula):
@@ -374,7 +389,10 @@ def validate_formula(formula):
     formula = re.sub(r"([∀∃])\s+([x-z])", r"\1\2", formula)
     # 在变量后面紧跟的量词加空格
     formula = re.sub(r"([x-z])([∀∃])", r"\1 \2", formula)
-
+    # 检查不必要的量词
+    check_res, check_msg = check_unnecessary_quantifiers(formula)
+    if not check_res:
+        return check_res, check_msg
     # 检查括号是否匹配
     unbalanced_parentheses, left_count, right_count = is_balanced_parentheses(formula)
     if unbalanced_parentheses:
@@ -494,12 +512,3 @@ def solvaer_test(formula):
     except Exception as e:
         # 如果出现问题，打印这个前提
         return f"异常: {e}"
-
-
-if __name__ == "__main__":
-    s = "∃d (Duster(d) ∧ HouseholdAppliance(d) ∧ ¬Sucks(d))"
-    print(validate_formula(s))
-    # s2 = [
-    #       "∀x (Top10Game(x)",
-    #      "Top10Game(Top10game)" ]
-    # print(check_predicate_consistency(s2))

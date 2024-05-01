@@ -1,8 +1,12 @@
 from configparser import ConfigParser
+import json
 import os
 import re
+import socket
 from openai import OpenAI
 import requests
+#禁用ipv6
+requests.packages.urllib3.util.connection.HAS_IPV6 = False
 
 # 读取配置文件
 file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../config.ini")
@@ -16,7 +20,7 @@ client = OpenAI(
 )
 
 
-def llm_send(prompt, system_msg):
+def llm_send(prompt, system_msg, temperature=0.7):
     global cf
     max_try = 5
     cur = 0
@@ -26,7 +30,7 @@ def llm_send(prompt, system_msg):
                 model=cf.get("API", "MODEL"),
                 messages=get_msg(prompt, system_msg),
                 # extra_body={"chatId": random.randint(10000, 99999)},
-                temperature=0.7,
+                temperature=temperature,
                 stream=False,
                 # max_tokens=1024,
             )
@@ -120,22 +124,33 @@ def process_response(text: str):
     return text, res
 
 
+def count_words(text):
+    words = text.split()
+    return len(words)
+
+
 # 定义抽取知识函数
 def get_knowledge(full_premises: str, list_premises: list):
     global cf
     k_list = []
     k_dict = {}
-    num1 = 300
-    num2 = 300
-    k_dict[full_premises] = fastgpt_knowledge(
-        f"<NL>\n{full_premises}\n<NL>", num1, 1, cf.get("API", "KNOW_F"), 0.15
-    )  # 600,0.15
-    for k in k_dict[full_premises]:
-        k_list.append(k)
+    if full_premises != "":
+        k_dict[full_premises] = fastgpt_knowledge(
+            f"<NL>\n{full_premises}\n<NL>", 300, 1, cf.get("API", "KNOW_F"), 0
+        )  # 600,0.15
+        for k in k_dict[full_premises]:
+            k_list.append(k)
     # 每个premise查询知识库，加到knowledege
     for premise in list_premises:
+        count = count_words(premise)
+        if count > 35:
+            num = 5
+        elif count > 25:
+            num = 4
+        else:
+            num = 3
         k_dict[premise] = fastgpt_knowledge(
-            f"<NL>\n{premise}\n<NL>", num2, 2, cf.get("API", "KNOW_S"), 0.2
+            f"<NL>\n{premise}\n<NL>", 700, num, cf.get("API", "KNOW_S"), 0
         )  # 500 0.2
         # 从知识库list中提取知识
         for k in k_dict[premise]:
@@ -153,6 +168,7 @@ def fastgpt_knowledge(
     similarity: int = 0,
     search_mode: str = "embedding",
     using_rerank: bool = False,
+    retries: int = 5,
 ) -> list:
     """
     Sends a request to the FastGPT API to search within a specified dataset and returns the top results
@@ -165,12 +181,12 @@ def fastgpt_knowledge(
     - similarity: The similarity threshold for search results (default is 0).
     - search_mode: The search mode, can be 'embedding' or other modes supported by the API (default is 'embedding').
     - using_rerank: Whether to use re-ranking on the search results (default is False).
+    - retries: Number of retries in case of request failures.
 
     Returns:
-    A string of concatenated questions and answers, separated by newlines.
+    A list of concatenated questions and answers, separated by newlines.
     """
-    global cf
-    # API URL
+    # API URL from configuration
     api_url = f"{cf.get('API', 'FASTPGT_URL')}/api/core/dataset/searchTest"
 
     # Headers including a placeholder for Authorization token
@@ -180,31 +196,56 @@ def fastgpt_knowledge(
     }
 
     # Request body
-    data = {
+    json_data = {
         "datasetId": dataset_id,
         "text": query,
+        "searchMode": search_mode,
+        "usingReRank": False,
         "limit": max_tokens,
         "similarity": similarity,
-        "searchMode": search_mode,
-        "usingReRank": using_rerank,
+        "datasetSearchUsingExtensionQuery": False,
+        "datasetSearchExtensionModel": "gpt-3.5-turbo-0125",
+        "datasetSearchExtensionBg": "",
     }
 
-    # Sending the POST request to the API
-    response = requests.post(api_url, json=data, headers=headers)
+    # Initialize a session
+    session = requests.Session()
+    session.headers.update(headers)  # Update session headers
 
-    # Check if the response is successful
-    if response.status_code == 200:
-        response_data = response.json().get("data", [])["list"]
-        # print(response_data)
-        # Process the response data
-        result = []
-        # 只取nums个
-        response_data = response_data[:nums]
-        for item in response_data:
-            result_line = f"{item['q']}{item['a']}\n"
-            result.append(result_line)
-        
-        return result
-    else:
-        # Return an error message in case of a failed request
-        return []
+    for attempt in range(retries):
+        try:
+            # Force using IPv4
+            session.socket = socket.create_connection(
+                (api_url.split("//")[1].split("/")[0], 80)
+            )
+
+            # Sending the POST request to the API
+            response = session.post(api_url, json=json_data)
+
+            # Check if the response is successful
+            if response.status_code == 200:
+                response_data = response.json().get("data", [])["list"]
+                # Process the response data
+                result = []
+                # 只取nums个
+                response_data = response_data[:nums]
+                for item in response_data:
+                    result_line = f"{item['q']}{item['a']}\n"
+                    result.append(result_line)
+                return result
+            else:
+                print(
+                    f"Attempt {attempt + 1}: Failed {response.status_code}, error : {response.text} \n json_data {json_data}"
+                )
+        except Exception as e:
+            print(f"fastgpt_knowledge Attempt {attempt + 1}: An error occurred - {e}")
+
+    return []  # If all retries fail, return an empty list
+
+
+if __name__ == "__main__":
+    print(
+        count_words(
+            "Bonnie either both attends and is very engaged with school events and is a student who attends the school, or she neither attends and is very engaged with school events nor is a student who attends the school."
+        )
+    )

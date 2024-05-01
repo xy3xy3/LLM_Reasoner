@@ -1,7 +1,6 @@
-from z3 import *
+from z3.z3 import *
 import re
 from .translate import *
-
 # 提取并替换formula中的常元，因为同一组前提要共享常元，因此记录constants_dict
 # region
 constants_dict = {}  # 存储已经出现的常元及其索引

@@ -4,8 +4,35 @@ from .overall_fixer import process as of_process
 from .signel_fixer import process as sf_process
 from .overall_translator import process as ot_process
 from .error_fixer import process as ef_process
-# 定义发送函数
+from .singel_translator import process as st_process
+
 def send(data):
+    return send_singel(data)
+
+def send_singel(data):
+    id = data["id"]
+    premises = "\n".join(data["premises"])
+    conclusion = data["conclusion"]
+    # 查询知识库
+    full_premises = premises + "\n" + conclusion  # 将结论添加到premises的末尾
+    list_premises = full_premises.split("\n")
+    k_list,k_dict = get_knowledge("",list_premises)
+    str_res, list_res = st_process(id,full_premises,list_premises,k_list,k_dict)
+    if list_res == []:
+        print(f"失败，{str_res}")
+        return []
+    # 整体修正
+    str_res, list_res = of_process(id,full_premises,list_premises,[],{},str_res, list_res)
+    if list_res == [] or len(list_res) != len(list_premises):
+        print(f"整体修正失败，{str_res}")
+        return []
+    str_res, list_res = sf_process(id,full_premises,list_premises,k_list,k_dict,str_res, list_res)
+    if list_res == []:
+        print(f"单个修正失败，{str_res}")
+        return []
+    return list_res
+# 三步走，先整体发，再整体修复，再单个修复
+def send_three_step(data):
     id = data["id"]
     premises = "\n".join(data["premises"])
     conclusion = data["conclusion"]
@@ -29,6 +56,7 @@ def send(data):
         return []
     return list_res
 
+# 基于三段的基础带错误修复
 def send_err_fix(data):
     id = data["id"]
     premises = "\n".join(data["premises"])

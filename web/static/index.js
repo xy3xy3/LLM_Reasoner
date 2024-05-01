@@ -144,9 +144,12 @@ layui.use(["table", "form", "layer"], function () {
           // 根据搜索内容过滤数据
           tableOptions.data = originalData.filter(function (item) {
             return (
-              item['id'] == filterText ||
+              item["id"] == filterText ||
               item["premises-FOL"].join(" ").includes(filterText) ||
-              item.response.join(" ").includes(filterText)
+              item.response.join(" ").includes(filterText) ||
+              item["conclusion"].includes(filterText) ||
+              item["conclusion-FOL"].includes(filterText) ||
+              item["premises"].join(" ").includes(filterText)
             );
           });
         } else {
@@ -204,6 +207,7 @@ layui.use(["table", "form", "layer"], function () {
       data["premises-FOL"] = data["premises-FOL"].join("<br><hr>");
       data["response"] = data["response"].join("<br><hr>");
       var details = `<div class="">
+      ${data.id}
 <div class="layui-row">
 <!-- 自然语言 -->
 <div class="layui-col-xs4 layui-col-sm4 layui-col-m4">
