@@ -370,11 +370,11 @@ def validate_formula(formula):
         return False, check_msg
 
     # 检查自然语言 forall rightarrow latex，如果有，返回
-    if check_nature_language(formula):
-        return (
-            False,
-            "Contains Nature language entities.Rewite and follow the rules.",
-        )
+    # if check_nature_language(formula):
+    #     return (
+    #         False,
+    #         "Contains Nature language entities.Rewite and follow the rules.",
+    #     )
     # 检查量词后面的字母是否为x、y或z
     quantifier_variable_match = re.findall(r"[∀∃]([\w]*)", formula)
     if quantifier_variable_match:

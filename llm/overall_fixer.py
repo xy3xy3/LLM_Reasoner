@@ -34,9 +34,9 @@ The FOL formulas should be one to one of each line.Don't mix two line into one f
 6. You SHOULD generate FOL rules with either: 
 (1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
 ## Task
-Let's think step by step.
 Firstly,follow the rules above and reply your idea to do this job.
 Secondly,write {length} FOL formulas after fixed in the following tag <FOL>.
+Let's think step by step.
 """
 
 

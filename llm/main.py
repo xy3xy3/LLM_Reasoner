@@ -7,7 +7,7 @@ from .error_fixer import process as ef_process
 from .singel_translator import process as st_process
 
 def send(data):
-    return send_singel(data)
+    return send_three_step(data)
 
 def send_singel(data):
     id = data["id"]
@@ -39,7 +39,8 @@ def send_three_step(data):
     # 查询知识库
     full_premises = premises + "\n" + conclusion  # 将结论添加到premises的末尾
     list_premises = full_premises.split("\n")
-    k_list,k_dict = get_knowledge(full_premises,list_premises)
+    # list_premises = []
+    k_list,k_dict = get_knowledge(full_premises,list_premises, 0)
     # 整体消息发送
     str_res, list_res = ot_process(id,full_premises,list_premises,k_list,k_dict)
     if list_res == []:

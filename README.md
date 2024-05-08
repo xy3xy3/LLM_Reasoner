@@ -82,6 +82,11 @@ python 3.11.0
 pip install -r requirements.txt
 ```
 
+<!-- 生成requirements
+pipreqs --force . 
+ -->
+
+
 ### 运行推理
 
 数据放在data文件夹，可以自行修改使用其他符合格式数据

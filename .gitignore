@@ -3,6 +3,7 @@ config.ini
 log/*
 *tempCodeRunnerFile.py
 *.cfg
-llm/__pycache__/overall_translator.cpython-311.pyc
+*.pyc
+llm/__pycache__/*
 error.log
-llm/__pycache__/overall_translator.cpython-311.pyc
+cache/*

@@ -1,5 +1,5 @@
 Flask==3.0.3
-openai==1.17.0
+openai==1.26.0
 Requests==2.31.0
 z3==0.2.0
 z3_solver==4.13.0.0

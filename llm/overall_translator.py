@@ -51,12 +51,12 @@ Each line in the tag should be a single FOL formula.
 You can analyze task during your output.But don't use natural language in the final <FOL> tag.
 
 Let's think step by step.
-Firstly, follow the rules and output your analysis of each line in the <NL> tag.
-The analysis should specify the quantifiers, predicates, and entities in the sentence.
-You should also try to focus on the Attention to each line's analysis.
-Secondly,write {length} FOL formulas in the following tag <FOL>.
 """
 
+# Firstly, follow the rules and output your analysis of each line in the <NL> tag.
+# The analysis should specify the quantifiers, predicates, and entities in the sentence.
+# You should also try to focus on the Attention to each line's analysis.
+# Secondly,write {length} FOL formulas in the following tag <FOL>.
 def process(id:int,full_premises: str, list_premises: list, k_list: list, k_dict: dict):
     global origin
     # 遍历每一个list在k_dict构建提示
@@ -66,6 +66,7 @@ def process(id:int,full_premises: str, list_premises: list, k_list: list, k_dict
     prompt = origin.format(knowledge=knowledge,length=len(list_premises),full_premises=full_premises)
     print(f"ID{id}总体翻译 {datetime.datetime.now()}: \n{prompt}")
     raw_response = llm_send(prompt, "")
+    print(raw_response)
     if raw_response == "":
         return f"ID{id}回复为空", []
     str_res, list_res = process_response(raw_response)
