@@ -25,12 +25,15 @@ You can analyze task during your output.But don't use natural language in the fi
 <NL>
 {full_premises}
 </NL>
-## Error message:
-{error_msg}
+The formulas below may contain errors.
+<FOL>
+{str_res}
+</FOL>
 ## Cureent task:
-Let's think step by step.
-Firstly,follow the rules above and reply your idea to do this job.
-Secondly,write only one FOL formulas for one lines in the following tag <FOL>."""
+{error_msg}
+Firstly,follow the rules above and reply your idea about the error message.
+Secondly,write only one FOL formula for one line in the following tag <FOL> which like `<FOL>Your answer</FOL>`.
+Let's think step by step."""
 
 
 def process(
@@ -50,11 +53,12 @@ def process(
     for i, res_text in enumerate(list_res):
         valid, msg = validate_formula(res_text)
         retry_count = 0
-        knowledge = ""
-        for key, value in k_dict.items():
-            if key == full_premises:
-                continue
-            knowledge += f"Examples for `{key}`\n"+ "\n".join(value) + "\n"
+        # knowledge = ""  
+        # for key, value in k_dict.items():
+        #     if key == full_premises:
+        #         continue
+        #     knowledge += f"Examples for `{key}`\n"+ "\n".join(value) + "\n"
+        knowledge = "\n".join(k_dict[list_premises[i]])
         while not valid and retry_count < max_attempts:
             retry_count += 1
             # 重新构造仅包含当前正在处理的premise的提示信息
@@ -62,6 +66,7 @@ def process(
                 f"<NL>\n{list_premises[i]}\n</NL>\n<FOL>\n{res_text}\n<FOL>\n{msg}."
             )
             prompt = origin.format(
+                str_res=str_res,
                 knowledge=knowledge,
                 full_premises=full_premises,
                 error_msg=err_msg,
@@ -70,16 +75,20 @@ def process(
             raw_res = llm_send(prompt, "")
             if (raw_res == ""):
                 return "空回复", []
+            # 获取新的回复
             res_text, res_list = process_response(raw_res)
             if len(res_list)>1:
                 err_msg = (
                 f"<NL>\n{list_premises[i]}\n</NL>\n<FOL>\n{res_text}\n<FOL>\nYou can only reply one line pure formula."
                 )
                 continue
+            # 更新验证结果
             valid, msg = validate_formula(res_text)
         # 将最终验证通过或重试结束后的结果添加到结果列表
         if not valid:
             print(f"\n最终还是失败 {msg}\n{res_text}")
+        list_res[i] = res_text
+        str_res = "\n".join(list_res)
         fianl_res.append(res_text)
     str_res = "\n".join(fianl_res)
     return str_res, fianl_res

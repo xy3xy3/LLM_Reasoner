@@ -55,8 +55,9 @@ def ollama_send(prompt:str):
     return json["response"]
 
 def llm_send(prompt:str, system_msg:str, temperature=0.7):
-    return ollama_send(prompt)
     global cf
+    if system_msg == "":
+        system_msg = "You are a helpful assistant."
     max_try = 5
     cur = 0
     while cur < max_try:
@@ -170,13 +171,8 @@ def get_knowledge(full_premises: str, list_premises: list, type: int = 0):
     k_list = []
     k_dict = {}
     if full_premises != "":
-        if type == 0:
-            k_dict[full_premises] = fastgpt_knowledge(
-                f"<NL>\n{full_premises}\n<NL>", 900, 4, cf.get("API", "KNOW_F"), 0
-            )  # 600,0.15
-        else:
-            k_dict[full_premises] = fastgpt_knowledge(
-                f"<NL>\n{full_premises}\n<NL>", 300, 1, cf.get("API", "KNOW_F"), 0
+        k_dict[full_premises] = fastgpt_knowledge(
+                f"<NL>\n{full_premises}\n<NL>", 1200, 4, cf.get("API", "KNOW_F"), 0
             )  # 600,0.15
         for k in k_dict[full_premises]:
             k_list.append(k)
@@ -187,10 +183,8 @@ def get_knowledge(full_premises: str, list_premises: list, type: int = 0):
         count = count_words(premise)
         if count > 35:
             num = 5
-        elif count > 25:
-            num = 4
         else:
-            num = 3
+            num = 4
         k_dict[premise] = fastgpt_knowledge(
             f"<NL>\n{premise}\n<NL>", 700, num, cf.get("API", "KNOW_S"), 0
         )  # 500 0.2

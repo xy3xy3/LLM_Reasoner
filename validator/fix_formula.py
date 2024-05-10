@@ -35,9 +35,17 @@ def get_param_from_list(expressions):
             for arg in args:
                 if not re.match(r"^[x-z]{1,2}", arg) and re.match(r"^[a-zA-Z0-9]", arg):
                     constant_list.append(arg)
-
     return predicate_dict, constant_list
-
+def get_var(expression):
+    var_list = list()
+    predicates_with_args = predicates_with_args_re.findall(expression)
+    for predicate, args in predicates_with_args:
+        # 处理常量
+        args = re.split(r"\s*,\s*", args.strip())
+        for arg in args:
+            if re.match(r"^[x-z]{1,2}", arg):
+                var_list.append(arg)
+    return var_list
 
 def find_singel_predicate(expressions: list):
     predicate_usage_details = {}
@@ -219,30 +227,22 @@ def get_variable_constraints(formula):
             variable_start = i + 1
             while variable_start < len(formula) and formula[variable_start] == " ":
                 variable_start += 1
-
             # 确定变量名的结束位置
             variable_end = variable_start
             while variable_end < len(formula) and formula[variable_end].isalpha():
                 variable_end += 1
 
             variable = formula[variable_start:variable_end]
-            next_char_pos = (
-                formula.find("(", variable_end)
-                if "(" in formula[variable_end:]
-                else len(formula)
-            )
-            stack.append((variable, i, next_char_pos))
-        elif char == ")" and stack:
-            for item in reversed(stack):
-                if len(item) == 3:
-                    variable, quantifier_pos, start_pos = item
-                    constraints.setdefault(variable, []).append((start_pos, i))
-                    stack.remove(item)
-                    break
-
-    for variable, quantifier_pos, start_pos in stack:
-        constraints.setdefault(variable, []).append((start_pos, len(formula) - 1))
-
+            # 查找当前下标到末尾的括号刚好匹配的范围
+            open_brackets = 0
+            for j in range(i, len(formula)):
+                if formula[j] == "(":
+                    open_brackets += 1
+                elif formula[j] == ")":
+                    open_brackets -= 1
+                    if open_brackets == 0:
+                        constraints[variable] = (i, j)
+                        break
     return constraints
 
 
@@ -262,18 +262,15 @@ def find_constant_comparations(formula):
     return comparations
 
 
-def check_nature_language(formula: str):
+def check_nature_language(formula: str):    # 正则表达式匹配 LaTeX 逻辑运算符
+    pattern = r'\\(oplus|lor|land|exists|forall|rightarrow|leftrightarrow|neg)'
     nature_check = (
-        "forall" in formula
-        or "." in formula
+        "." in formula
         or ":" in formula
-        or "rightarrow" in formula
-        or "neg" in formula
-        or "$" in formula
         or "True" in formula
         or "False" in formula
     )
-    return nature_check
+    return re.search(pattern, formula) and nature_check
 def check_latex(formula: str):
     # 寻找\开头的LaTeX符号 或者 $符号
     latex_symbols = re.findall(r"\\[a-zA-Z]+", formula)
@@ -351,14 +348,14 @@ Based on the context to determine the correct way.""",
 
 def check_unnecessary_quantifiers(formula):
     constraints = get_variable_constraints(formula)
-    all_variables = get_variables(formula)
+    # 遍历公式中的每个变量，检查是否有不必要的量词
     for var, ranges in constraints.items():
         used = False
-        for start, end in ranges:
-            if var in formula[start:end]:
-                used = True
-                break
-        if not used:
+        start,end = ranges
+        str = formula[start:end+1]
+        #提取str中谓词的参数
+        param_list = get_var(str)
+        if var not in param_list:
             return False, f"Unnecessary quantifier for variable '{var}'. The variable is quantified but not used in its scope."
     return True, ""
 
@@ -370,11 +367,11 @@ def validate_formula(formula):
         return False, check_msg
 
     # 检查自然语言 forall rightarrow latex，如果有，返回
-    # if check_nature_language(formula):
-    #     return (
-    #         False,
-    #         "Contains Nature language entities.Rewite and follow the rules.",
-    #     )
+    if check_nature_language(formula):
+        return (
+            False,
+            "Contains Nature language entities.Rewite and follow the rules.",
+        )
     # 检查量词后面的字母是否为x、y或z
     quantifier_variable_match = re.findall(r"[∀∃]([\w]*)", formula)
     if quantifier_variable_match:
@@ -480,16 +477,14 @@ def validate_formula(formula):
                 False,
                 f"Variable '{var}' is not properly constrained at position {position}.Use quantifiers '∀' or '∃' to constrain variables.Alternatively, you can replace the variables in the predicate with constants.",
             )
-
-        # 检查约束是否合法
-        for start, end in constraints[var]:
-            # 确保约束范围内没有其他量词
-            constraint_range = formula[start : end + 1]
-            if re.search(r"[∀∃]", constraint_range):
-                return (
-                    False,
-                    f"Variable '{var}' has an invalid constraint range at positions {start} to {end}.",
-                )
+        # 确保约束范围内没有其他量词，感觉不能这样
+        # for start, end in constraints[var]:
+        #     constraint_range = formula[start : end + 1]
+        #     if re.search(r"[∀∃]", constraint_range):
+        #         return (
+        #             False,
+        #             f"Variable '{var}' has an invalid constraint range at positions {start} to {end}.",
+        #         )
 
     res = quelle(formula)
     if res == "Not-a-formula":

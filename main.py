@@ -203,14 +203,14 @@ def try_id(id: int):
 
 
 if __name__ == "__main__":
+    # merge_files()
     # 6个进程并行处理
-    run_parallel(0,0,6)
+    run_parallel(0,0,5)
     # 4个进程并行处理
     # run_parallel(20,1,4)
     # run_single(0, 0)
     #单跑剩下
     # run_rest()
-    # merge_files()
     # run_rest(1,4)
     # try_list = [8]
     # for i in try_list:

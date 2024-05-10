@@ -11,21 +11,6 @@ origin = """# Role: Logic Corrector
 - Enhance the compatibility of First-order Logic (FOL) formulas with formal verification tools by ensuring syntactical correctness and adherence to formal logic syntax.
 - Automatically identify and suggest corrections for common syntax errors in FOL formulas to facilitate their processing by logic verifiers.
 ## For FOL rule generation
-1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence) 2. You *SHOULD NEVER USE* the following symbols for FOL: "", "̸=", "%", "=" 3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 4. The FOL rule SHOULD ACCURATELY reflect the meaning of the NL statement 5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 6. You SHOULD generate FOL rules with either: (1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
-## Output format
-Use <FOL> and </FOL> to wrap the FOL formulas.
-Each line in the tag should be a single FOL formula.
-You can analyze task during your output.But don't use natural language in the final <FOL> tag.
-Only signal <FOL> can be in your reply.
-## Example to learn
-{knowledge}
-## Background Information
-The FOL formulas should be one to one of each line.Don't mix two line into one formula.
-<NL>
-{full_premises}
-</NL>
-{err_msg}
-## For FOL rule generation
 1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence)
 2. You *SHOULD NEVER USE* the following symbols for FOL: "", "̸=", "%", "=" 
 3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 
@@ -33,9 +18,20 @@ The FOL formulas should be one to one of each line.Don't mix two line into one f
 5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 
 6. You SHOULD generate FOL rules with either: 
 (1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
-## Task
-Firstly,follow the rules above and reply your idea to do this job.
-Secondly,write {length} FOL formulas after fixed in the following tag <FOL>.
+## Output format
+Use <FOL> and </FOL> to wrap the FOL formulas.
+Each line in the tag should be a single FOL formula.
+You can analyze task during your output.But don't use natural language in the final <FOL> tag.
+Only signal <FOL> can be in your reply.
+## Example to learn
+{knowledge}
+## Cureent task:
+<NL>
+{full_premises}
+</NL>
+{err_msg}
+Firstly,follow the rules above and reply your idea about the error message.
+Secondly,write {length} FOL formulas after fixed in the following tag <FOL> which like `<FOL>Your answer</FOL>`.
 Let's think step by step.
 """
 
@@ -52,9 +48,11 @@ def process(
     global origin
     print(f"ID{id}整体修复")
     # 从k_dict获取整体的知识
-    knowledge = ""
-    for key, value in k_dict.items():
-       knowledge += f"Examples for `{key}`\n"+ "\n".join(value) + "\n"
+    # knowledge = ""
+    # for key, value in k_dict.items():
+    #    knowledge += f"Examples for `{key}`\n"+ "\n".join(value) + "\n"
+    knowledge = "\n".join(k_dict[full_premises])
+
     length = len(list_premises)
     max_attempts = length * 2  # 最大尝试次数
     send_attempts = 0  # 当前尝试次数
@@ -80,7 +78,7 @@ def process(
                 f"ID{id}整体修复 {datetime.datetime.now()} 包含LaTeX符号或自然语言, 重新发送 {send_attempts + 1}次尝试: {str_res}"
             )
             send_attempts += 1
-            err_msg = f"<FOL>\n{str_res}\n</FOL>\n This contains LaTeX symbols or natural language, which is not allowed. Please provide the response in the correct format.<FOL> tag must contain pure formulas.\n"
+            err_msg = f"<FOL>\n{str_res}\n</FOL>\nThe content in the <FOL> tag contains LaTeX symbols or natural language, which is not allowed.\nPlease provide the response in the correct format.<FOL> tag must contain pure formulas.\n"
             continue
         # 检查长度是否一致
         len_list = len(list_res)
@@ -94,6 +92,7 @@ def process(
                 err_msg += " Please remove the extra formulas."
             else:
                 err_msg += " Please provide the missing formulas."
+            err_msg += f"You should also make sure the fixed {length} formulas are one to one correspondence with the natural language premises.\n"
             continue
         # 最后两个一起处理
         # 检查谓词元数

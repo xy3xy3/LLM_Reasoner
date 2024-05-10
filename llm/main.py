@@ -40,7 +40,7 @@ def send_three_step(data):
     full_premises = premises + "\n" + conclusion  # 将结论添加到premises的末尾
     list_premises = full_premises.split("\n")
     # list_premises = []
-    k_list,k_dict = get_knowledge(full_premises,list_premises, 0)
+    k_list,k_dict = get_knowledge(full_premises,list_premises, 1)
     # 整体消息发送
     str_res, list_res = ot_process(id,full_premises,list_premises,k_list,k_dict)
     if list_res == []:

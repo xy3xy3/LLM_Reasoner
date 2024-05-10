@@ -1,6 +1,8 @@
-from validator.fix_formula import validate_formula
+from validator.fix_formula import *
 
 
 if __name__ == "__main__":
-    s = "∀x (SymphonyNo9(x) ∧ MusicPiece(x) → True)"
-    print(validate_formula(s))
+    s = "∀x (∀y (Read(x, y) → GainKnowledge(x)))"
+    print(check_unnecessary_quantifiers(s))
+    s = "∀x ∀y (Read(x, y) → GainKnowledge(x))"
+    print(check_unnecessary_quantifiers(s))
