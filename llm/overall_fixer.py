@@ -51,7 +51,50 @@ def process(
     # knowledge = ""
     # for key, value in k_dict.items():
     #    knowledge += f"Examples for `{key}`\n"+ "\n".join(value) + "\n"
-    knowledge = "\n".join(k_dict[full_premises])
+    # knowledge = "\n".join(k_dict[full_premises])
+    knowledge = """
+<NL>
+All people who regularly drink coffee are dependent on caffeine.
+People either regularly drink coffee or joke about being addicted to caffeine.
+No one who jokes about being addicted to caffeine is unaware that caffeine is a drug.
+Rina is either a student and unaware that caffeine is a drug, or neither a student nor unaware that caffeine is a drug.
+If Rina is not a person dependent on caffeine and a student, then Rina is either a person dependent on caffeine and a student, or neither a person dependent on caffeine nor a student. 
+</NL>
+<FOL>
+∀x (Drinks(x) → Dependent(x))
+∀x (Drinks(x) ⊕ Jokes(x))
+∀x (Jokes(x) → ¬Unaware(x))
+(Student(rina) ∧ Unaware(rina)) ⊕ ¬(Student(rina) ∨ Unaware(rina))
+¬(Dependent(rina) ∧ Student(rina)) → (Dependent(rina) ∧ Student(rina)) ⊕ ¬(Dependent(rina) ∨ Student(rina))
+</FOL>
+<NL>
+Miroslav Venhoda was a Czech choral conductor who specialized in the performance of Renaissance and Baroque music.
+Any choral conductor is a musician.
+Some musicians love music.
+Miroslav Venhoda published a book in 1946 called Method of Studying Gregorian Chant.
+</NL>
+<FOL>
+Czech(miroslav) ∧ ChoralConductor(miroslav) ∧ Specialize(miroslav, renaissance) ∧ Specialize(miroslav, baroque)
+∀x (ChoralConductor(x) → Musician(x))
+∃x (Musician(x) → Love(x, music))
+Book(methodOfStudyingGregorianChant) ∧ Author(miroslav, methodOfStudyingGregorianChant) ∧ Publish(methodOfStudyingGregorianChant, year1946)
+</FOL>
+<NL>
+All eels are fish. 
+No fish are plants. 
+A thing is either a plant or animal.
+Nothing that breathes is paper. 
+All animals breathe.
+If a sea eel is either an eel or a plant, then a sea eel is an eel or an animal.
+</NL>
+<FOL>
+∀x  (Eel (x)→  Fish (x))
+∀x  (Fish (x)→ ¬ Plant (x))
+∀x ( Plant (x) ∨  Animal (x))
+∀x  (Breathe (x)→ ¬ Paper (x))
+∀x  (Animal (x)→  Breathe (x))
+ Eel (seaEel) ⊕ Plant (seaEel) → Eel (seaEel) ∨ Animal (seaEel) 
+</FOL>"""
 
     length = len(list_premises)
     max_attempts = length * 2  # 最大尝试次数

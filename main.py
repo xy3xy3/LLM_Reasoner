@@ -4,11 +4,18 @@ import os
 import random
 import time
 from multiprocessing import Pool
-from llm.main import send
+from llm.main import send,send_baseline
 from validator.fix_formula import get_param_from_list
 from validator.inference import inference
 
-
+# baseline的处理数据
+def process_data_baseline(line):
+    data = json.loads(line)
+    print("开始执行：", data["id"], " 时间：", datetime.datetime.now())
+    label = send_baseline(data)
+    data["label-AI"] = label
+    data["same"] = data["label-AI"] == data["label"]
+    return json.dumps(data)
 # 处理数据
 def process_data(line):
     data = json.loads(line)
@@ -205,13 +212,14 @@ def try_id(id: int):
 if __name__ == "__main__":
     # merge_files()
     # 6个进程并行处理
-    run_parallel(0,0,5)
+    # run_parallel(0,0,6)
     # 4个进程并行处理
     # run_parallel(20,1,4)
     # run_single(0, 0)
     #单跑剩下
     # run_rest()
     # run_rest(1,4)
+    try_id(150)
     # try_list = [8]
     # for i in try_list:
     #     try_id(i)

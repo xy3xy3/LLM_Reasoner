@@ -29,7 +29,12 @@ API_URL = (
     "https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B"
 )
 headers = {"Authorization": "Bearer "+cf.get("API", "HF_KEY")}
-
+def log(msg):
+    #追加在error.log
+    log_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../error.log").replace("\\", "/")
+    with open(log_path, "a", encoding='utf-8') as f:
+        f.write(msg+"\n")
+    print(msg)
 
 def huggingface_send(prompt:str):
     response = requests.post(
@@ -75,6 +80,8 @@ def llm_send(prompt:str, system_msg:str, temperature=0.7):
                 return res.choices[0].message.content
             return ""
         except Exception as e:
+            if cur == max_try - 1:
+                log(f"{prompt}\n{e}")
             print(f"llm_send报错 {cur + 1}次尝试: {e}")
             cur += 1
     return ""

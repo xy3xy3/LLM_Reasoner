@@ -5,10 +5,15 @@ from .signel_fixer import process as sf_process
 from .overall_translator import process as ot_process
 from .error_fixer import process as ef_process
 from .singel_translator import process as st_process
+from .baseline import process as bl_process
 
 def send(data):
     return send_three_step(data)
-
+def send_baseline(data):
+    id = data["id"]
+    premises = "\n".join(data["premises"])
+    conclusion = data["conclusion"]
+    return bl_process(id,premises,conclusion)
 def send_singel(data):
     id = data["id"]
     premises = "\n".join(data["premises"])

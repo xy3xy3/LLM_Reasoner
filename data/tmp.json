@@ -1,24 +1,21 @@
 {
+  "story_id": 416,
+  "example_id": 1176,
+  "conclusion": "James is either good at chemistry or good at math.",
   "premises": [
-    "Heinrich Scmidt was a Nazi German politician. ",
-    "Heeinrich Scmidt was also a member of the Prussian State Parliament and the Nazi Reichstag."
+    "Some students good at math are good at chemistry.",
+    "All students good at chemistry enjoy conducting experiments. ",
+    "All students that enjoy conducting experiments are good at planning. ",
+    "No student good at planning is awarded the Dean's List. ",
+    "James is either good at chemistry and awarded the Dean's List, or neither good at chemistry nor awarded the Dean's List."
   ],
   "premises-FOL": [
-    "From(heinrichScmidt, naziGermany) \u2227 Politician(heinrichScmidt)",
-    "Member(heinrichScmidt, prussianStateParliament) \u2227 Member(heinrichScmidt, naziReichstag)"
+    "∃x (Math(x) ∧ Chemistry(x))",
+    "∀x (Chemistry(x) → Experiment(x))",
+    "∀x (Experiment(x) → Planning(x))",
+    "∀x (Planning(x) → ¬Award(x))",
+    "¬(Chemistry(james) ⊕ Award(james))"
   ],
-  "conclusion": "Heinrich Schmidt was either German or Russian.",
-  "conclusion-FOL": "From(heinrichScmidt, naziGermany) \u2228 From(heinrichScmidt, russia)",
-  "label": "True",
-  "id": 149,
-  "conclusion-AI": "\u00ac(IsHappy(john) \u2227 IsSad(john))",
-  "response": [
-    "\u2200x (IsHuman(x) \u2192 IsMortal(x))",
-    "\u2203x (IsAnimal(x) \u2227 HasTail(x))"
-  ],
-  "predicates-AI": "IsHuman IsMortal IsAnimal HasTail IsHappy IsSad",
-  "constants-AI": "john john",
-  "label-AI": "Unknown",
-  "errmsg": "",
-  "same": false
+  "label": "False",
+  "source": "hyb"
 }
