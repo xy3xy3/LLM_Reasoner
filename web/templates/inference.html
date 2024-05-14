@@ -29,7 +29,7 @@
         contentType: "application/json",
         data: JSON.stringify({ text: inputText }),
         success: function(data) {
-          $("#resultDisplay").html(data[0]);
+          $("#resultDisplay").html(data["status"]+"<br>"+data["msg"]);
         },
         error: function(xhr, status, error) {
           console.error("Error:", error);

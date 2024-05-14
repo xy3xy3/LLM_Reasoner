@@ -75,8 +75,8 @@ def inferenceSubmit():
     data = {}
     data["response"] = list_res[:-1]
     data["conclusion-AI"] = list_res[-1]
-    print(data)
-    return jsonify(inference(data))
+    status,msg = inference(data)
+    return jsonify({"status":status,"msg":msg})
 @app.route('/inferenceTest')
 def inferenceTest():
     return render_template('inference.html')
