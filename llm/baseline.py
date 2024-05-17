@@ -3,12 +3,16 @@ from .client import *
 
 origin = """
 # Introduction
-Could you analyze the logical relationship between the premises and the conclusion provided below, and determine if the conclusion logically follows from the premises? Please enclose your final assessment of the conclusion—whether it's 'True', 'False', or 'Unknown' within <label></label> tags for easier processing.
+This task requires an analysis of the logical connections between a series of premises and a specified conclusion to determine the validity of the conclusion. The analysis is grounded in first-order logic. The objective is to evaluate if the conclusion is logically supported by the premises provided. Please use <label></label> tags to categorize the final assessment of the conclusion as 'True', 'False', or 'Unknown', facilitating streamlined processing.
 
-The problem is based on first-order logic. The task involves evaluating whether a conclusion is logically supported by a set of premises, all formatted in first-order logic sentences.
+# Task Description
+## Input:
+- **Premises**: A set of statements presented in first-order logic.
+- **Conclusion**: A statement that needs to be evaluated against the premises.
 
-# Current Problem
-Input:
+## Instructions:
+1. **Read and Understand the Premises and Conclusion**:
+
 <premises>
 {premises}
 </premises>
@@ -17,12 +21,21 @@ Input:
 {conclusion}
 </conclusion>
 
-Based on the above information , is the conclusion True , False , or Unknown?
-Remember to enclose your final assessment of the conclusion within <label></label> tags.
-<label>Your answer</label>
+2. **Analyze the Logical Relationship**:
+   - Determine if the logical flow supports the conclusion based on the premises.
 
-Let's think step by step.
-Output:
+3. **Evaluation and Labeling**:
+   - Based on the analysis, decide if the conclusion is:
+     - **True**: The conclusion logically follows from the premises.
+     - **False**: The conclusion does not logically follow from the premises.
+     - **Unknown**: It is unclear or there is insufficient information to determine the relationship.
+
+4. **Final Output**:
+   - Clearly state your final assessment of the conclusion. Encapsulate your decision ('True', 'False', or 'Unknown') within <label></label> tags for clarity.
+   - Example: `<label>True</label>`
+
+# Example of Completion
+Let's break down the logical progression step by step to determine the accuracy of the conclusion. Remember, your final decision must be enclosed within <label></label> tags to enhance the model's result processing capability.
 """
 
 

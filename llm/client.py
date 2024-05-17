@@ -61,9 +61,9 @@ def ollama_send(prompt:str):
 
 def llm_send(prompt:str, system_msg:str, temperature=0.7):
     global cf
-    if system_msg == "":
-        system_msg = "You are a helpful assistant."
-    max_try = 5
+    # if system_msg == "":
+    #     system_msg = "You are a helpful assistant."
+    max_try = 2
     cur = 0
     while cur < max_try:
         try:
@@ -130,7 +130,7 @@ def error_msg(msg, new_msg, response: str):
 
 
 # 处理返回的结果
-def process_response(text: str):
+def process_response(text: str, tagname:str = "FOL"):
     # 去除空行
     text = text.replace("\n\n", "\n")
     # 去除Markdown列表编号
@@ -138,7 +138,10 @@ def process_response(text: str):
     # 去除数字编号
     text = re.sub(r"\d+\.\s+", "", text, flags=re.MULTILINE)
     # 提取```代码块```的内容，并包含在处理后的文本中
-    block = re.findall(r"<FOL>(.*?)</FOL>", text, re.DOTALL)
+    pattern = fr"<{tagname}>([^<]*?)</{tagname}>"
+    block = re.findall(pattern, text, re.DOTALL)
+    #去除多余的\n和为空的内容
+    block = [x.strip() for x in block if x]
     block_content = "\n".join(block)
     # 如果存在代码块，则去除整个代码块的标记
     if block_content:

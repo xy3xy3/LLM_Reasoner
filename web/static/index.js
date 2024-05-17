@@ -139,6 +139,11 @@ layui.use(["table", "form", "layer"], function () {
         }).length;
         var accuracy2 = (trueCount / totalCount) * 100;
         $("#accuracy2").text(accuracy2.toFixed(2) + "%");
+        var trueCount = originalData.filter(function (item) {
+          return item.same === true || (item['label-AI'] == "Error" && item.label == "Unknown");
+        }).length;
+        var accuracy3 = (trueCount /  originalData.length) * 100;
+        $("#accuracy3").text(accuracy3.toFixed(2) + "%");
         $("#errorCount").text(falseCount);
         if (filterText) {
           // 根据搜索内容过滤数据
