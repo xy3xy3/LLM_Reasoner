@@ -1,21 +1,36 @@
 {
-  "story_id": 416,
-  "example_id": 1176,
-  "conclusion": "James is either good at chemistry or good at math.",
   "premises": [
-    "Some students good at math are good at chemistry.",
-    "All students good at chemistry enjoy conducting experiments. ",
-    "All students that enjoy conducting experiments are good at planning. ",
-    "No student good at planning is awarded the Dean's List. ",
-    "James is either good at chemistry and awarded the Dean's List, or neither good at chemistry nor awarded the Dean's List."
+    "If people perform in school talent shows often, then they attend and are very engaged with school events.",
+    "People either perform in school talent shows often or are inactive and disinterested members of their community.",
+    "If people chaperone high school dances, then they are not students who attend the school.",
+    "All people who are inactive and disinterested members of their community chaperone high school dances.",
+    "All young children and teenagers who wish to further their academic careers and educational opportunities are students who attend the school.",
+    "Bonnie either both attends and is very engaged with school events and is a student who attends the school, or she neither attends and is very engaged with school events nor is a student who attends the school. "
   ],
   "premises-FOL": [
-    "∃x (Math(x) ∧ Chemistry(x))",
-    "∀x (Chemistry(x) → Experiment(x))",
-    "∀x (Experiment(x) → Planning(x))",
-    "∀x (Planning(x) → ¬Award(x))",
-    "¬(Chemistry(james) ⊕ Award(james))"
+    "\u2200x (TalentShows(x) \u2192 Engaged(x))",
+    "\u2200x (TalentShows(x) \u2228 Inactive(x))",
+    "\u2200x (Chaperone(x) \u2192 \u00acStudents(x))",
+    "\u2200x (Inactive(x) \u2192 Chaperone(x))",
+    "\u2200x (AcademicCareer(x) \u2192 Students(x))",
+    "(Engaged(bonnie) \u2227 Students(bonnie)) \u2295 (\u00acEngaged(bonnie) \u2227 \u00acStudents(bonnie))"
   ],
-  "label": "False",
-  "source": "hyb"
+  "conclusion": "Bonnie performs in school talent shows often.",
+  "conclusion-FOL": "Engaged(bonnie)",
+  "label": "Unknown",
+  "id": 1,
+  "conclusion-AI": "Perform(bonnie, talentShows)",
+  "response": [
+    "\u2200x (Perform(x, talentShows) \u2192 Attend(x, events) \u2227 Engaged(x, events))",
+    "\u2200x (Perform(x, talentShows) \u2295 (Inactive(x) \u2227 Disinterested(x)))",
+    "\u2200x (Chaperone(x, dances) \u2192 \u00acStudent(x))",
+    "\u2200x ((Inactive(x) \u2227 Disinterested(x)) \u2192 Chaperone(x, dances))",
+    "\u2200x ((Young(x) \u2227 Teenager(x) \u2227 Wish(x, academicCareer)) \u2192 Student(x))",
+    "(Attend(bonnie, events) \u2227 Engaged(bonnie, events) \u2227 Student(bonnie)) \u2295 \u00ac(Attend(bonnie, events) \u2228 Engaged(bonnie, events) \u2228 Student(bonnie))"
+  ],
+  "predicates-AI": "Perform Attend Engaged Inactive Disinterested Chaperone Student Young Teenager Wish",
+  "constants-AI": "talentShows events events talentShows dances dances academicCareer bonnie events bonnie events bonnie bonnie events bonnie events bonnie bonnie talentShows",
+  "label-AI": "Unknown",
+  "errmsg": "",
+  "same": true
 }

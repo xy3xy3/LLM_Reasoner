@@ -16,15 +16,7 @@ p_f_t = """# Role: Logic Translater
 5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 
 6. You SHOULD generate FOL rules with either: 
 (1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
-## Example to learn
-{knowledge}
-## Background information
-<NL>
-{full_premises}
-</NL>
-<FOL>
-{fol_premises}
-</FOL>
+
 ## Attention
 ### Usage of operator
 The use of quantifiers: 
@@ -83,6 +75,54 @@ Use non-negation to express it:
 Rather than
 <FOL>
 ∀ x NotGood(x) → Bad(x)
+</FOL>
+### Discourse domain issues:
+The discourse domain refers to the set of all the individuals involved in a predicate. In different sentences, the discourse domain may be different, which can lead to inaccuracy in reasoning. Consider unifying the discourse domains in different sentences to ensure the accuracy of reasoning.
+Example:
+<NL>
+All new iPhones are very expensive.
+Some phones use MediaTek chips.
+All iPhones use the iOS system.
+A phone is either an Android system or an iOS system.
+If a phone uses a Snapdragon chip, then it must be an Android system.
+XiaoMi13 use Android system and Snapdragon chip.
+</NL>
+<FOL>
+∀x (new(x) ∧  Iphone(x)) → Expensive(x)
+∃x MobilePhone(x) → MediaTek(x)
+∀x Iphone(x) → iOS(x)
+∀x Android(x) ⊕ iOS(x)
+∀x (Snapdragon(x) → Android(x))
+Snapdragon(XiaoMi13) ∧ Android(XiaoMi13)
+</FOL>
+Domain analysis:
+1.MobilePhone.
+2.MobilePhone or electronic device.`MobilePhone` may be removed.
+3.MobilePhone.
+4.MobilePhone.
+5.MobilePhone.
+6.MobilePhone.
+The 1,3,4,5 sentences have the same domain which is mobile phone.
+So we can turn the 2nd sentence's domain from device to mobile phone.
+And remove the predicate "MobilePhone"
+
+After fixed:
+<FOL>
+∀x (new(x) ∧  Iphone(x)) → Expensive(x)
+∃x MediaTek(x)
+∀x Iphone(x) → iOS(x)
+∀x Android(x) ⊕ iOS(x)
+∀x (Snapdragon(x) → Android(x))
+Snapdragon(XiaoMi13) ∧ Android(XiaoMi13)
+</FOL>
+## Example to learn
+{knowledge}
+## Background information
+<NL>
+{full_premises}
+</NL>
+<FOL>
+{fol_premises}
 </FOL>
 ## Current task:
 Let's think step by step.

@@ -2,23 +2,16 @@
 import json
 from llm.client import process_response
 from validator.inference import inference
-raw_response = """
-<FOL>
-∀x (PerformInTalentShows(x) → (AttendSchoolEvents(x) ∧ EngagedWithSchoolEvents(x)))
-∀x (PerformInTalentShows(x) ⊕ InactiveAndDisinterested(x))
-∀x (ChaperoneHighSchoolDances(x) → ¬StudentAtSchool(x))
-∀x (InactiveAndDisinterested(x) → ChaperoneHighSchoolDances(x))
-∀x (YoungChildOrTeenager(x) ∧ WishesToFurtherAcademicCareer(x) → StudentAtSchool(x))
-(AttendAndEngagedWithSchoolEvents(Bonnie) ∧ StudentAtSchool(Bonnie)) ⊕ (¬AttendAndEngagedWithSchoolEvents(Bonnie) ∧ ¬StudentAtSchool(Bonnie))
-((YoungChildOrTeenager(Bonnie) ∧ WishesToFurtherAcademicCareer(Bonnie) ∧ ChaperoneHighSchoolDances(Bonnie)) ∨ (¬YoungChildOrTeenager(Bonnie) ∧ ¬WishesToFurtherAcademicCareer(Bonnie))) → (StudentAtSchool(Bonnie) ∨ InactiveAndDisinterested(Bonnie))
-</FOL>
-"""
+# Example instance for testing
+instance = {
+    "conclusion-AI": "A(a)",
+    "response": [
+        "∀x A(a)"
+    ]
+}
 
-str_res, list_res = process_response(raw_response)
-data = {}
-data["response"] = list_res[:-1]
-data["conclusion-AI"] = list_res[-1]
-print(inference(data))
+result, proof_path = inference(instance)
+print(f"Result: {result}, Proof Path: {proof_path}")
 
 #测试推理和label的一致性
 # input_name = "./data/folio_fix.jsonl"

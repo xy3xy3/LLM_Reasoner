@@ -9,7 +9,7 @@ from .il_translator import process as il_process
 from .baseline import process as bl_process
 
 def send(data):
-    return send_err_fix(data)
+    return send_singel(data)
 def send_baseline(data):
     id = data["id"]
     premises = "\n".join(data["premises"])
@@ -129,7 +129,7 @@ def send_singel(data):
     # 查询知识库
     full_premises = premises + "\n" + conclusion  # 将结论添加到premises的末尾
     list_premises = full_premises.split("\n")
-    k_list,k_dict = get_knowledge("",list_premises)
+    k_list,k_dict = get_knowledge("",list_premises, 1)
     str_res, list_res = st_process(id,full_premises,list_premises,k_list,k_dict)
     if list_res == []:
         print(f"失败，{str_res}")
