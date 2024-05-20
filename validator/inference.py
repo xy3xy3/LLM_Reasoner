@@ -87,13 +87,13 @@ def reason(
             solver.add(eval(premise))
         except Exception as e:
             cleanup_functions(created_functions)
-            return f"{i} {origin_premises[i]}\n{premise}\n 添加前提异常: {e}"
+            return False,f"{i} {origin_premises[i]}\n{premise}\n 添加前提异常: {e}"
     conclusion = replace_const(conclusion, constants_dict)
     try:
         solver.add(Not(eval(conclusion)))
     except Exception as e:
         cleanup_functions(created_functions)
-        return f"{origin_conclusion}  {conclusion}, 添加结论异常: {e}"
+        return False,f"{origin_conclusion}  {conclusion}, 添加结论异常: {e}"
 
     result = solver.check()
     print(solver)

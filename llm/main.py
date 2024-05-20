@@ -86,7 +86,6 @@ def send_three_step(data):
         print(f"单个修正失败，{str_res}")
         return []
     return list_res
-
 # 基于三段的基础带错误修复
 def send_err_fix(data):
     id = data["id"]
@@ -120,7 +119,6 @@ def send_err_fix(data):
         print(f"单个修正失败，{str_res}")
         return []
     return list_res
-
 # 单步的，暂时废弃
 def send_singel(data):
     id = data["id"]
