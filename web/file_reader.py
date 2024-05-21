@@ -1,5 +1,7 @@
 import json
 import os
+import codecs
+
 
 def read_file_list(file_name):
     current_dir = os.path.dirname(__file__)
@@ -25,7 +27,13 @@ def read_file(file_name: str) -> str:
     log_dir = os.path.join(current_dir, '../log')
     file_path = os.path.join(log_dir, file_name)
     
-    with open(file_path, 'r') as file:
-        file_content = file.read()
+    # 尝试使用GBK编码读取文件
+    try:
+        with codecs.open(file_path, 'r', 'gbk') as file:
+            file_content = file.read()
+    except UnicodeDecodeError:
+        # 如果GBK编码失败，尝试使用UTF-8编码读取文件
+        with codecs.open(file_path, 'r', 'utf-8') as file:
+            file_content = file.read()
     
     return file_content

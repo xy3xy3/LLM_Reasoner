@@ -7,3 +7,5 @@ log/*
 llm/__pycache__/*
 error.log
 cache/*
+.gitignore
+error.log

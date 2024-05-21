@@ -8885,3 +8885,798 @@ If you use pre-existing predicates, keep the number of predicates arguments you 
 Secondly, reply one formula of this task in <FOL> tag.
 
 Error code: 400 - {'detail': 'Content Exists Risk'}
+# Role: Logic Translater
+## For FOL rule generation
+1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence)
+2. You *SHOULD NEVER USE* the following symbols for FOL: ">","<", "̸=", "%", "=" 
+3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 
+4. The FOL rule SHOULD ACCURATELY reflect the meaning of the NL statement 
+5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 
+6. You SHOULD generate FOL rules with either: 
+(1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
+
+## Attention
+### Usage of operator
+The use of quantifiers: 
+Quantifiers are used when a sentence obviously involves a class of things.
+However, when the sentence gives a specific person or a specific name, use constant instead of variable predicates to describe the a specific person or specific name.
+<NL>
+Human are good or bad.
+</NL>
+<FOL>
+∀ x Human(x) → Good(x) ⊕ Bad(x)
+</FOL>
+<NL>
+Lily is good or bad.
+</NL>
+<FOL>
+Good(Lily) ⊕ Bad(Lily)
+</FOL>
+### Use of the xor formula Note: 
+Make sure that both cannot be used at the same time, such as happy or sad, man or woman, this should be used XOR.
+<NL>
+Human is either male or female.
+</NL>
+<FOL>
+∀ x Male(x) ⊕ Female(x)
+</FOL>
+<NL>
+John is either a naughty student or a quiet good student.
+</NL>
+<FOL>
+naughty(John) ⊕ quiet(John)
+</FOL>
+### Predicate consistency:
+Sometimes, some predicates between some different sentences are different, but the word similarity is very high, you can consider these predicates unified into a word, which can ensure the accuracy of reasoning.
+<NL>
+Humans have two legs.
+An animal with 2 legs is a human.
+</NL>
+<FOL>
+∀ x Human (x) → Have2Legs (x)
+∃x With2Leg (x) → Human (x)
+</FOL>
+In this example, the second line of With2Leg (x) can be unified into Have2Leg (x), which becomes
+<FOL>
+∀ x Human (x) → Have2Legs (x)
+∃X Have2Leg (x) → Human (x)
+</FOL>
+### Do not express negation in the predicate, but use non negation uniformly
+If the sentence is negative, use the non-negation predicate to express it.
+<NL>
+If a person is not good, he is bad.
+</NL>
+Use non-negation to express it:
+<FOL>
+∀ x ¬ Good(x) → Bad(x)
+</FOL>
+Rather than
+<FOL>
+∀ x NotGood(x) → Bad(x)
+</FOL>
+### Discourse domain issues:
+The discourse domain refers to the set of all the individuals involved in a predicate. In different sentences, the discourse domain may be different, which can lead to inaccuracy in reasoning. Consider unifying the discourse domains in different sentences to ensure the accuracy of reasoning.
+Example:
+<NL>
+All new iPhones are very expensive.
+Some phones use MediaTek chips.
+All iPhones use the iOS system.
+A phone is either an Android system or an iOS system.
+If a phone uses a Snapdragon chip, then it must be an Android system.
+XiaoMi13 use Android system and Snapdragon chip.
+</NL>
+<FOL>
+∀x (new(x) ∧  Iphone(x)) → Expensive(x)
+∃x MobilePhone(x) → MediaTek(x)
+∀x Iphone(x) → iOS(x)
+∀x Android(x) ⊕ iOS(x)
+∀x (Snapdragon(x) → Android(x))
+Snapdragon(XiaoMi13) ∧ Android(XiaoMi13)
+</FOL>
+Domain analysis:
+1.MobilePhone.
+2.MobilePhone or electronic device.`MobilePhone` may be removed.
+3.MobilePhone.
+4.MobilePhone.
+5.MobilePhone.
+6.MobilePhone.
+The 1,3,4,5 sentences have the same domain which is mobile phone.
+So we can turn the 2nd sentence's domain from device to mobile phone.
+And remove the predicate "MobilePhone"
+
+After fixed:
+<FOL>
+∀x (new(x) ∧  Iphone(x)) → Expensive(x)
+∃x MediaTek(x)
+∀x Iphone(x) → iOS(x)
+∀x Android(x) ⊕ iOS(x)
+∀x (Snapdragon(x) → Android(x))
+Snapdragon(XiaoMi13) ∧ Android(XiaoMi13)
+</FOL>
+## Example to learn
+<NL>
+Robert Zimmer was born in Germany.
+</NL>
+<FOL>
+BornInGermany(robertZimmer)
+</FOL>
+
+<NL>
+Ralph Hammerthaler is a German writer.
+</NL>
+<FOL>
+Writer(ralphHammerthaler)
+</FOL>
+
+<NL>
+Frederick Monhoff was an American.
+</NL>
+<FOL>
+American(monhoff)
+</FOL>
+
+<NL>
+Ernest Pohl was a Polish football player. 
+</NL>
+<FOL>
+PolishFootballPlayer(ernestpohl)
+</FOL>
+## Background information
+<NL>
+Heinrich Scmidt was a Nazi German politician. 
+Heeinrich Scmidt was also a member of the Prussian State Parliament and the Nazi Reichstag.
+No politicans are part of the Nazi Reichstag.
+</NL>
+<FOL>
+//There will be 3 FOL formulas to be completed.
+</FOL>
+## Current task:
+Let's think step by step.
+Firstly, repy your analysis of current task: `Heinrich Scmidt was a Nazi German politician. `.
+The attention mentioned before is what you need to consider in your analysis.
+If the <FOL> tag is not empty,consider the whole context to ensure constants and predicates are the same.
+If you use pre-existing predicates, keep the number of predicates arguments you use the same as before. Here are some templates used
+
+Secondly, reply one formula of this task in <FOL> tag.
+
+Error code: 400 - {'detail': 'Content Exists Risk'}
+# Role: Logic Translater
+## For FOL rule generation
+1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence)
+2. You *SHOULD NEVER USE* the following symbols for FOL: ">","<", "̸=", "%", "=" 
+3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 
+4. The FOL rule SHOULD ACCURATELY reflect the meaning of the NL statement 
+5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 
+6. You SHOULD generate FOL rules with either: 
+(1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
+
+## Attention
+### Usage of operator
+The use of quantifiers: 
+Quantifiers are used when a sentence obviously involves a class of things.
+However, when the sentence gives a specific person or a specific name, use constant instead of variable predicates to describe the a specific person or specific name.
+<NL>
+Human are good or bad.
+</NL>
+<FOL>
+∀ x Human(x) → Good(x) ⊕ Bad(x)
+</FOL>
+<NL>
+Lily is good or bad.
+</NL>
+<FOL>
+Good(Lily) ⊕ Bad(Lily)
+</FOL>
+### Use of the xor formula Note: 
+Make sure that both cannot be used at the same time, such as happy or sad, man or woman, this should be used XOR.
+<NL>
+Human is either male or female.
+</NL>
+<FOL>
+∀ x Male(x) ⊕ Female(x)
+</FOL>
+<NL>
+John is either a naughty student or a quiet good student.
+</NL>
+<FOL>
+naughty(John) ⊕ quiet(John)
+</FOL>
+### Predicate consistency:
+Sometimes, some predicates between some different sentences are different, but the word similarity is very high, you can consider these predicates unified into a word, which can ensure the accuracy of reasoning.
+<NL>
+Humans have two legs.
+An animal with 2 legs is a human.
+</NL>
+<FOL>
+∀ x Human (x) → Have2Legs (x)
+∃x With2Leg (x) → Human (x)
+</FOL>
+In this example, the second line of With2Leg (x) can be unified into Have2Leg (x), which becomes
+<FOL>
+∀ x Human (x) → Have2Legs (x)
+∃X Have2Leg (x) → Human (x)
+</FOL>
+### Do not express negation in the predicate, but use non negation uniformly
+If the sentence is negative, use the non-negation predicate to express it.
+<NL>
+If a person is not good, he is bad.
+</NL>
+Use non-negation to express it:
+<FOL>
+∀ x ¬ Good(x) → Bad(x)
+</FOL>
+Rather than
+<FOL>
+∀ x NotGood(x) → Bad(x)
+</FOL>
+### Discourse domain issues:
+The discourse domain refers to the set of all the individuals involved in a predicate. In different sentences, the discourse domain may be different, which can lead to inaccuracy in reasoning. Consider unifying the discourse domains in different sentences to ensure the accuracy of reasoning.
+Example:
+<NL>
+All new iPhones are very expensive.
+Some phones use MediaTek chips.
+All iPhones use the iOS system.
+A phone is either an Android system or an iOS system.
+If a phone uses a Snapdragon chip, then it must be an Android system.
+XiaoMi13 use Android system and Snapdragon chip.
+</NL>
+<FOL>
+∀x (new(x) ∧  Iphone(x)) → Expensive(x)
+∃x MobilePhone(x) → MediaTek(x)
+∀x Iphone(x) → iOS(x)
+∀x Android(x) ⊕ iOS(x)
+∀x (Snapdragon(x) → Android(x))
+Snapdragon(XiaoMi13) ∧ Android(XiaoMi13)
+</FOL>
+Domain analysis:
+1.MobilePhone.
+2.MobilePhone or electronic device.`MobilePhone` may be removed.
+3.MobilePhone.
+4.MobilePhone.
+5.MobilePhone.
+6.MobilePhone.
+The 1,3,4,5 sentences have the same domain which is mobile phone.
+So we can turn the 2nd sentence's domain from device to mobile phone.
+And remove the predicate "MobilePhone"
+
+After fixed:
+<FOL>
+∀x (new(x) ∧  Iphone(x)) → Expensive(x)
+∃x MediaTek(x)
+∀x Iphone(x) → iOS(x)
+∀x Android(x) ⊕ iOS(x)
+∀x (Snapdragon(x) → Android(x))
+Snapdragon(XiaoMi13) ∧ Android(XiaoMi13)
+</FOL>
+## Example to learn
+<NL>
+Hugh Vanstone is from the UK.
+</NL>
+<FOL>
+FromUK(hughVanstone)
+</FOL>
+
+<NL>
+Jack attends the conference and he is a student from China.
+</NL>
+<FOL>
+China(jack) ∧ Attend(jack)
+</FOL>
+
+<NL>
+Andy Chang is from Hong Kong.
+</NL>
+<FOL>
+From(andyChang, hongKong)
+</FOL>
+
+<NL>
+If Mike is not both a human and a sheep, then Mike is either a man or a human.
+</NL>
+<FOL>
+(¬Human(mike) ∨ ¬Sheep(mike)) → Man(mike) ⊕ Human(mike)
+</FOL>
+## Background information
+<NL>
+International students in US have either an F1 visa or a J1 visa.
+An international student in US with an F1 visa needs to apply for CPT or OPT if the student wants to work in the US.
+Mike is an international student.
+Mike needs to apply for CPT if he wants to work in the US.
+Mike has an F1 visa.
+</NL>
+<FOL>
+∀x (InternationalStudentUS(x) → (F1Visa(x) ⊕ J1Visa(x)))
+∀x ((InternationalStudentUS(x) ∧ F1Visa(x) ∧ WantsToWorkInUS(x)) → (CPT(x) ⊕ OPT(x)))
+//There will be 3 FOL formulas to be completed.
+</FOL>
+## Current task:
+Let's think step by step.
+Firstly, repy your analysis of current task: `Mike is an international student.`.
+The attention mentioned before is what you need to consider in your analysis.
+If the <FOL> tag is not empty,consider the whole context to ensure constants and predicates are the same.
+If you use pre-existing predicates, keep the number of predicates arguments you use the same as before. Here are some templates used
+InternationalStudentUS(x)
+F1Visa(x)
+J1Visa(x)
+WantsToWorkInUS(x)
+CPT(x)
+OPT(x)
+
+Secondly, reply one formula of this task in <FOL> tag.
+
+Error code: 400 - {'detail': 'Content Exists Risk'}
+# Role: Logic Translater
+## For FOL rule generation
+1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence)
+2. You *SHOULD NEVER USE* the following symbols for FOL: ">","<", "̸=", "%", "=" 
+3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 
+4. The FOL rule SHOULD ACCURATELY reflect the meaning of the NL statement 
+5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 
+6. You SHOULD generate FOL rules with either: 
+(1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
+
+## Attention
+### Usage of operator
+The use of quantifiers: 
+Quantifiers are used when a sentence obviously involves a class of things.
+However, when the sentence gives a specific person or a specific name, use constant instead of variable predicates to describe the a specific person or specific name.
+<NL>
+Human are good or bad.
+</NL>
+<FOL>
+∀ x Human(x) → Good(x) ⊕ Bad(x)
+</FOL>
+<NL>
+Lily is good or bad.
+</NL>
+<FOL>
+Good(Lily) ⊕ Bad(Lily)
+</FOL>
+### Use of the xor formula Note: 
+Make sure that both cannot be used at the same time, such as happy or sad, man or woman, this should be used XOR.
+<NL>
+Human is either male or female.
+</NL>
+<FOL>
+∀ x Male(x) ⊕ Female(x)
+</FOL>
+<NL>
+John is either a naughty student or a quiet good student.
+</NL>
+<FOL>
+naughty(John) ⊕ quiet(John)
+</FOL>
+### Predicate consistency:
+Sometimes, some predicates between some different sentences are different, but the word similarity is very high, you can consider these predicates unified into a word, which can ensure the accuracy of reasoning.
+<NL>
+Humans have two legs.
+An animal with 2 legs is a human.
+</NL>
+<FOL>
+∀ x Human (x) → Have2Legs (x)
+∃x With2Leg (x) → Human (x)
+</FOL>
+In this example, the second line of With2Leg (x) can be unified into Have2Leg (x), which becomes
+<FOL>
+∀ x Human (x) → Have2Legs (x)
+∃X Have2Leg (x) → Human (x)
+</FOL>
+### Do not express negation in the predicate, but use non negation uniformly
+If the sentence is negative, use the non-negation predicate to express it.
+<NL>
+If a person is not good, he is bad.
+</NL>
+Use non-negation to express it:
+<FOL>
+∀ x ¬ Good(x) → Bad(x)
+</FOL>
+Rather than
+<FOL>
+∀ x NotGood(x) → Bad(x)
+</FOL>
+### Discourse domain issues:
+The discourse domain refers to the set of all the individuals involved in a predicate. In different sentences, the discourse domain may be different, which can lead to inaccuracy in reasoning. Consider unifying the discourse domains in different sentences to ensure the accuracy of reasoning.
+Example:
+<NL>
+All new iPhones are very expensive.
+Some phones use MediaTek chips.
+All iPhones use the iOS system.
+A phone is either an Android system or an iOS system.
+If a phone uses a Snapdragon chip, then it must be an Android system.
+XiaoMi13 use Android system and Snapdragon chip.
+</NL>
+<FOL>
+∀x (new(x) ∧  Iphone(x)) → Expensive(x)
+∃x MobilePhone(x) → MediaTek(x)
+∀x Iphone(x) → iOS(x)
+∀x Android(x) ⊕ iOS(x)
+∀x (Snapdragon(x) → Android(x))
+Snapdragon(XiaoMi13) ∧ Android(XiaoMi13)
+</FOL>
+Domain analysis:
+1.MobilePhone.
+2.MobilePhone or electronic device.`MobilePhone` may be removed.
+3.MobilePhone.
+4.MobilePhone.
+5.MobilePhone.
+6.MobilePhone.
+The 1,3,4,5 sentences have the same domain which is mobile phone.
+So we can turn the 2nd sentence's domain from device to mobile phone.
+And remove the predicate "MobilePhone"
+
+After fixed:
+<FOL>
+∀x (new(x) ∧  Iphone(x)) → Expensive(x)
+∃x MediaTek(x)
+∀x Iphone(x) → iOS(x)
+∀x Android(x) ⊕ iOS(x)
+∀x (Snapdragon(x) → Android(x))
+Snapdragon(XiaoMi13) ∧ Android(XiaoMi13)
+</FOL>
+## Example to learn
+<NL>
+Hugh Vanstone is from the UK.
+</NL>
+<FOL>
+FromUK(hughVanstone)
+</FOL>
+
+<NL>
+Jack attends the conference and he is a student from China.
+</NL>
+<FOL>
+China(jack) ∧ Attend(jack)
+</FOL>
+
+<NL>
+Andy Chang is from Hong Kong.
+</NL>
+<FOL>
+From(andyChang, hongKong)
+</FOL>
+
+<NL>
+If Mike is not both a human and a sheep, then Mike is either a man or a human.
+</NL>
+<FOL>
+(¬Human(mike) ∨ ¬Sheep(mike)) → Man(mike) ⊕ Human(mike)
+</FOL>
+## Background information
+<NL>
+International students in US have either an F1 visa or a J1 visa.
+An international student in US with an F1 visa needs to apply for CPT or OPT if the student wants to work in the US.
+Mike is an international student.
+Mike needs to apply for CPT if he wants to work in the US.
+Mike has a J1 visa.
+</NL>
+<FOL>
+∀x (InternationalStudentUS(x) → (F1Visa(x) ⊕ J1Visa(x)))
+∀x (InternationalStudentUS(x) ∧ F1Visa(x) ∧ WantsToWorkInUS(x) → (CPT(x) ⊕ OPT(x)))
+//There will be 3 FOL formulas to be completed.
+</FOL>
+## Current task:
+Let's think step by step.
+Firstly, repy your analysis of current task: `Mike is an international student.`.
+The attention mentioned before is what you need to consider in your analysis.
+If the <FOL> tag is not empty,consider the whole context to ensure constants and predicates are the same.
+If you use pre-existing predicates, keep the number of predicates arguments you use the same as before. Here are some templates used
+InternationalStudentUS(x)
+F1Visa(x)
+J1Visa(x)
+WantsToWorkInUS(x)
+CPT(x)
+OPT(x)
+
+Secondly, reply one formula of this task in <FOL> tag.
+
+Error code: 400 - {'detail': 'Content Exists Risk'}
+# Role: Logic Translater
+## For FOL rule generation
+1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence)
+2. You *SHOULD NEVER USE* the following symbols for FOL: ">","<", "̸=", "%", "=" 
+3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 
+4. The FOL rule SHOULD ACCURATELY reflect the meaning of the NL statement 
+5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 
+6. You SHOULD generate FOL rules with either: 
+(1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
+
+## Attention
+### Usage of operator
+The use of quantifiers: 
+Quantifiers are used when a sentence obviously involves a class of things.
+However, when the sentence gives a specific person or a specific name, use constant instead of variable predicates to describe the a specific person or specific name.
+<NL>
+Human are good or bad.
+</NL>
+<FOL>
+∀ x Human(x) → Good(x) ⊕ Bad(x)
+</FOL>
+<NL>
+Lily is good or bad.
+</NL>
+<FOL>
+Good(Lily) ⊕ Bad(Lily)
+</FOL>
+### Use of the xor formula Note: 
+Make sure that both cannot be used at the same time, such as happy or sad, man or woman, this should be used XOR.
+<NL>
+Human is either male or female.
+</NL>
+<FOL>
+∀ x Male(x) ⊕ Female(x)
+</FOL>
+<NL>
+John is either a naughty student or a quiet good student.
+</NL>
+<FOL>
+naughty(John) ⊕ quiet(John)
+</FOL>
+### Predicate consistency:
+Sometimes, some predicates between some different sentences are different, but the word similarity is very high, you can consider these predicates unified into a word, which can ensure the accuracy of reasoning.
+<NL>
+Humans have two legs.
+An animal with 2 legs is a human.
+</NL>
+<FOL>
+∀ x Human (x) → Have2Legs (x)
+∃x With2Leg (x) → Human (x)
+</FOL>
+In this example, the second line of With2Leg (x) can be unified into Have2Leg (x), which becomes
+<FOL>
+∀ x Human (x) → Have2Legs (x)
+∃X Have2Leg (x) → Human (x)
+</FOL>
+### Do not express negation in the predicate, but use non negation uniformly
+If the sentence is negative, use the non-negation predicate to express it.
+<NL>
+If a person is not good, he is bad.
+</NL>
+Use non-negation to express it:
+<FOL>
+∀ x ¬ Good(x) → Bad(x)
+</FOL>
+Rather than
+<FOL>
+∀ x NotGood(x) → Bad(x)
+</FOL>
+### Discourse domain issues:
+The discourse domain refers to the set of all the individuals involved in a predicate. In different sentences, the discourse domain may be different, which can lead to inaccuracy in reasoning. Consider unifying the discourse domains in different sentences to ensure the accuracy of reasoning.
+Example:
+<NL>
+All new iPhones are very expensive.
+Some phones use MediaTek chips.
+All iPhones use the iOS system.
+A phone is either an Android system or an iOS system.
+If a phone uses a Snapdragon chip, then it must be an Android system.
+XiaoMi13 use Android system and Snapdragon chip.
+</NL>
+<FOL>
+∀x (new(x) ∧  Iphone(x)) → Expensive(x)
+∃x MobilePhone(x) → MediaTek(x)
+∀x Iphone(x) → iOS(x)
+∀x Android(x) ⊕ iOS(x)
+∀x (Snapdragon(x) → Android(x))
+Snapdragon(XiaoMi13) ∧ Android(XiaoMi13)
+</FOL>
+Domain analysis:
+1.MobilePhone.
+2.MobilePhone or electronic device.`MobilePhone` may be removed.
+3.MobilePhone.
+4.MobilePhone.
+5.MobilePhone.
+6.MobilePhone.
+The 1,3,4,5 sentences have the same domain which is mobile phone.
+So we can turn the 2nd sentence's domain from device to mobile phone.
+And remove the predicate "MobilePhone"
+
+After fixed:
+<FOL>
+∀x (new(x) ∧  Iphone(x)) → Expensive(x)
+∃x MediaTek(x)
+∀x Iphone(x) → iOS(x)
+∀x Android(x) ⊕ iOS(x)
+∀x (Snapdragon(x) → Android(x))
+Snapdragon(XiaoMi13) ∧ Android(XiaoMi13)
+</FOL>
+## Example to learn
+<NL>
+Robert Zimmer was born in Germany.
+</NL>
+<FOL>
+BornInGermany(robertZimmer)
+</FOL>
+
+<NL>
+Ralph Hammerthaler is a German writer.
+</NL>
+<FOL>
+Writer(ralphHammerthaler)
+</FOL>
+
+<NL>
+Frederick Monhoff was an American.
+</NL>
+<FOL>
+American(monhoff)
+</FOL>
+
+<NL>
+Ernest Pohl was a Polish football player. 
+</NL>
+<FOL>
+PolishFootballPlayer(ernestpohl)
+</FOL>
+## Background information
+<NL>
+Heinrich Scmidt was a Nazi German politician. 
+Heeinrich Scmidt was also a member of the Prussian State Parliament and the Nazi Reichstag.
+Heinrich Schmidt was either German or Russian.
+</NL>
+<FOL>
+//There will be 3 FOL formulas to be completed.
+</FOL>
+## Current task:
+Let's think step by step.
+Firstly, repy your analysis of current task: `Heinrich Scmidt was a Nazi German politician. `.
+The attention mentioned before is what you need to consider in your analysis.
+If the <FOL> tag is not empty,consider the whole context to ensure constants and predicates are the same.
+If you use pre-existing predicates, keep the number of predicates arguments you use the same as before. Here are some templates used
+
+Secondly, reply one formula of this task in <FOL> tag.
+
+Error code: 400 - {'detail': 'Content Exists Risk'}
+# Role: Logic Translater
+## For FOL rule generation
+1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence)
+2. You *SHOULD NEVER USE* the following symbols for FOL: ">","<", "̸=", "%", "=" 
+3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 
+4. The FOL rule SHOULD ACCURATELY reflect the meaning of the NL statement 
+5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 
+6. You SHOULD generate FOL rules with either: 
+(1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
+
+## Attention
+### Usage of operator
+The use of quantifiers: 
+Quantifiers are used when a sentence obviously involves a class of things.
+However, when the sentence gives a specific person or a specific name, use constant instead of variable predicates to describe the a specific person or specific name.
+<NL>
+Human are good or bad.
+</NL>
+<FOL>
+∀ x Human(x) → Good(x) ⊕ Bad(x)
+</FOL>
+<NL>
+Lily is good or bad.
+</NL>
+<FOL>
+Good(Lily) ⊕ Bad(Lily)
+</FOL>
+### Use of the xor formula Note: 
+Make sure that both cannot be used at the same time, such as happy or sad, man or woman, this should be used XOR.
+<NL>
+Human is either male or female.
+</NL>
+<FOL>
+∀ x Male(x) ⊕ Female(x)
+</FOL>
+<NL>
+John is either a naughty student or a quiet good student.
+</NL>
+<FOL>
+naughty(John) ⊕ quiet(John)
+</FOL>
+### Predicate consistency:
+Sometimes, some predicates between some different sentences are different, but the word similarity is very high, you can consider these predicates unified into a word, which can ensure the accuracy of reasoning.
+<NL>
+Humans have two legs.
+An animal with 2 legs is a human.
+</NL>
+<FOL>
+∀ x Human (x) → Have2Legs (x)
+∃x With2Leg (x) → Human (x)
+</FOL>
+In this example, the second line of With2Leg (x) can be unified into Have2Leg (x), which becomes
+<FOL>
+∀ x Human (x) → Have2Legs (x)
+∃X Have2Leg (x) → Human (x)
+</FOL>
+### Do not express negation in the predicate, but use non negation uniformly
+If the sentence is negative, use the non-negation predicate to express it.
+<NL>
+If a person is not good, he is bad.
+</NL>
+Use non-negation to express it:
+<FOL>
+∀ x ¬ Good(x) → Bad(x)
+</FOL>
+Rather than
+<FOL>
+∀ x NotGood(x) → Bad(x)
+</FOL>
+### Discourse domain issues:
+The discourse domain refers to the set of all the individuals involved in a predicate. In different sentences, the discourse domain may be different, which can lead to inaccuracy in reasoning. Consider unifying the discourse domains in different sentences to ensure the accuracy of reasoning.
+Example:
+<NL>
+All new iPhones are very expensive.
+Some phones use MediaTek chips.
+All iPhones use the iOS system.
+A phone is either an Android system or an iOS system.
+If a phone uses a Snapdragon chip, then it must be an Android system.
+XiaoMi13 use Android system and Snapdragon chip.
+</NL>
+<FOL>
+∀x (new(x) ∧  Iphone(x)) → Expensive(x)
+∃x MobilePhone(x) → MediaTek(x)
+∀x Iphone(x) → iOS(x)
+∀x Android(x) ⊕ iOS(x)
+∀x (Snapdragon(x) → Android(x))
+Snapdragon(XiaoMi13) ∧ Android(XiaoMi13)
+</FOL>
+Domain analysis:
+1.MobilePhone.
+2.MobilePhone or electronic device.`MobilePhone` may be removed.
+3.MobilePhone.
+4.MobilePhone.
+5.MobilePhone.
+6.MobilePhone.
+The 1,3,4,5 sentences have the same domain which is mobile phone.
+So we can turn the 2nd sentence's domain from device to mobile phone.
+And remove the predicate "MobilePhone"
+
+After fixed:
+<FOL>
+∀x (new(x) ∧  Iphone(x)) → Expensive(x)
+∃x MediaTek(x)
+∀x Iphone(x) → iOS(x)
+∀x Android(x) ⊕ iOS(x)
+∀x (Snapdragon(x) → Android(x))
+Snapdragon(XiaoMi13) ∧ Android(XiaoMi13)
+</FOL>
+## Example to learn
+<NL>
+Robert Zimmer was born in Germany.
+</NL>
+<FOL>
+BornInGermany(robertZimmer)
+</FOL>
+
+<NL>
+Ralph Hammerthaler is a German writer.
+</NL>
+<FOL>
+Writer(ralphHammerthaler)
+</FOL>
+
+<NL>
+Frederick Monhoff was an American.
+</NL>
+<FOL>
+American(monhoff)
+</FOL>
+
+<NL>
+Ernest Pohl was a Polish football player. 
+</NL>
+<FOL>
+PolishFootballPlayer(ernestpohl)
+</FOL>
+## Background information
+<NL>
+Heinrich Scmidt was a Nazi German politician. 
+Heeinrich Scmidt was also a member of the Prussian State Parliament and the Nazi Reichstag.
+Some Nazi German politician was part of both the Prussian State Parliament and the Nazi Reichstag.
+</NL>
+<FOL>
+//There will be 3 FOL formulas to be completed.
+</FOL>
+## Current task:
+Let's think step by step.
+Firstly, repy your analysis of current task: `Heinrich Scmidt was a Nazi German politician. `.
+The attention mentioned before is what you need to consider in your analysis.
+If the <FOL> tag is not empty,consider the whole context to ensure constants and predicates are the same.
+If you use pre-existing predicates, keep the number of predicates arguments you use the same as before. Here are some templates used
+
+Secondly, reply one formula of this task in <FOL> tag.
+
+Error code: 400 - {'detail': 'Content Exists Risk'}
