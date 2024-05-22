@@ -24,16 +24,12 @@ def process(
         prompt = origin.format(predicate=predicate, Predicate=predicate.capitalize())
         print(f"quering {predicate}.....")
         answer = llm_send(prompt, "")
+        # print(answer)
         is_noun_list = re.findall(r'<bool>(.*?)</bool>', answer)
         if is_noun_list and is_noun_list[0].strip().lower() == "true":
-            is_noun = True
-        else:
-            is_noun = False
-        
-        if is_noun:
             n_pre_set.add(predicate)
     for res in n_pre_set:
-        list_res.append(f"∀x({res}(x))")
+        list_res.append(f"∀x ({res}(x))")
     str_res = " ".join(list_res)
     return str_res, list_res
 
