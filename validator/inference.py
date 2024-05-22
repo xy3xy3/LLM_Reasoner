@@ -97,6 +97,7 @@ def reason(
 
     result = solver.check()
     print(solver)
+    del solver
     if result == unsat:
         # proof = solver.proof()
         proof = ""

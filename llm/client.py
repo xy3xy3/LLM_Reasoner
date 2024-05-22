@@ -191,12 +191,13 @@ def get_knowledge(full_premises: str, list_premises: list, type: int = 0):
     # 每个premise查询知识库，加到knowledege
     for premise in list_premises:
         count = count_words(premise)
+        # 用于overall翻译的最佳参数
         if count > 35:
             num = 5
         else:
             num = 4
         k_dict[premise] = fastgpt_knowledge(
-            f"<NL>\n{premise}\n<NL>", 700, num, cf.get("API", "KNOW_S"), 0
+            f"<NL>\n{premise}\n<NL>", 1200, num, cf.get("API", "KNOW_S"), 0
         )  # 500 0.2
         # 从知识库list中提取知识
         for k in k_dict[premise]:

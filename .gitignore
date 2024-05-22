@@ -9,3 +9,4 @@ error.log
 cache/*
 .gitignore
 error.log
+data/tmp.json

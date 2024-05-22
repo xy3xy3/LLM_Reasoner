@@ -59,6 +59,7 @@ layui.use(["form", "table", "jquery"], function () {
         var Data = filteredData.map(function (entry) {
           return {
             id: entry.id,
+            num: entry.item1.premises.length,
             labelAI1: entry.item1["label-AI"], // 访问嵌套的 label-AI 属性
             labelAI2: entry.item2["label-AI"], // 同上
             item1: entry.item1, // 顶层属性
@@ -73,6 +74,11 @@ layui.use(["form", "table", "jquery"], function () {
           cols: [
             [
               { field: "id", title: "ID" },
+              {
+                field: "num",
+                title: "前提数量",
+                sort: true,
+              },
               { field: "labelAI1", title: "标签1" },
               { field: "labelAI2", title: "标签2" },
               { field: "label", title: "标注标签" },

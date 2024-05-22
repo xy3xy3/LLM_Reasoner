@@ -58,6 +58,8 @@ def is_predicate(formula):
 
 # 判断一个公式是否是否定式
 def is_negation(formula):
+    if not '¬' in formula:
+        return False
     formula = "".join(formula.split())
     if contained(formula):
         formula = formula[1:-1]
@@ -84,6 +86,8 @@ def is_negation(formula):
 
 # 判断一个公式是不是合取式
 def is_conjunction(formula):
+    if not '∧' in formula:
+        return False
     if is_xor(formula) or is_disjunction(formula) or is_implies(formula):
         return False
     formula = "".join(formula.split())
@@ -91,7 +95,6 @@ def is_conjunction(formula):
         formula = formula[1:-1]
     if not is_balanced_parentheses(formula):
         return False
-    
     # 对每个 ∧ 符号都进行检查
     for i in range(len(formula)):
         if formula[i] == '∧':
@@ -112,6 +115,8 @@ def is_conjunction(formula):
 
 # 判断一个公式是不是异或式
 def is_xor(formula):
+    if not '⊕' in formula:
+        return False
     if is_disjunction(formula) or is_implies(formula):
         return False
     formula = "".join(formula.split())
@@ -140,6 +145,8 @@ def is_xor(formula):
 
 # 判断一个公式是否是析取式
 def is_disjunction(formula):
+    if not '∨' in formula:
+        return False
     if is_implies(formula):
         return False
     formula = "".join(formula.split())
@@ -168,6 +175,8 @@ def is_disjunction(formula):
 
 # 判断一个公式是否是蕴含式
 def is_implies(formula):
+    if not '→' in formula:
+        return False
     if is_equi(formula):
         return False
     formula = "".join(formula.split())
@@ -175,7 +184,6 @@ def is_implies(formula):
         formula = formula[1:-1]
     if not is_balanced_parentheses(formula):
         return False
-    
     for i in range(len(formula)):
         if formula[i] == '→':
             left_formula = formula[:i].strip()
@@ -187,12 +195,15 @@ def is_implies(formula):
 
             if is_formula(left_formula) and is_formula(right_formula):
                 return (i, True)
+                # return True
     return False
 # is_implies(formula)
 
 
 # 判断一个公式是否是等价式
 def is_equi(formula):
+    if not '↔' in formula:
+        return False
     formula = "".join(formula.split())
     if contained(formula):
         formula = formula[1:-1]
@@ -215,6 +226,8 @@ def is_equi(formula):
 
 # 判断一个公式是否是存在式
 def is_existential(formula):
+    if not '∃' in formula:
+        return False
     formula = "".join(formula.split())
     if formula.startswith('(∃x)'):
         formula = formula[1:3] + formula[4:]
@@ -242,6 +255,8 @@ def is_existential(formula):
 
 # 判断一个公式是否是全称式
 def is_forall(formula):
+    if not '∀' in formula:
+        return False
     formula = "".join(formula.split())
     if formula.startswith('(∀x)') or formula.startswith('(∃x)'):
         formula = formula[1:3] + formula[4:]
@@ -294,3 +309,5 @@ def quelle(formula):
 # quelle(formula)
 
 
+if __name__ == "__main__":
+    pass

@@ -18,22 +18,6 @@ p_f_t = """# Role: Logic Translater
 (1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
 
 ## Attention
-### Usage of operator
-The use of quantifiers: 
-Quantifiers are used when a sentence obviously involves a class of things.
-However, when the sentence gives a specific person or a specific name, use constant instead of variable predicates to describe the a specific person or specific name.
-<NL>
-Human are good or bad.
-</NL>
-<FOL>
-∀ x Human(x) → Good(x) ⊕ Bad(x)
-</FOL>
-<NL>
-Lily is good or bad.
-</NL>
-<FOL>
-Good(Lily) ⊕ Bad(Lily)
-</FOL>
 ### Use of the xor formula Note: 
 Make sure that both cannot be used at the same time, such as happy or sad, man or woman, this should be used XOR.
 <NL>
@@ -52,29 +36,19 @@ naughty(John) ⊕ quiet(John)
 Sometimes, some predicates between some different sentences are different, but the word similarity is very high, you can consider these predicates unified into a word, which can ensure the accuracy of reasoning.
 <NL>
 Humans have two legs.
-An animal with 2 legs is a human.
+Animals with two feet can walk
+Humans can walk
 </NL>
 <FOL>
-∀ x Human (x) → Have2Legs (x)
-∃x With2Leg (x) → Human (x)
+∀x Human(x) → Have2Legs(x)
+∀x With2Feet(x) → walk(x)
+∀x Human(x) → walk(x)
 </FOL>
-In this example, the second line of With2Leg (x) can be unified into Have2Leg (x), which becomes
+In this example, the second line of With2Feet(x) can be unified into Have2Legs(x), which becomes
 <FOL>
-∀ x Human (x) → Have2Legs (x)
-∃X Have2Leg (x) → Human (x)
-</FOL>
-### Do not express negation in the predicate, but use non negation uniformly
-If the sentence is negative, use the non-negation predicate to express it.
-<NL>
-If a person is not good, he is bad.
-</NL>
-Use non-negation to express it:
-<FOL>
-∀ x ¬ Good(x) → Bad(x)
-</FOL>
-Rather than
-<FOL>
-∀ x NotGood(x) → Bad(x)
+∀x Human(x) → Have2Legs(x)
+∀x Have2Legs(x) → walk(x)
+∀x Human(x) → walk(x)
 </FOL>
 ### Discourse domain issues:
 The discourse domain refers to the set of all the individuals involved in a predicate. In different sentences, the discourse domain may be different, which can lead to inaccuracy in reasoning. Consider unifying the discourse domains in different sentences to ensure the accuracy of reasoning.
@@ -124,14 +98,15 @@ Snapdragon(XiaoMi13) ∧ Android(XiaoMi13)
 <FOL>
 {fol_premises}
 </FOL>
-## Current task:
-Let's think step by step.
-Firstly, repy your analysis of current task: `{cur_premise}`.
-The attention mentioned before is what you need to consider in your analysis.
-If the <FOL> tag is not empty,consider the whole context to ensure constants and predicates are the same.
-If you use pre-existing predicates, keep the number of predicates arguments you use the same as before. Here are some templates used
+If the `<FOL>` tag is not empty,consider the whole context to ensure constants and predicates are the same.
+If you use pre-existing predicates, keep the number of predicates arguments you use the same as before.
+```pre-existing predicates templates
 {p_info}
-Secondly, reply one formula of this task in <FOL> tag.
+```
+## Current task:
+Firstly, analyse current task: `{cur_premise}` with `Attention` and `Example to learn`.
+Secondly, reply one formula of this task in `<FOL>` tag.
+Let's think step by step.
 """
 
 p_f_f = """# Role: Logic Corrector
@@ -153,15 +128,14 @@ p_f_f = """# Role: Logic Corrector
 {fol_premises}
 </FOL>
 ## Current task:
-Let's think step by step.
-
 Firstly,follow the rules above and show me your analysis of fixing current task: `{cur_premise}`.
 Here are some infomation about what you need to fix:
 
 {error_msg}
 
 Secondly, use <FOL> and </FOL> to wrap the FOL formulas.
-Only one line of FOL formula without other description is allowed in the tag."""
+Only one line of FOL formula without other description is allowed in the tag.
+Let's think step by step."""
 
 
 def process(
