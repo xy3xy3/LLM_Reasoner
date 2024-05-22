@@ -23,15 +23,7 @@ def process(
     for predicate in result:
         prompt = origin.format(predicate=predicate, Predicate=predicate.capitalize())
         print(f"quering {predicate}.....")
-        response = client.chat.completions.create(
-            model="deepseek-chat",
-            messages= [
-                {"role": "user", "content": prompt},
-            ],
-            # max_tokens=1000,
-            temperature=1
-        )
-        answer = response.choices[0].message.content
+        answer = llm_send(prompt, "")
         is_noun_list = re.findall(r'<bool>(.*?)</bool>', answer)
         if is_noun_list and is_noun_list[0].strip().lower() == "true":
             is_noun = True
