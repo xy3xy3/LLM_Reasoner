@@ -255,15 +255,18 @@ def merge_temporary_files(temp_output_paths, final_output_path):
                 final_file.write(temp_file.read())
             os.remove(temp_path)
 if __name__ == "__main__":
-    merge_files()
-    # 6个进程并行处理
-    # run_parallel(0,0,16)
+    # 检测有./log/part_0.jsonl
+    if os.path.exists("./log/part_0.jsonl"):
+        merge_files()
+        run_rest(1,6)
+    else:
+        # 6个进程并行处理
+        run_parallel(0,0,6)
     # 4个进程并行处理
     # run_parallel(20,1,4)
     # run_single(0, 0)
     #单跑剩下
     # run_rest()
-    run_rest(1,1)
     # try_id(150)
     # try_list = [14, 15, 16, 23, 30, 31, 32, 34, 36, 40, 45, 49, 50, 51, 53, 62, 68, 70, 71, 77, 79, 80, 84, 85, 86, 87, 89, 92, 93, 100, 104, 108, 110, 111, 121, 123, 125, 139, 140, 153, 154, 155, 157, 159, 160, 162, 163, 165, 171]
     # try_id_parallel(try_list, 4)

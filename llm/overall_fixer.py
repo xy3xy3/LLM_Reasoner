@@ -97,7 +97,7 @@ def process(
 # </FOL>"""
 
     length = len(list_premises)
-    max_attempts = length * 2  # 最大尝试次数
+    max_attempts = length * 2 + 4  # 最大尝试次数
     send_attempts = 0  # 当前尝试次数
     err_msg = ""  # 错误信息
     while send_attempts < max_attempts:

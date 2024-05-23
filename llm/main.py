@@ -9,7 +9,7 @@ from .il_translator import process as il_process
 from .baseline import process as bl_process
 
 def send(data):
-    return send_err_fix(data)
+    return send_three_step(data)
 def send_baseline(data):
     id = data["id"]
     premises = "\n".join(data["premises"])

@@ -4,8 +4,12 @@ from .client import *
 from validator.formula_format import *
 from validator.auxiliary import contained
 from validator.fix_formula import get_param_from_list as arity_query
-origin = """Is '{predicate}' a noun?
-Can '{Predicate}(x)' be interpreted as "x is/are a/an/a piece of/a kind of(etc.) {predicate}", and mean "x is one of {predicate}?\". You only need to answer "True" or "False" and put it in the <bool></bool> tag, in the form of <bool>True</bool> or <bool>False</bool>."""
+origin = """Background nature language: {nl}
+Background formula: {formula}
+Is '{predicate}' a noun?
+Can '{Predicate}(x)' be interpreted as "x is/are a/an/a piece of/a kind of(etc.) {predicate}", and mean "x is one of {predicate}?\". 
+First analyze the meaning of the predicate.
+Then,you need to answer "True" or "False" and put it in the <bool></bool> tag, in the form of <bool>True</bool> or <bool>False</bool>."""
 
 def process(
     id: int,
@@ -21,7 +25,15 @@ def process(
     result = find_antecedent_predicates(list_res[:-1], list_res[-1])
     n_pre_set = set()
     for predicate in result:
-        prompt = origin.format(predicate=predicate, Predicate=predicate.capitalize())
+        # 查找predicate存在list_res的位置
+        nl = ""
+        formula = ""
+        for i in range(len(list_res)):
+            if predicate in list_res[i]:
+                nl = list_premises[i]
+                formula = full_premises[i]
+                break
+        prompt = origin.format(predicate=predicate, Predicate=predicate.capitalize(),nl=nl,formula=formula)
         # print(f"quering {predicate}.....")
         answer = llm_send(prompt, "")
         # print(answer)

@@ -94,10 +94,10 @@ def reason(
         cleanup_functions(created_functions)
         return False,f"{origin_conclusion}  {conclusion}, 添加结论异常: {e}"
 
-    print(premises)
-    print(conclusion)
+    # print(premises)
+    # print(conclusion)
     result = solver.check()
-    print(solver)
+    # print(solver)
     del solver
     if result == unsat:
         # proof = solver.proof()

@@ -18825,3 +18825,209 @@ Secondly, reply one formula of this task in `<FOL>` tag.
 Let's think step by step.
 
 Error code: 402 - {'detail': 'Insufficient Balance'}
+# Role: Logic Translater
+## For FOL rule generation
+1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence)
+2. You *SHOULD NEVER USE* the following symbols for FOL: "", "̸=", "%", "=" 
+3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 
+4. The FOL rule SHOULD ACCURATELY reflect the meaning of the NL statement 
+5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 
+6. You SHOULD generate FOL rules with either: 
+(1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
+## Example to learn
+<NL>
+All customers who are subscribed to AMC List are available to watch 3 movies every week without any additional fees. 
+Some customers go to cinemas every week
+Customers either subscribe to AMC service or HBO service. 
+Customers who prefer TV series more and will not watch TV series in cinemas.
+All customers who subscribe to HBO services prefer TV series to movies. 
+James watches TV series in cinemas. 
+</NL>
+<FOL>
+∀x (AMC(x) → ThreeMovies(x))
+∃x (CinemaEveryWeek(x))
+∀x (AMC(x) ∨ HBO(x))
+∀x (PreferTVSeries(x) → ¬WatchTVInCinema(x))
+∀x (HBO(x) → PreferTVSeries(x))
+WatchTVInCinema(james)
+</FOL>
+
+<NL>
+If a customer subscribes to AMC A List, then he/she can watch 3 movies every week without any additional fees. 
+Some customers go to cinemas every week. 
+Customers who prefer TV series will not watch TV series in cinemas.
+James watches TV series in cinemas. 
+James subscribes to AMC A List.
+Peter prefers TV series.
+</NL>
+<FOL>
+∀x (SubscribedTo(x, amcalist) → ThreeMovies(x) ∧ NoFees(x))
+∃x (CinemaEveryWeek(x))
+∀x (Prefer(x, tvseries) → ¬WatchTVIn(x, cinemas))
+WatchTVIn(james, cinemas)
+SubscribedTo(james, amcalist)
+Prefer(peter, tvseries)
+</FOL>
+
+<NL>
+People either order a lot of Amazon packages or are environmentally conscious.
+If people order a lot of Amazon packages, then they get a lot of daily mail delivered.
+If people are environmentally conscious, then they have solar panels in their homes.
+If people get a lot of daily mail delivered, then they are very involved with their neighborhood.
+If people have solar panels in their homes, then they save a lot of money.
+If Marcy either gets a lot of mail and is very involved with her neighborhood or if she does not order a lot of Amazon packages nor is very involved with her neighborhood, then Marcy does not both get a lot of daily mail and order a lot of Amazon packages. 
+</NL>
+<FOL>
+∀x (Amazon(x) ⊕ Environmental(x))
+∀x (Amazon(x) → DailyMail(x))
+∀x (Environmental(x) → Solar(x))
+∀x (DailyMail(x) → Neighborhood(x))
+∀x (Solar(x) → SaveMoney(x))
+¬(DailyMail(marcy) ⊕ Neighborhood(marcy)) → (¬DailyMail(marcy) ∨ ¬Amazon(marcy))
+</FOL>
+
+<NL>
+John will go to the cinema if and only if Jack goes to the cinema today.
+Jack will go to the cinema if and only if Iron Man is on and the weather is not bad today.
+Some days in March have bad weather.
+Iron man is on.
+It's March now.
+</NL>
+<FOL>
+GoToTheCinema(john, today) ↔ GoToTheCinema(jack, today)
+GoToTheCinema(jack, today) ↔ (Movie(ironman) ∧ ¬BadWeather(today))
+∃x (Month(march) → BadWeather(x))
+Movie(ironman)
+Month(march)
+</FOL>
+## Current task:
+Convert the following 7 lines natural language sentences into 7 first-order logical formulas.
+<NL>
+"Stranger Things" is a popular Netflix show.
+If a Netflix show is popular, Karen will binge-watch it.
+If and only if Karen binge-watches a Netflix show, she will download it.
+Karen does not download "Black Mirror".
+"Black Mirror" is a Netflix show.
+If Karen binge-watches a Netflix show, she will share it to Lisa.
+Karen will share "Stranger Things" to Lisa.
+</NL>
+## Output format
+Use <FOL> and </FOL> to wrap the FOL formulas.
+The formulas you output in the <FOL> tag should correspond line by line with the content in the <NL> tag.
+Each line in the tag should be a single FOL formula.
+You can analyze task during your output.But don't use natural language in the final <FOL> tag.
+
+Let's think step by step.
+
+<html>
+<head><title>502 Bad Gateway</title></head>
+<body>
+<center><h1>502 Bad Gateway</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+# Role: Logic Translater
+## For FOL rule generation
+1. You SHOULD USE the following logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence)
+2. You *SHOULD NEVER USE* the following symbols for FOL: "", "̸=", "%", "=" 
+3. The literals in FOL SHOULD ALWAYS have predicate and entities, e.g., "Rounded(x, y)" or "City(guilin)"; expressions such as "y = a ∨ y = b" or "a ∧ b ∧ c" are NOT ALLOWED 
+4. The FOL rule SHOULD ACCURATELY reflect the meaning of the NL statement 
+5. You SHOULD ALWAYS put quantifiers and variables at the beginning of the FOL 
+6. You SHOULD generate FOL rules with either: 
+(1) no variables; (2) one variable "x"; (3) two variables "x", "y"; or (4) three variables "x", "y" and "z"
+## Example to learn
+<NL>
+All people who attend weddings are getting married or have friends who are getting married.
+No preteens and other young children are getting married or have friends who are getting married.
+If people enjoy celebrating life milestone events with other people, then they attend weddings.
+If people are fond of large organized group functions, then they enjoy celebrating life milestone events with other people.
+All people who are outgoing and very spirited are fond of large organized group functions.
+If Carol is not both a pre-teen or other young child and attends weddings, then Carol is not getting married or has friends who are getting married.  
+</NL>
+<FOL>
+∀x Weddings(x) → GettingMarried(x)
+∀x PreTeen(x) → ¬GettingMarried(x)
+∀x Celebrating(x) → Weddings(x)
+∀x LargeGathering(x) → Celebrating(x)
+∀x Outgoing(x) → LargeGathering(x)
+¬(PreTeen(Carol) ∧ Weddings(Carol)) → ¬GettingMarried(Carol)
+</FOL>
+
+<NL>
+All young working professionals who have regular 9-5 jobs also have pets.
+Some people who live in Manhattan are young working professionals who have regular 9-5 jobs.
+All people who have pets are people who have at least one child.
+People who do not have at least one child are people who own a sports car.
+Mary either does not own a sports car or, if they do, then they do not have at least one child.
+</NL>
+<FOL>
+∀x (Working(x) → Pets(x))
+∃x (Manhattan(x) ∧ Working(x))
+∀x (Pets(x) → Child(x))
+∀x (Child(x) → ¬Car(x))
+¬(Car(mary) ⊕ Child(mary))
+</FOL>
+
+<NL>
+Either present their work at the conference or provide a tutorial session at the conference. 
+All who present their work at the conference will attend in person. 
+All those providing a tutorial session at the conference are invited to join the club. 
+All who attend the conference in person are provided with souvenirs. 
+All invited to join the club are provided with delicious meals. 
+All provided with delicious meals are happy to communicate with each other during the dinner. 
+All provided with delicious meals are invited to take a photo with the audience. 
+James does not attend the conference in person and is not provided with souvenirs.
+</NL>
+<FOL>
+∀x ( Present(x) ∨ Tutorial(x))
+∀x (Present(x) → InPerson(x))
+∀x (Tutorial(x) → Invited(x))
+∀x (InPerson(x) → Souvenirs(x))
+∀x (Invited(x) → Meals(x))
+∀x (Meals(x) → HappyCommunicate(x))
+∀x (Meals(x) → InvitedTakePhoto(x))
+¬(InPerson(james) ∧ Souvenirs(james))
+</FOL>
+
+<NL>
+If people eat cereal and milk every day for breakfast, then they have very busy morning schedules every day.
+All young children below the age of ten eat cereal and milk every day for breakfast.
+People are either young children below the age of ten or have a lot of commitments they voluntarily signed up for.
+If people have a lot of commitments they voluntarily signed up for, then they are hardworking individuals with high ambitions and goals for the future.
+If people are hardworking individuals with high ambitions and goals for the future, then they are not good at staying organized and motivated.
+John either is both a hardworking individual with high ambitions and goals for the future and has busy morning schedules every day, or he is neither a hardworking individual with high ambitions and goals for the future nor does he have a busy morning schedule every day.
+</NL>
+<FOL>
+∀x (Cereal(x) → BusyMorning(x))
+∀x (YoungChildren(x) → BusyMorning(x))
+∀x (YoungChildren(x) ⊕ Committments(x))
+∀x (Committments(x) → Hardworking(x))
+∀x (Hardworking(x) → ¬Organized(x))
+(Hardworking(john) ∧ BusyMorning(john)) ⊕ (¬Hardworking(john) ∧ ¬BusyMorning(john))
+</FOL>
+## Current task:
+Convert the following 7 lines natural language sentences into 7 first-order logical formulas.
+<NL>
+All people who have a wedding are people who have at least one child.
+All people who travel to Paris for their honeymoon are people who have a wedding.
+All weddings that occur in July belong to people who travel to Paris for their honeymoon.
+Some weddings in July are well-attended.
+If John has at least one child, then John does not travel to Paris for his honeymoon and does not have a wedding.
+If John has a wedding that is well-attended, then John has a wedding in July or, if not, then John travels to Paris for their honeymoon. 
+John has at least one child.
+</NL>
+## Output format
+Use <FOL> and </FOL> to wrap the FOL formulas.
+The formulas you output in the <FOL> tag should correspond line by line with the content in the <NL> tag.
+Each line in the tag should be a single FOL formula.
+You can analyze task during your output.But don't use natural language in the final <FOL> tag.
+
+Let's think step by step.
+
+<html>
+<head><title>502 Bad Gateway</title></head>
+<body>
+<center><h1>502 Bad Gateway</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
