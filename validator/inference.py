@@ -80,7 +80,6 @@ def reason(
     created_functions = create_functions(predicates_dict)
     x, y, z = Int("x"), Int("y"), Int("z")
     u, v, w = Int("u"), Int("v"), Int("w")
-
     for i, premise in enumerate(premises):
         premise = replace_const(premise, constants_dict)
         try:
@@ -95,6 +94,8 @@ def reason(
         cleanup_functions(created_functions)
         return False,f"{origin_conclusion}  {conclusion}, 添加结论异常: {e}"
 
+    print(premises)
+    print(conclusion)
     result = solver.check()
     print(solver)
     del solver
@@ -123,8 +124,7 @@ def inference(instance):
     predicates_dict = extract_predicates(instance["conclusion-AI"], predicates_dict)
     premises = translate_premises(instance["response"])
     conclusion = translate(instance["conclusion-AI"].replace(".", ""))
-    print(constants_dict)
-    print(predicates_dict)
+    print("常量",constants_dict,"谓词",predicates_dict)
     case1, proof1 = reason(
         premises,
         conclusion,

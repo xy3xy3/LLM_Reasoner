@@ -1,11 +1,68 @@
 # 可能之后改成专门修复特定问题
 # 修复同义词替换
 from .client import *
-from validator.formula_format import *
-from validator.auxiliary import contained
-from validator.fix_formula import get_param_from_list as arity_query
-origin = """Is '{predicate}' a noun?
-Can '{Predicate}(x)' be interpreted as "x is/are a/an/a piece of/a kind of(etc.) {predicate}", and mean "x is one of {predicate}?\". You only need to answer "True" or "False" and put it in the <bool></bool> tag, in the form of <bool>True</bool> or <bool>False</bool>."""
+from .domain_fixer import process as domain_process
+origin = """You are a good logic formula error finder!
+# Example
+The formulas are first-order logic formulas.Here are logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence)
+Giving some formulas, you need to identify which type of the error is in the formula.
+The types of errors are as follows:
+## id:1
+Domain Variable Meaning and Predicate Meaning Repetition
+<NL>
+All new iPhones are very expensive.
+Some phones use MediaTek chips.
+All iPhones use the iOS system.
+A phone is either an Android system or an iOS system.
+If a phone uses a Snapdragon chip, then it must be an Android system.
+XiaoMi13 use Android system and Snapdragon chip.
+</NL>
+<FOL>
+∀x (new(x) ∧  Iphone(x)) → Expensive(x)
+∃x MobilePhone(x) → MediaTek(x)
+∀x Iphone(x) → iOS(x)
+∀x Android(x) ⊕ iOS(x)
+∀x (Snapdragon(x) → Android(x))
+Snapdragon(XiaoMi13) ∧ Android(XiaoMi13)
+</FOL>
+The 1,3,4,5 sentences have the same domain which is mobile phone.
+So we can turn the 2nd sentence's domain from device to mobile phone.
+And remove the predicate "MobilePhone"
+After fixed:
+<FOL>
+∀x (new(x) ∧  Iphone(x)) → Expensive(x)
+∃x MediaTek(x)
+∀x Iphone(x) → iOS(x)
+∀x Android(x) ⊕ iOS(x)
+∀x (Snapdragon(x) → Android(x))
+Snapdragon(XiaoMi13) ∧ Android(XiaoMi13)
+</FOL>
+## id:2
+Inconsistent naming of contextual predicates
+<NL>
+All electric cars use batteries.
+All recharging stations provide electricity.
+Any battery cars requires recharging.
+</NL>
+<FOL>
+∀x (ElectricCar(x) → UsesBatteries(x))
+∀x (RechargingStation(x) → ProvidesElectricity(x))
+∀x (BatteryCar(x) → RequiresRecharging(x))
+</FOL>
+In order to make the formula consistent, we need to change the predicate "BatteryCar" to "UsesBatteries"
+<FOL>
+∀x (ElectricCar(x) → UsesBatteries(x))
+∀x (RechargingStation(x) → ProvidesElectricity(x))
+∀x (UsesBatteries(x) → RequiresRecharging(x))
+</FOL>
+# Current tasks
+You should indentify the following types of errors with tag `<type>id</type>`:
+<NL>\n{full_premises}\n</NL>
+<FOL>\n{str_res}\n</FOL>
+Only reply one type of id, and put it in the <type></type> tag, in the form of <type>id</type>.
+If no specific error is found, reply "<type>0</type>".
+"""
+
 
 def process(
     id: int,
@@ -18,74 +75,17 @@ def process(
 ):
     global origin
     print(f"ID{id}错误修复")
-    result = find_antecedent_predicates(list_res[:-1], list_res[-1])
-    n_pre_set = set()
-    for predicate in result:
-        prompt = origin.format(predicate=predicate, Predicate=predicate.capitalize())
-        print(f"quering {predicate}.....")
-        answer = llm_send(prompt, "")
-        # print(answer)
-        is_noun_list = re.findall(r'<bool>(.*?)</bool>', answer)
-        if is_noun_list and is_noun_list[0].strip().lower() == "true":
-            n_pre_set.add(predicate)
-    for res in n_pre_set:
-        list_res.append(f"∀x ({res}(x))")
-    str_res = " ".join(list_res)
-    return str_res, list_res
-
-# 查找前提前件谓词
-def find_antecedent_predicates(premises, conclusion):
-    pattern = r"[A-Z][a-zA-Z0-9]*\("
-
-    antecedent_ps = set()   # 前提前件谓词
-    unantecede_ps = set()   # 前提非前件谓词
-    conclusion_ps = set()   # 结论谓词
-    prohibit = set()
-    predicates, _ = arity_query(premises)
-
-    for premise in premises:
-        print(premise)
-        if not is_formula(premise):
-            return set()
-        premise = premise.replace(' ', '')
-        if contained(premise):
-            premise = premise[1:-1]
-        
-        if is_forall(premise) or is_existential(premise):
-            premise = premise[2:]
-            if contained(premise):
-                premise = premise[1:-1]
-
-            implies_result = is_implies(premise)
-            if implies_result:
-                connective, _ = implies_result
-                antecedent = premise[:connective]
-                consequent = premise[connective+1:]
-                antecedent_prds = re.findall(pattern, antecedent)
-                consequent_ps = re.findall(pattern, consequent)
-                for predicate in antecedent_prds:
-                    antecedent_ps.add(predicate.rstrip('('))
-                for predicate in consequent_ps:
-                    unantecede_ps.add(predicate.rstrip('('))
-                if (len(antecedent_prds) == 1 and len(consequent_ps) == 1):
-                    prohibit.add(antecedent_prds[0].rstrip('('))
-            else:
-                un_implies_pres = re.findall(pattern, premise)
-                for predicate in un_implies_pres:
-                    unantecede_ps.add(predicate.rstrip('('))
-        else:
-            un_implies_pres = re.findall(pattern, premise)
-            for predicate in un_implies_pres:
-                unantecede_ps.add(predicate.rstrip('('))
-
-    print(f"conclusion = {conclusion}")
-    conclu_pres = re.findall(pattern, conclusion)
-    for predicate in conclu_pres:
-        conclusion_ps.add(predicate.rstrip('('))
-
-    resultt = antecedent_ps.difference(unantecede_ps).difference(conclusion_ps).difference(prohibit)
-    result = set()
-    for predicate in resultt:
-        if predicates[predicate] == 1:
-            result.add(predicate)
-    return result
+    prompt = origin.format(full_premises=full_premises, str_res=str_res)
+    raw_response = llm_send(prompt, "")
+    res = re.findall(r'<type>(.*?)</type>', raw_response)
+    # raw_response=""
+    # res = ["1"]
+    if not res or res[0] == "0":
+        return str_res, list_res
+    print(f"{full_premises}\n {str_res}\n 错误修复结果：{raw_response}")
+    if res[0] == "1":
+        # 调用论域修复
+        return domain_process(id, full_premises, list_premises, k_list, k_dict, str_res, list_res)
+    if res[0] == "2":
+        # 调用同义词修复
+        pass
