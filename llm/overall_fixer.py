@@ -48,10 +48,10 @@ def process(
     global origin
     print(f"ID{id}整体修复")
     # 从k_dict获取整体的知识
-    # knowledge = ""
-    # for key, value in k_dict.items():
-    #    knowledge += f"Examples for `{key}`\n"+ "\n".join(value) + "\n"
     knowledge = "\n".join(k_dict[full_premises])
+    for key, value in k_dict.items():
+      #只取两条
+      knowledge += f"Examples for `{key}`\n"+ "\n".join(value) + "\n"
 #     knowledge = """
 # <NL>
 # All people who regularly drink coffee are dependent on caffeine.

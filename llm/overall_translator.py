@@ -61,9 +61,10 @@ def process(
     global origin
     # 遍历每一个list在k_dict构建提示
     #  knowledge = ""
-    #  for key, value in k_dict.items():
-    #     knowledge += f"Examples for `{key}`\n"+ "\n".join(value) + "\n"
     knowledge = "\n".join(k_dict[full_premises])
+    for key, value in k_dict.items():
+      #只取两条
+      knowledge += f"Examples for `{key}`\n"+ "\n".join(value) + "\n"
 #     knowledge = """
 # <NL>
 # All people who regularly drink coffee are dependent on caffeine.
@@ -111,7 +112,7 @@ def process(
         knowledge=knowledge, length=len(list_premises), full_premises=full_premises
     )
     print(f"ID{id}总体翻译 {datetime.datetime.now()}: \n{prompt}")
-    raw_response = llm_send(prompt, "")
+    raw_response = llm_send(prompt, "", 0)
     print(raw_response)
     if raw_response == "":
         return f"ID{id}回复为空", []

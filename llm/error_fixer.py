@@ -2,6 +2,7 @@
 # 修复同义词替换
 from .client import *
 from .domain_fixer import process as domain_process
+from .consistent_fixer import process as consistent_process
 origin = """You are a good logic formula error finder!
 # Example
 The formulas are first-order logic formulas.Here are logical operators: ⊕ (either or), ∨ (disjunction), ∧ (conjunction), → (implication), ∀ (universal), ∃ (existential), ¬ (negation), ↔ (equivalence)
@@ -88,4 +89,4 @@ def process(
         return domain_process(id, full_premises, list_premises, k_list, k_dict, str_res, list_res)
     if res[0] == "2":
         # 调用同义词修复
-        pass
+        return consistent_process(id, full_premises, list_premises, k_list, k_dict, str_res, list_res)

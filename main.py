@@ -19,26 +19,26 @@ def process_data_baseline(line):
 def process_normal(line):
     data = json.loads(line)
     # 尝试更多次
-    for i in range(1):
-        print("开始执行：", data["id"], " 时间：", datetime.datetime.now())
-        res = send(data)
-        print(res)
-        if len(res) == 0:
-            return ""
-        data["conclusion-AI"] = res[-1]
-        data["response"] = res[:-1]
-        predicates, constants = get_param_from_list(res)
-        # 只取keys，获取str的predicates
-        predicates = list(predicates.keys())
-        data["predicates-AI"] = " ".join(predicates)
-        # list变成str
-        data["constants-AI"] = " ".join(constants)
-        label, errmsg = inference(data)
-        data["label-AI"] = label
-        data["errmsg"] = errmsg
-        data["same"] = data["label-AI"] == data["label"]
-        if label != "Unknown":
-            break
+    # for i in range(1):
+    print("开始执行：", data["id"], " 时间：", datetime.datetime.now())
+    res = send(data)
+    print(res)
+    if len(res) == 0:
+        return ""
+    data["conclusion-AI"] = res[-1]
+    data["response"] = res[:-1]
+    predicates, constants = get_param_from_list(res)
+    # 只取keys，获取str的predicates
+    predicates = list(predicates.keys())
+    data["predicates-AI"] = " ".join(predicates)
+    # list变成str
+    data["constants-AI"] = " ".join(constants)
+    label, errmsg = inference(data)
+    data["label-AI"] = label
+    data["errmsg"] = errmsg
+    data["same"] = data["label-AI"] == data["label"]
+    # if label != "Unknown":
+    #     break
     return json.dumps(data)
 # 处理数据
 def process_data(line):
@@ -136,15 +136,26 @@ def run_parallel(num_lines=0, r=False, num_processes=8):
             os.remove(temp_path)
 # 合并所有文件
 def merge_files():
-    #查找log所有带part_的合并到res
     path = "./log"
     files = os.listdir(path)
+    combined_data = {}
+
+    # Read each temporary file and store the data in a dictionary
+    for file in files:
+        if "part_" in file:
+            with open(f"{path}/{file}", "r", encoding="utf-8") as infile:
+                for line in infile:
+                    data = json.loads(line)
+                    combined_data[data["id"]] = data
+            os.remove(f"{path}/{file}")
+
+    # Sort the combined data by ID
+    sorted_data = sorted(combined_data.values(), key=lambda x: x["id"])
+
+    # Write the sorted and deduplicated data to the final output file
     with open("./log/res.jsonl", "a", encoding="utf-8") as outfile:
-        for file in files:
-            if "part_" in file:
-                with open(f"{path}/{file}", "r", encoding="utf-8") as infile:
-                    outfile.write(infile.read())
-                os.remove(f"{path}/{file}")
+        for data in sorted_data:
+            outfile.write(json.dumps(data) + "\n")
 
 def process_data_chunk(args):
     chunk, temp_output_path = args
@@ -258,10 +269,10 @@ if __name__ == "__main__":
     # 检测有./log/part_0.jsonl
     if os.path.exists("./log/part_0.jsonl"):
         merge_files()
-        run_rest(1,6)
+        run_rest(1,12)
     else:
         # 6个进程并行处理
-        run_parallel(0,0,6)
+        run_parallel(0,0,12)
     # 4个进程并行处理
     # run_parallel(20,1,4)
     # run_single(0, 0)

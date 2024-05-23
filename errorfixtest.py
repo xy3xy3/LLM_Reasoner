@@ -4,7 +4,7 @@ from llm.error_fixer import process
 from validator.fix_formula import get_param_from_list
 from validator.inference import inference
 
-input_name = "./log/deepseek-迭代修复.jsonl"
+input_name = "./log/deepseek-最新迭代180个例子无error.jsonl"
 output_name = "./log/fix.jsonl"
 
 def try_id(id: int):
@@ -44,7 +44,7 @@ with open(input_name, "r", encoding="utf-8") as infile, open(
     lines = sorted(lines, key=lambda x: len(json.loads(x)["premises"]))
     for line in lines:
         data = json.loads(line)
-        if data["same"] or data['id']==155:
+        if data["same"]:
             continue
         list_premises = data["premises"]
         list_premises.append(data["conclusion"])
@@ -66,6 +66,6 @@ with open(input_name, "r", encoding="utf-8") as infile, open(
         outfile.write(json.dumps(data) + "\n")
         outfile.flush()
         print(f"ID{data['id']}修复完成 修复结果：{data['same']}")
-        break
+        
 
 # try_id(10)

@@ -20,6 +20,8 @@ def read_files() -> list:
     current_dir = os.path.dirname(__file__)
     log_dir = os.path.join(current_dir, '../log')
     files = os.listdir(log_dir)
+    # 去除文件夹
+    files = [file for file in files if os.path.isfile(os.path.join(log_dir, file))]
     return files
 
 def read_file(file_name: str) -> str:

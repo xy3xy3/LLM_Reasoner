@@ -1,18 +1,33 @@
 {
-  "story_id": 153,
-  "example_id": 447,
-  "conclusion": "You can not play games on a phone.",
   "premises": [
-    "A laptop is a computer.",
-    "You can play games on a computer.",
-    "A phone is not a computer."
+    "If people perform in school talent shows often, then they attend and are very engaged with school events.",
+    "People either perform in school talent shows often or are inactive and disinterested members of their community.",
+    "If people chaperone high school dances, then they are not students who attend the school.",
+    "All people who are inactive and disinterested members of their community chaperone high school dances.",
+    "All young children and teenagers who wish to further their academic careers and educational opportunities are students who attend the school.",
+    "Bonnie either both attends and is very engaged with school events and is a student who attends the school, or she neither attends and is very engaged with school events nor is a student who attends the school. "
   ],
   "premises-FOL": [
-    "∀x (Laptop(x) → Computer(x))",
-    "∀x (Computer(x) → CanPlayGames(x))",
-    "∀x (Phone(x) → ¬Computer(x))",
-    ""
+    "\u2200x (TalentShows(x) \u2192 Engaged(x))",
+    "\u2200x (TalentShows(x) \u2228 Inactive(x))",
+    "\u2200x (Chaperone(x) \u2192 \u00acStudents(x))",
+    "\u2200x (Inactive(x) \u2192 Chaperone(x))",
+    "\u2200x (AcademicCareer(x) \u2192 Students(x))",
+    "(Engaged(bonnie) \u2227 Students(bonnie)) \u2295 (\u00acEngaged(bonnie) \u2227 \u00acStudents(bonnie))"
   ],
+  "conclusion": "Bonnie performs in school talent shows often.",
+  "conclusion-FOL": "Engaged(bonnie)",
   "label": "Unknown",
-  "source": "wiki"
+  "id": 1,
+  "conclusion-AI": "PerformInTalentShows(bonnie)",
+  "response": [
+    "\u2200x (PerformInTalentShows(x) \u2192 AttendAndEngaged(x))",
+    "\u2200x (PerformInTalentShows(x) \u2228 InactiveDisinterested(x))",
+    "\u2200x (ChaperoneDance(x) \u2192 \u00acStudent(x))",
+    "\u2200x (InactiveDisinterested(x) \u2192 ChaperoneDance(x))",
+    "\u2200x (YoungChildTeen(x) \u2227 FurtherAcademicCareers(x) \u2192 Student(x))",
+    "AttendAndEngaged(bonnie) \u2227 Student(bonnie) \u2228 \u00ac(AttendAndEngaged(bonnie) \u2227 Student(bonnie))"
+  ],
+  "predicates-AI": "PerformInTalentShows AttendAndEngaged InactiveDisinterested ChaperoneDance Student YoungChildTeen FurtherAcademicCareers",
+  "constants-AI": "bonnie bonnie bonnie bonnie bonnie"
 }
