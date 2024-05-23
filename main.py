@@ -267,12 +267,13 @@ def merge_temporary_files(temp_output_paths, final_output_path):
             os.remove(temp_path)
 if __name__ == "__main__":
     # 检测有./log/part_0.jsonl
-    if os.path.exists("./log/part_0.jsonl"):
-        merge_files()
-        run_rest(1,12)
-    else:
-        # 6个进程并行处理
-        run_parallel(0,0,12)
+    # if os.path.exists("./log/part_0.jsonl"):
+    #     merge_files()
+    #     run_rest(1,12)
+    # else:
+    #     # 6个进程并行处理
+    #     run_parallel(0,0,12)
+    run_rest(1,4)
     # 4个进程并行处理
     # run_parallel(20,1,4)
     # run_single(0, 0)

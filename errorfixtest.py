@@ -1,10 +1,11 @@
 # 测试error_fix的有效性
 import json
-from llm.error_fixer import process
+from llm.error_fixer import process as error_fixer
+from llm.domain_fixer import process as domain_fixer
 from validator.fix_formula import get_param_from_list
 from validator.inference import inference
 
-input_name = "./log/deepseek-最新迭代180个例子无error.jsonl"
+input_name = "./log/5-23-dp-rag迭代.jsonl"
 output_name = "./log/fix.jsonl"
 
 def try_id(id: int):
@@ -44,15 +45,15 @@ with open(input_name, "r", encoding="utf-8") as infile, open(
     lines = sorted(lines, key=lambda x: len(json.loads(x)["premises"]))
     for line in lines:
         data = json.loads(line)
-        if data["same"]:
-            continue
+        # if data["same"]:
+        #     continue
         list_premises = data["premises"]
         list_premises.append(data["conclusion"])
         full_premises = "\n".join(list_premises)
         list_res = data["response"]
         list_res.append(data["conclusion-AI"])
         str_res = "\n".join(list_res)
-        str_res,list_res = process(data["id"],full_premises,list_premises,[],{},str_res,list_res)
+        str_res,list_res = domain_fixer(data["id"],full_premises,list_premises,[],{},str_res,list_res)
         data["conclusion-AI"] = list_res[-1]
         data["response"] = list_res[:-1]
         predicates, constants = get_param_from_list(list_res)
