@@ -1,3 +1,4 @@
+from validator.fix_formula import check_predicate_consistency
 from .client import *
 origin = """You are a good logic formula error fixer!
 # Instructions
@@ -57,6 +58,7 @@ The term "MortalBeing" is introduced without a clear linkage to "Mortal".
 # Current tasks
 <NL>\n{full_premises}\n</NL>
 <FOL>\n{str_res}\n</FOL>
+{errmsg}
 ## Output format
 Use <FOL> and </FOL> to wrap the FOL formulas after fixed.
 Let's think step by step.
@@ -74,7 +76,9 @@ def process(
 ):
     global origin
     print(f"ID{id}错误修复")
-    prompt = origin.format(full_premises=full_premises, str_res=str_res)
+    f, errmsg = check_predicate_consistency(list_res, True)
+    prompt = origin.format(full_premises=full_premises, str_res=str_res, errmsg=errmsg)
+    print(prompt)
     raw_response = llm_send(prompt, "")
     if raw_response == "":
         return f"ID{id}回复为空", []

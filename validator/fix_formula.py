@@ -77,7 +77,7 @@ def find_singel_predicate(expressions: list):
         return f"""Predicates that occur only once: {single_details}"""
     else:
         return ""
-def check_predicate_consistency(expressions: list):
+def check_predicate_consistency(expressions: list, occur_once: bool = False):
     predicate_usage_details = {}
     constant_list = list()
     for expression_id, expression in enumerate(expressions):
@@ -126,8 +126,8 @@ def check_predicate_consistency(expressions: list):
                     f"Predicate '{predicate}' has arity {count}. Predicates must have at most 2 arguments. A 3 arity predicates can be replaced by some 2 arity predicates.",
                 )
         # 只出现一次的谓词
-        # if len(usages) == 1:
-        #     single_occurrence_predicates.append((predicate, usages[0][0]))  # 记录谓词和其索引
+        if occur_once and len(usages) == 1:
+            single_occurrence_predicates.append((predicate, usages[0][0]))  # 记录谓词和其索引
 
         unique_arg_counts = set(count for _, count, _ in usages)
         if len(unique_arg_counts) > 1:
@@ -340,10 +340,10 @@ Based on the context to determine the correct way.""",
                 False,
                 f"Predicate '{predicate}' has inconsistent arity in premises and conclusion.",
             )
-    # 检查前提和结论的常元一致性
-    # for constant in c2:
-    #     if constant not in c1:
-    #         return False, f"Constant '{constant}' in conclusion(the last line) is not found in premises."
+    # 检查前提和结论的常元一致性 proofwriter无需检查
+    for constant in c2:
+        if constant not in c1:
+            return False, f"Constant '{constant}' in conclusion(the last line) is not found in premises."
     return True, ""
 
 def check_unnecessary_quantifiers(formula):

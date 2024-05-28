@@ -1,9 +1,7 @@
 import datetime
 from .client import *
 
-origin = """
-# Introduction
-This task requires an analysis of the logical connections between a series of premises and a specified conclusion to determine the validity of the conclusion. The analysis is grounded in first-order logic. The objective is to evaluate if the conclusion is logically supported by the premises provided. Please use <label></label> tags to categorize the final assessment of the conclusion as 'True', 'False', or 'Unknown', facilitating streamlined processing.
+origin = """This task requires an analysis of the logical connections between a series of premises and a specified conclusion to determine the validity of the conclusion. The analysis is grounded in first-order logic. The objective is to evaluate if the conclusion is logically supported by the premises provided. Please use <label></label> tags to categorize the final assessment of the conclusion as 'True', 'False', or 'Unknown', facilitating streamlined processing.
 
 # Task Description
 ## Input:
@@ -34,8 +32,8 @@ This task requires an analysis of the logical connections between a series of pr
    - Clearly state your final assessment of the conclusion. Encapsulate your decision ('True', 'False', or 'Unknown') within <label></label> tags for clarity.
    - Example: `<label>True</label>`
 
-# Example of Completion
-Let's break down the logical progression step by step to determine the accuracy of the conclusion. Remember, your final decision must be enclosed within <label></label> tags to enhance the model's result processing capability.
+Remember, your final decision must be enclosed within <label></label> tags to enhance the model's result processing capability.
+Let's think step by step.
 """
 
 

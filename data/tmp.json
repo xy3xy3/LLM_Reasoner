@@ -1,33 +1,202 @@
 {
-  "premises": [
-    "If people perform in school talent shows often, then they attend and are very engaged with school events.",
-    "People either perform in school talent shows often or are inactive and disinterested members of their community.",
-    "If people chaperone high school dances, then they are not students who attend the school.",
-    "All people who are inactive and disinterested members of their community chaperone high school dances.",
-    "All young children and teenagers who wish to further their academic careers and educational opportunities are students who attend the school.",
-    "Bonnie either both attends and is very engaged with school events and is a student who attends the school, or she neither attends and is very engaged with school events nor is a student who attends the school. "
-  ],
-  "premises-FOL": [
-    "\u2200x (TalentShows(x) \u2192 Engaged(x))",
-    "\u2200x (TalentShows(x) \u2228 Inactive(x))",
-    "\u2200x (Chaperone(x) \u2192 \u00acStudents(x))",
-    "\u2200x (Inactive(x) \u2192 Chaperone(x))",
-    "\u2200x (AcademicCareer(x) \u2192 Students(x))",
-    "(Engaged(bonnie) \u2227 Students(bonnie)) \u2295 (\u00acEngaged(bonnie) \u2227 \u00acStudents(bonnie))"
-  ],
-  "conclusion": "Bonnie performs in school talent shows often.",
-  "conclusion-FOL": "Engaged(bonnie)",
-  "label": "Unknown",
-  "id": 1,
-  "conclusion-AI": "PerformInTalentShows(bonnie)",
-  "response": [
-    "\u2200x (PerformInTalentShows(x) \u2192 AttendAndEngaged(x))",
-    "\u2200x (PerformInTalentShows(x) \u2228 InactiveDisinterested(x))",
-    "\u2200x (ChaperoneDance(x) \u2192 \u00acStudent(x))",
-    "\u2200x (InactiveDisinterested(x) \u2192 ChaperoneDance(x))",
-    "\u2200x (YoungChildTeen(x) \u2227 FurtherAcademicCareers(x) \u2192 Student(x))",
-    "AttendAndEngaged(bonnie) \u2227 Student(bonnie) \u2228 \u00ac(AttendAndEngaged(bonnie) \u2227 Student(bonnie))"
-  ],
-  "predicates-AI": "PerformInTalentShows AttendAndEngaged InactiveDisinterested ChaperoneDance Student YoungChildTeen FurtherAcademicCareers",
-  "constants-AI": "bonnie bonnie bonnie bonnie bonnie"
+  "id": "RelNeg-OWA-D0-4449",
+  "maxD": 3,
+  "NFact": 3,
+  "NRule": 8,
+  "theory": "The bald eagle is not rough. The bear does not need the bald eagle. The dog needs the bear. If someone is rough then they chase the bald eagle. If someone needs the bear then they are not blue. If the bear is nice then the bear chases the bald eagle. If someone eats the bald eagle then they are rough. If someone is cold and they chase the bear then the bear is rough. If someone eats the bear and they need the bear then the bear does not eat the bald eagle. If the dog is cold and the dog is nice then the dog eats the bald eagle. If someone needs the bear then they eat the bald eagle.",
+  "triples": {
+    "triple1": {
+      "text": "The bald eagle is not rough.",
+      "representation": "(\"bald eagle\" \"is\" \"rough\" \"-\")"
+    },
+    "triple2": {
+      "text": "The bear does not need the bald eagle.",
+      "representation": "(\"bear\" \"needs\" \"bald eagle\" \"-\")"
+    },
+    "triple3": {
+      "text": "The dog needs the bear.",
+      "representation": "(\"dog\" \"needs\" \"bear\" \"+\")"
+    }
+  },
+  "rules": {
+    "rule1": {
+      "text": "If someone is rough then they chase the bald eagle.",
+      "representation": "(((\"someone\" \"is\" \"rough\" \"+\")) -> (\"someone\" \"chases\" \"bald eagle\" \"+\"))"
+    },
+    "rule2": {
+      "text": "If someone needs the bear then they are not blue.",
+      "representation": "(((\"someone\" \"needs\" \"bear\" \"+\")) -> (\"someone\" \"is\" \"blue\" \"-\"))"
+    },
+    "rule3": {
+      "text": "If the bear is nice then the bear chases the bald eagle.",
+      "representation": "(((\"bear\" \"is\" \"nice\" \"+\")) -> (\"bear\" \"chases\" \"bald eagle\" \"+\"))"
+    },
+    "rule4": {
+      "text": "If someone eats the bald eagle then they are rough.",
+      "representation": "(((\"someone\" \"eats\" \"bald eagle\" \"+\")) -> (\"someone\" \"is\" \"rough\" \"+\"))"
+    },
+    "rule5": {
+      "text": "If someone is cold and they chase the bear then the bear is rough.",
+      "representation": "(((\"someone\" \"is\" \"cold\" \"+\") (\"someone\" \"chases\" \"bear\" \"+\")) -> (\"bear\" \"is\" \"rough\" \"+\"))"
+    },
+    "rule6": {
+      "text": "If someone eats the bear and they need the bear then the bear does not eat the bald eagle.",
+      "representation": "(((\"someone\" \"eats\" \"bear\" \"+\") (\"someone\" \"needs\" \"bear\" \"+\")) -> (\"bear\" \"eats\" \"bald eagle\" \"-\"))"
+    },
+    "rule7": {
+      "text": "If the dog is cold and the dog is nice then the dog eats the bald eagle.",
+      "representation": "(((\"dog\" \"is\" \"cold\" \"+\") (\"dog\" \"is\" \"nice\" \"+\")) -> (\"dog\" \"eats\" \"bald eagle\" \"+\"))"
+    },
+    "rule8": {
+      "text": "If someone needs the bear then they eat the bald eagle.",
+      "representation": "(((\"someone\" \"needs\" \"bear\" \"+\")) -> (\"someone\" \"eats\" \"bald eagle\" \"+\"))"
+    }
+  },
+  "questions": {
+    "Q1": {
+      "question": "The dog needs the bear.",
+      "answer": true,
+      "QDep": 0,
+      "QLen": 1,
+      "strategy": "proof",
+      "proofs": "[(triple3)]",
+      "representation": "(\"dog\" \"needs\" \"bear\" \"+\")",
+      "proofsWithIntermediates": [
+        { "representation": "triple3", "intermediates": [] }
+      ]
+    },
+    "Q2": {
+      "question": "The bear needs the bald eagle.",
+      "answer": false,
+      "QDep": 0,
+      "QLen": 1,
+      "strategy": "inv-proof",
+      "proofs": "[(triple2)]",
+      "representation": "(\"bear\" \"needs\" \"bald eagle\" \"+\")",
+      "proofsWithIntermediates": [
+        { "representation": "triple2", "intermediates": [] }
+      ]
+    },
+    "Q3": {
+      "question": "The bear is not rough.",
+      "answer": "Unknown",
+      "QDep": 2,
+      "QLen": "",
+      "strategy": "inv-rconc",
+      "proofs": "[@2: The bear is rough.[CWA. Example of deepest failure = (rule4 <- rule8 <- FAIL)]]",
+      "representation": "(\"bear\" \"is\" \"rough\" \"-\")"
+    },
+    "Q4": {
+      "question": "The bald eagle is cold.",
+      "answer": "Unknown",
+      "QDep": 0,
+      "QLen": "",
+      "strategy": "random",
+      "proofs": "[@0: The bald eagle is cold.[CWA. Example of deepest failure = (FAIL)]]",
+      "representation": "(\"bald eagle\" \"is\" \"cold\" \"+\")"
+    }
+  },
+  "allProofs": "@0: The bald eagle is not rough.[(triple1)] The bear does not need the bald eagle.[(triple2)] The dog needs the bear.[(triple3)] @1: The dog eats the bald eagle.[(((triple3) -> rule8))] The dog is not blue.[(((triple3) -> rule2))] @2: The dog is rough.[(((((triple3) -> rule8)) -> rule4))] @3: The dog chases the bald eagle.[(((((((triple3) -> rule8)) -> rule4)) -> rule1))]",
+  "proofDetails": [
+    {
+      "text": "The bald eagle is not rough.",
+      "QDep": 0,
+      "representation": "(\"bald eagle\" \"is\" \"rough\" \"-\")",
+      "proofsWithIntermediates": [
+        { "representation": "triple1", "intermediates": [] }
+      ]
+    },
+    {
+      "text": "The bear does not need the bald eagle.",
+      "QDep": 0,
+      "representation": "(\"bear\" \"needs\" \"bald eagle\" \"-\")",
+      "proofsWithIntermediates": [
+        { "representation": "triple2", "intermediates": [] }
+      ]
+    },
+    {
+      "text": "The dog needs the bear.",
+      "QDep": 0,
+      "representation": "(\"dog\" \"needs\" \"bear\" \"+\")",
+      "proofsWithIntermediates": [
+        { "representation": "triple3", "intermediates": [] }
+      ]
+    },
+    {
+      "text": "The dog eats the bald eagle.",
+      "QDep": 1,
+      "representation": "(\"dog\" \"eats\" \"bald eagle\" \"+\")",
+      "proofsWithIntermediates": [
+        {
+          "representation": "((triple3) -> (rule8 % int1))",
+          "intermediates": {
+            "int1": {
+              "text": "The dog eats the bald eagle.",
+              "representation": "(\"dog\" \"eats\" \"bald eagle\" \"+\")"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "text": "The dog is not blue.",
+      "QDep": 1,
+      "representation": "(\"dog\" \"is\" \"blue\" \"-\")",
+      "proofsWithIntermediates": [
+        {
+          "representation": "((triple3) -> (rule2 % int1))",
+          "intermediates": {
+            "int1": {
+              "text": "The dog is not blue.",
+              "representation": "(\"dog\" \"is\" \"blue\" \"-\")"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "text": "The dog is rough.",
+      "QDep": 2,
+      "representation": "(\"dog\" \"is\" \"rough\" \"+\")",
+      "proofsWithIntermediates": [
+        {
+          "representation": "((((triple3) -> (rule8 % int2))) -> (rule4 % int1))",
+          "intermediates": {
+            "int1": {
+              "text": "The dog is rough.",
+              "representation": "(\"dog\" \"is\" \"rough\" \"+\")"
+            },
+            "int2": {
+              "text": "The dog eats the bald eagle.",
+              "representation": "(\"dog\" \"eats\" \"bald eagle\" \"+\")"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "text": "The dog chases the bald eagle.",
+      "QDep": 3,
+      "representation": "(\"dog\" \"chases\" \"bald eagle\" \"+\")",
+      "proofsWithIntermediates": [
+        {
+          "representation": "((((((triple3) -> (rule8 % int3))) -> (rule4 % int2))) -> (rule1 % int1))",
+          "intermediates": {
+            "int1": {
+              "text": "The dog chases the bald eagle.",
+              "representation": "(\"dog\" \"chases\" \"bald eagle\" \"+\")"
+            },
+            "int2": {
+              "text": "The dog is rough.",
+              "representation": "(\"dog\" \"is\" \"rough\" \"+\")"
+            },
+            "int3": {
+              "text": "The dog eats the bald eagle.",
+              "representation": "(\"dog\" \"eats\" \"bald eagle\" \"+\")"
+            }
+          }
+        }
+      ]
+    }
+  ]
 }

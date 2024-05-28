@@ -182,8 +182,8 @@ def get_knowledge(full_premises: str, list_premises: list, type: int = 0):
     k_dict = {}
     if full_premises != "":
         k_dict[full_premises] = fastgpt_knowledge(
-                f"<NL>\n{full_premises}\n<NL>", 1200, 4, cf.get("API", "KNOW_F"), 0
-            )  # 600,0.15
+                f"<NL>\n{full_premises}\n<NL>", 5000, 4, cf.get("API", "KNOW_F"), 0
+            )  # 4
         for k in k_dict[full_premises]:
             k_list.append(k)
     if type == 0:
@@ -191,7 +191,6 @@ def get_knowledge(full_premises: str, list_premises: list, type: int = 0):
     # 每个premise查询知识库，加到knowledege
     for premise in list_premises:
         count = count_words(premise)
-        # 用于overall翻译的最佳参数
         if count > 35:
             num = 5
         else:
@@ -225,7 +224,7 @@ def read_cache(cache_key):
     cache_file = os.path.join(cache_dir, f"{cache_key}.txt")
     if os.path.exists(cache_file):
         with open(cache_file, "r", encoding="utf-8") as f:
-            return f.read().splitlines()
+            return f.read().split("\n\n")
     return []
 
 
@@ -292,23 +291,18 @@ def fastgpt_knowledge(
 
     for attempt in range(retries):
         try:
-            # Force using IPv4
             session.socket = socket.create_connection(
                 (api_url.split("//")[1].split("/")[0], 80)
             )
-
-            # Sending the POST request to the API
             response = session.post(api_url, json=json_data)
-
-            # Check if the response is successful
             if response.status_code == 200:
                 response_data = response.json().get("data", [])["list"]
-                # Process the response data
                 result = []
                 # 只取nums个
-                response_data = response_data[:nums]
+                if nums < len(response_data):
+                    response_data = response_data[:nums]
                 for item in response_data:
-                    result_line = f"{item['q']}{item['a']}\n"
+                    result_line = f"{item['q']}\n{item['a']}\n"
                     result.append(result_line)
                     # 写入缓存
                 write_cache(cache_key, result)
@@ -318,7 +312,7 @@ def fastgpt_knowledge(
                     f"Attempt {attempt + 1}: Failed {response.status_code}, error : {response.text} \n json_data {json_data}"
                 )
         except Exception as e:
-            print(f"fastgpt_knowledge Attempt {attempt + 1}: An error occurred - {e}")
+            print(f"fastgpt_knowledge 尝试 {attempt + 1}:{e}")
 
     return []  # If all retries fail, return an empty list
 

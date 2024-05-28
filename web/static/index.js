@@ -209,7 +209,7 @@ layui.use(["table", "form", "layer"], function () {
       // 将\n替换为<br>以在HTML中正确显示换行
       //数组转字符串
       data["premises"] = data["premises"].join("<br><hr>");
-      data["premises-FOL"] = data["premises-FOL"].join("<br><hr>");
+      data["premises-FOL"] = data["premises-FOL"] ? data["premises-FOL"].join("<br><hr>") : "";
       data["response"] = data["response"].join("<br><hr>");
       var details = `<div class="">
       ${data.id}
